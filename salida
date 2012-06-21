@@ -1,0 +1,875 @@
+Array
+(
+)
+Array
+(
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => BrandsConfs_ibfk_1
+            [column_name] => fieldId
+            [foreign_tbl_name] => BrandsFieldsMaster
+            [foreign_tbl_column_name] => fieldId
+        )
+
+    [1] => Array
+        (
+            [key_name] => BrandsConfs_ibfk_2
+            [column_name] => brandId
+            [foreign_tbl_name] => Brands
+            [foreign_tbl_column_name] => brandId
+        )
+
+)
+Array
+(
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CommercialPackages_ibfk_1
+            [column_name] => brandId
+            [foreign_tbl_name] => Brands
+            [foreign_tbl_column_name] => brandId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CommercialPackagesPermissionGroups_ibfk_1
+            [column_name] => commercialPackageId
+            [foreign_tbl_name] => CommercialPackages
+            [foreign_tbl_column_name] => commercialPackageId
+        )
+
+    [1] => Array
+        (
+            [key_name] => CommercialPackagesPermissionGroups_ibfk_2
+            [column_name] => permGroupId
+            [foreign_tbl_name] => PermGroups
+            [foreign_tbl_column_name] => permGroupId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => Companies_ibfk_1
+            [column_name] => asId
+            [foreign_tbl_name] => ApplicationServers
+            [foreign_tbl_column_name] => asId
+        )
+
+    [1] => Array
+        (
+            [key_name] => Companies_ibfk_2
+            [column_name] => brandId
+            [foreign_tbl_name] => Brands
+            [foreign_tbl_column_name] => brandId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CompaniesDDIs_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CompaniesFeaturesAccessPrivileges_ibfk_1
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+    [1] => Array
+        (
+            [key_name] => CompaniesFeaturesAccessPrivileges_ibfk_2
+            [column_name] => featureId
+            [foreign_tbl_name] => FeatureMasters
+            [foreign_tbl_column_name] => featureId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CompaniesHolidaysCalendar_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CompaniesHolidaysCalendarDates_ibfk_1
+            [column_name] => CHCId
+            [foreign_tbl_name] => CompaniesHolidaysCalendar
+            [foreign_tbl_column_name] => CHCId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+    [1] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_10
+            [column_name] => DDIIdWhenNoResp
+            [foreign_tbl_name] => CompaniesDDIs
+            [foreign_tbl_column_name] => DDIId
+        )
+
+    [2] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_11
+            [column_name] => CSId
+            [foreign_tbl_name] => CompaniesSchedules
+            [foreign_tbl_column_name] => CSId
+        )
+
+    [3] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_12
+            [column_name] => CHCId
+            [foreign_tbl_name] => CompaniesHolidaysCalendar
+            [foreign_tbl_column_name] => CHCId
+        )
+
+    [4] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_2
+            [column_name] => incomingPhraseId
+            [foreign_tbl_name] => Phrases
+            [foreign_tbl_column_name] => phraseId
+        )
+
+    [5] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_3
+            [column_name] => afterHoursPhraseId
+            [foreign_tbl_name] => Phrases
+            [foreign_tbl_column_name] => phraseId
+        )
+
+    [6] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_4
+            [column_name] => afterHoursCallForwardDDI
+            [foreign_tbl_name] => CompaniesDDIs
+            [foreign_tbl_column_name] => DDIId
+        )
+
+    [7] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_5
+            [column_name] => afterHoursCallForwardVoiceMail
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+    [8] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_6
+            [column_name] => holidayPhraseId
+            [foreign_tbl_name] => Phrases
+            [foreign_tbl_column_name] => phraseId
+        )
+
+    [9] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_7
+            [column_name] => holidayCallForwardDDI
+            [foreign_tbl_name] => CompaniesDDIs
+            [foreign_tbl_column_name] => DDIId
+        )
+
+    [10] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_8
+            [column_name] => holidayCallForwardVoiceMail
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+    [11] => Array
+        (
+            [key_name] => CompaniesIncomingCallFilters_ibfk_9
+            [column_name] => DDIIdWhenBusy
+            [foreign_tbl_name] => CompaniesDDIs
+            [foreign_tbl_column_name] => DDIId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CompaniesIncomingCallFiltersRelDDI_ibfk_1
+            [column_name] => cicfId
+            [foreign_tbl_name] => CompaniesIncomingCallFilters
+            [foreign_tbl_column_name] => cicfId
+        )
+
+    [1] => Array
+        (
+            [key_name] => CompaniesIncomingCallFiltersRelDDI_ibfk_2
+            [column_name] => DDIId
+            [foreign_tbl_name] => CompaniesDDIs
+            [foreign_tbl_column_name] => DDIId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CompaniesSchedules_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CompanyUsersGroups_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => CompanyUsersGroupsOutCallExceptions_ibfk_1
+            [column_name] => exceptionId
+            [foreign_tbl_name] => OutCallExceptions
+            [foreign_tbl_column_name] => exceptionId
+        )
+
+    [1] => Array
+        (
+            [key_name] => CompanyUsersGroupsOutCallExceptions_ibfk_2
+            [column_name] => groupId
+            [foreign_tbl_name] => CompanyUsersGroups
+            [foreign_tbl_column_name] => groupId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => Contacts_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+    [1] => Array
+        (
+            [key_name] => Contacts_ibfk_2
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => ContactsAdrresses_ibfk_1
+            [column_name] => CId
+            [foreign_tbl_name] => Contacts
+            [foreign_tbl_column_name] => CId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => ContactsEmails_ibfk_1
+            [column_name] => CId
+            [foreign_tbl_name] => Contacts
+            [foreign_tbl_column_name] => CId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => ContactsGroups_ibfk_1
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => ContactsNumbers_ibfk_1
+            [column_name] => CId
+            [foreign_tbl_name] => Contacts
+            [foreign_tbl_column_name] => CId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => ContactsWebsites_ibfk_1
+            [column_name] => CId
+            [foreign_tbl_name] => Contacts
+            [foreign_tbl_column_name] => CId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => FeatureBrandsConfigs_ibfk_1
+            [column_name] => brandId
+            [foreign_tbl_name] => Brands
+            [foreign_tbl_column_name] => brandId
+        )
+
+    [1] => Array
+        (
+            [key_name] => FeatureBrandsConfigs_ibfk_2
+            [column_name] => featureId
+            [foreign_tbl_name] => FeatureMasters
+            [foreign_tbl_column_name] => featureId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => FeatureCompaniesConfigs_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+    [1] => Array
+        (
+            [key_name] => FeatureCompaniesConfigs_ibfk_2
+            [column_name] => featureId
+            [foreign_tbl_name] => FeatureMasters
+            [foreign_tbl_column_name] => featureId
+        )
+
+)
+Array
+(
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => FeatureUsersConfigs_ibfk_1
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+    [1] => Array
+        (
+            [key_name] => FeatureUsersConfigs_ibfk_2
+            [column_name] => featureId
+            [foreign_tbl_name] => FeatureMasters
+            [foreign_tbl_column_name] => featureId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => GroupsRelContacts_ibfk_1
+            [column_name] => CId
+            [foreign_tbl_name] => Contacts
+            [foreign_tbl_column_name] => CId
+        )
+
+    [1] => Array
+        (
+            [key_name] => GroupsRelContacts_ibfk_2
+            [column_name] => CGId
+            [foreign_tbl_name] => ContactsGroups
+            [foreign_tbl_column_name] => CGId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => HuntGroups_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => HuntGroupsUsers_ibfk_1
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+    [1] => Array
+        (
+            [key_name] => HuntGroupsUsers_ibfk_2
+            [column_name] => huntGroupId
+            [foreign_tbl_name] => HuntGroups
+            [foreign_tbl_column_name] => huntGroupId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => IVRpredefined_ibfk_1
+            [column_name] => phraseId
+            [foreign_tbl_name] => Phrase
+            [foreign_tbl_column_name] => phraseId
+        )
+
+    [1] => Array
+        (
+            [key_name] => IVRpredefined_ibfk_2
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+    [2] => Array
+        (
+            [key_name] => IVRpredefined_ibfk_3
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => IVRs_ibfk_1
+            [column_name] => errorPhraseId
+            [foreign_tbl_name] => Phrase
+            [foreign_tbl_column_name] => phraseId
+        )
+
+    [1] => Array
+        (
+            [key_name] => IVRs_ibfk_2
+            [column_name] => phraseId
+            [foreign_tbl_name] => Phrase
+            [foreign_tbl_column_name] => phraseId
+        )
+
+    [2] => Array
+        (
+            [key_name] => IVRs_ibfk_3
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+    [3] => Array
+        (
+            [key_name] => IVRs_ibfk_4
+            [column_name] => huntGroupId
+            [foreign_tbl_name] => HuntGroups
+            [foreign_tbl_column_name] => huntGroupId
+        )
+
+    [4] => Array
+        (
+            [key_name] => IVRs_ibfk_5
+            [column_name] => parentIVRId
+            [foreign_tbl_name] => IVRs
+            [foreign_tbl_column_name] => IVRId
+        )
+
+    [5] => Array
+        (
+            [key_name] => IVRs_ibfk_6
+            [column_name] => meetmeGroupId
+            [foreign_tbl_name] => MeetingRooms
+            [foreign_tbl_column_name] => meetingRoomId
+        )
+
+    [6] => Array
+        (
+            [key_name] => IVRs_ibfk_7
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => Locations_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => MeetingRooms_ibfk_1
+            [column_name] => languageId
+            [foreign_tbl_name] => Languages
+            [foreign_tbl_column_name] => languageId
+        )
+
+    [1] => Array
+        (
+            [key_name] => MeetingRooms_ibfk_2
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => MusicOnWait_ibfk_1
+            [column_name] => brandId
+            [foreign_tbl_name] => Brands
+            [foreign_tbl_column_name] => brandId
+        )
+
+    [1] => Array
+        (
+            [key_name] => MusicOnWait_ibfk_2
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => OutCallExceptions_ibfk_1
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+    [1] => Array
+        (
+            [key_name] => OutCallExceptions_ibfk_2
+            [column_name] => brandId
+            [foreign_tbl_name] => Brands
+            [foreign_tbl_column_name] => brandId
+        )
+
+)
+Array
+(
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => PermGroupsFeatureMasters_ibfk_1
+            [column_name] => featureId
+            [foreign_tbl_name] => FeatureMasters
+            [foreign_tbl_column_name] => featureId
+        )
+
+    [1] => Array
+        (
+            [key_name] => PermGroupsFeatureMasters_ibfk_2
+            [column_name] => permGroupId
+            [foreign_tbl_name] => PermGroups
+            [foreign_tbl_column_name] => permGroupId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => Phrases_ibfk_1
+            [column_name] => languageId
+            [foreign_tbl_name] => Languages
+            [foreign_tbl_column_name] => languageId
+        )
+
+    [1] => Array
+        (
+            [key_name] => Phrases_ibfk_2
+            [column_name] => brandId
+            [foreign_tbl_name] => Brands
+            [foreign_tbl_column_name] => brandId
+        )
+
+    [2] => Array
+        (
+            [key_name] => Phrases_ibfk_3
+            [column_name] => companyId
+            [foreign_tbl_name] => Companies
+            [foreign_tbl_column_name] => companyId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => Profiles_ibfk_1
+            [column_name] => brandId
+            [foreign_tbl_name] => Brands
+            [foreign_tbl_column_name] => brandId
+        )
+
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => TerminalModels_ibfk_1
+            [column_name] => manufacturerId
+            [foreign_tbl_name] => TerminalManufacturers
+            [foreign_tbl_column_name] => manufacturerId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => Terminals_ibfk_1
+            [column_name] => modelId
+            [foreign_tbl_name] => TerminalModels
+            [foreign_tbl_column_name] => modelId
+        )
+
+    [1] => Array
+        (
+            [key_name] => Terminals_ibfk_2
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => UserAssistant_ibfk_1
+            [column_name] => assistantId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+    [1] => Array
+        (
+            [key_name] => UserAssistant_ibfk_2
+            [column_name] => assistedId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => UserContactsNumbersAlias_ibfk_1
+            [column_name] => CNId
+            [foreign_tbl_name] => ContactsNumbers
+            [foreign_tbl_column_name] => CNId
+        )
+
+    [1] => Array
+        (
+            [key_name] => UserContactsNumbersAlias_ibfk_2
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => UserSupervision_ibfk_1
+            [column_name] => supervisorId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+    [1] => Array
+        (
+            [key_name] => UserSupervision_ibfk_2
+            [column_name] => supervisedId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => Users_ibfk_1
+            [column_name] => commercialPackageId
+            [foreign_tbl_name] => CommercialPackages
+            [foreign_tbl_column_name] => commercialPackageId
+        )
+
+    [1] => Array
+        (
+            [key_name] => Users_ibfk_2
+            [column_name] => locationId
+            [foreign_tbl_name] => Locations
+            [foreign_tbl_column_name] => locationId
+        )
+
+    [2] => Array
+        (
+            [key_name] => Users_ibfk_3
+            [column_name] => languageId
+            [foreign_tbl_name] => Languages
+            [foreign_tbl_column_name] => languageId
+        )
+
+    [3] => Array
+        (
+            [key_name] => Users_ibfk_4
+            [column_name] => hardPhoneDDIId
+            [foreign_tbl_name] => CompaniesDDIs
+            [foreign_tbl_column_name] => DDIId
+        )
+
+    [4] => Array
+        (
+            [key_name] => Users_ibfk_5
+            [column_name] => cellPhoneDDIid
+            [foreign_tbl_name] => CompaniesDDIs
+            [foreign_tbl_column_name] => DDIId
+        )
+
+    [5] => Array
+        (
+            [key_name] => Users_ibfk_6
+            [column_name] => currentProfileId
+            [foreign_tbl_name] => Profiles
+            [foreign_tbl_column_name] => profileId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => UsersGroups_ibfk_1
+            [column_name] => groupId
+            [foreign_tbl_name] => CompanyUsersGroups
+            [foreign_tbl_column_name] => groupId
+        )
+
+    [1] => Array
+        (
+            [key_name] => UsersGroups_ibfk_2
+            [column_name] => userId
+            [foreign_tbl_name] => Users
+            [foreign_tbl_column_name] => userId
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [key_name] => VIPchannels_ibfk_1
+            [column_name] => DDIId
+            [foreign_tbl_name] => CompaniesDDIs
+            [foreign_tbl_column_name] => DDIId
+        )
+
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+done!
