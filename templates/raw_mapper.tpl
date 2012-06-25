@@ -70,7 +70,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
      */
     public function getDbTable()
     {
-        if ($this->_dbTable === null) {
+        if (is_null($this->_dbTable)) {
             $this->setDbTable('<?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className?>');
         }
 
@@ -119,7 +119,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         try {
 
             //onDeleteCascades emulation
-            if ($this->_simulateReferencialActions and count($deleteCascade = $model->getOnDeleteCascadeRelationships()) > 0) {
+            if ($this->_simulateReferencialActions && count($deleteCascade = $model->getOnDeleteCascadeRelationships()) > 0) {
 
                 $depList = $model->getDependentList();
 
@@ -147,7 +147,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                             $references = $relDbAdapter->getReference('<?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className?>', $capitzalizedFk);
 
                             $targetColumn = array_shift($references["columns"]);
-                            $where = $relDbAdapter->getAdapter()->quoteInto( $targetColumn . ' = ?', $model->getPrimaryKey() );
+                            $where = $relDbAdapter->getAdapter()->quoteInto($targetColumn . ' = ?', $model->getPrimaryKey());
 
                             $depMapper = new $depMapperName;
                             $depObjects = $depMapper->fetchList($where);
@@ -167,7 +167,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             }
 
             //onDeleteSetNull emulation
-            if ($this->_simulateReferencialActions and count($deleteSetNull = $model->getOnDeleteSetNullRelationships()) > 0) {
+            if ($this->_simulateReferencialActions && count($deleteSetNull = $model->getOnDeleteSetNullRelationships()) > 0) {
 
                 $depList = $model->getDependentList();
 
@@ -195,7 +195,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                             $references = $relDbAdapter->getReference('<?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className?>', $capitzalizedFk);
 
                             $targetColumn = array_shift($references["columns"]);
-                            $where = $relDbAdapter->getAdapter()->quoteInto( $targetColumn . ' = ?', $model->getPrimaryKey() );
+                            $where = $relDbAdapter->getAdapter()->quoteInto($targetColumn . ' = ?', $model->getPrimaryKey());
 
                             $depMapper = new $depMapperName;
                             $depObjects = $depMapper->fetchList($where);
@@ -209,7 +209,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
                                 $setterName = 'set' . ucfirst($targetColumn);
                                 $item->$setterName(null);
-                                $item->save(false, false, false);
+                                $item->save();
                             } //end foreach
 
                         } //end if
@@ -239,7 +239,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         <?php foreach ($this->_primaryKey[$this->getTablename()][$this->getTablename()]['fields'] as $key) : ?>
 
             $pk_val = $model->get<?=$key['capital']?>();
-            if ($pk_val === null) {
+            if (is_null($pk_val)) {
 <?php if (! empty($this->_loggerName)):?>
                 $this->_logger->log('The value for <?=$key['capital']?> cannot be null in delete for ' . get_class($this), \Zend_Log::ERR);
 
@@ -307,18 +307,30 @@ foreach ($this->_columns[$this->getTableName()] as $column):
     }
 
     /**
-     * Saves current row, and optionally dependent rows
+     * Saves current row
+     * @return boolean If the save action was successful
+     */
+     public function save(\<?=$namespace?>Model\<?=$this->_className?> $model)
+    {
+        return $this->_save($model, false, false);
+    }
+
+    /**
+     * Saves current and all dependent rows
      *
      * @param \<?=$namespace?>Model\<?=$this->_className?> $model
-     * @param boolean $ignoreEmptyValues Should empty values saved
-     * @param boolean $recursive Should the object graph be walked for all related elements
      * @param boolean $useTransaction Flag to indicate if save should be done inside a database transaction
      * @return boolean If the save action was successful
      */
-    public function save(\<?=$namespace?>Model\<?=$this->_className?> $model,
-        $ignoreEmptyValues = false, $recursive = false, $useTransaction = true, $transactionTag = null
-    ) {
+    public function saveRecursive(\<?=$namespace?>Model\<?=$this->_className?> $model, $useTransaction = true, $transactionTag = null)
+    {
+        return $this->_save($model, true, $useTransaction, $transactionTag);
+    }
 
+    protected function _save(\<?=$namespace?>Model\<?=$this->_className?> $model,
+        $recursive = false, $useTransaction = true, $transactionTag = null
+    )
+    {
         $fileObjects = array();
 
         $availableObjects = $model->getFileObjects();
@@ -347,30 +359,22 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
         $data = $model->sanitize()->toArray();
 
-        if ($ignoreEmptyValues) {
-            foreach ($data as $key => $value) {
-                if ($value === null or $value === '') {
-                    unset($data[$key]);
-                }
-            }
-        }
-
 <?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
-        $primary_key = array();
+        $primaryKey = array();
 <?php foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) : ?>
 
         $pk_val = $model->get<?=$key['capital']?>();
-        if ($pk_val === null) {
+        if (is_null($pk_val)) {
 <?php if (! empty($this->_loggerName)):?>
             $this->_logger->log('The value for <?=$key['capital']?> cannot be null in save for ' . get_class($this), \Zend_Log::ERR);
 <?php endif; ?>
             Throw new \Exception("The value for <?=$key['capital']?> cannot be null", 2000);
         } else {
-            $primary_key['<?=$key['field']?>'] = $pk_val;
+            $primaryKey['<?=$key['field']?>'] = $pk_val;
         }
 <?php endforeach; ?>
 
-        $exists = $this->find($primary_key, null);
+        $exists = $this->find($primaryKey, null);
         $success = true;
 
         if ($useTransaction) {
@@ -397,10 +401,10 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
         try {
             // Check for current existence to know if needs to be inserted
-            if ($exists === null) {
+            if (is_null($exists)) {
                 $this->getDbTable()->insert($data);
 <?php else :?>
-        $mainPrimaryKey = $primary_key = $model->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>();
+        $primaryKey = $model->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>();
         $success = true;
 
         if ($useTransaction) {
@@ -427,16 +431,16 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         unset($data['<?=$this->_primaryKey[$this->getTablename()]['field']?>']);
 
         try {
-            if ($primary_key === null or empty($primary_key)) {
+            if (is_null($primaryKey) || empty($primaryKey)) {
 <?php else: ?>
-        $exists = $this->find($primary_key, null);
+        $exists = $this->find($primaryKey, null);
 
         try {
-            if ($exists === null) {
+            if (is_null($exists)) {
 <?php endif; ?>
-                $mainPrimaryKey = $primary_key = $this->getDbTable()->insert($data);
-                if ($primary_key) {
-                    $model->set<?=$this->_primaryKey[$this->getTablename()]['capital']?>($primary_key);
+                $primaryKey = $this->getDbTable()->insert($data);
+                if ($primaryKey) {
+                    $model->set<?=$this->_primaryKey[$this->getTablename()]['capital']?>($primaryKey);
                 } else {
                     Throw new \Exception("Insert sentence did not return a valid primary key", 9000);
                 }
@@ -457,7 +461,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                         if ($this->_cache->test($cacheHash)) {
 
                             $cachedRelations = $this->_cache->load($cacheHash);
-                            $cachedRelations->results[] = $primary_key;
+                            $cachedRelations->results[] = $primaryKey;
 
                             if ($useTransaction) {
 
@@ -479,21 +483,21 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 $fields = count($this->_primaryKey[$this->getTablename()]['fields']);
                 $i = 0;
                 foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) {
-                    echo '\'' . $key['field'] . ' = ?\' => $primary_key[\'' . $key['field'] . '\']';
+                    echo '\'' . $key['field'] . ' = ?\' => $primaryKey[\'' . $key['field'] . '\']';
                     $i++;
                     if ($i != $fields) {
                         echo ",\n                                 ";
                     }
                 }
             } else {
-                echo '\'' . $this->_primaryKey[$this->getTablename()]['field'] . ' = ?\' => $primary_key';
+                echo '\'' . $this->_primaryKey[$this->getTablename()]['field'] . ' = ?\' => $primaryKey';
             }
             echo "\n";?>
                               )
                 );
             }
 
-            if (is_numeric($primary_key) and !empty($fileObjects)) {
+            if (is_numeric($primaryKey) and !empty($fileObjects)) {
 
                 foreach ($fileObjects as $key => $fso) {
 
@@ -501,7 +505,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
                     if (! empty($baseName)) {
 
-                        $fso->flush($primary_key);
+                        $fso->flush($primaryKey);
                     }
                 }
             }
@@ -514,9 +518,9 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 <?php if ($key['type'] !== 'many') : ?>
                     $model->get<?=$this->_getRelationName($key, 'dependent')?>()
 <?php if ($this->_primaryKey[$this->getTablename()]['phptype'] !== 'array') : ?>
-                          ->set<?=$this->_getCapital($key['column_name'])?>($primary_key)
+                          ->set<?=$this->_getCapital($key['column_name'])?>($primaryKey)
 <?php endif;?>
-                          ->save($ignoreEmptyValues, $recursive, false, $transactionTag);
+                          ->saveRecursive(false, $transactionTag);
 <?php else: ?>
                     $<?=$this->_getClassName($key['foreign_tbl_name'])?> = $model->get<?=$this->_getRelationName($key, 'dependent')?>();
 
@@ -527,13 +531,13 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
                     foreach ($<?=$this->_getClassName($key['foreign_tbl_name'])?> as $value) {
                         $value<?php if ($this->_primaryKey[$this->getTablename()]['phptype'] !== 'array') : ?>
-->set<?=$this->_getCapital($key['column_name'])?>($primary_key)
+->set<?=$this->_getCapital($key['column_name'])?>($primaryKey)
 <?php elseif (is_array($key['column_name'])) :
     foreach ($key['column_name'] as $column) : ?>
-->set<?=$this->_getCapital($column)?>($primary_key['<?php echo $column ?>'])
+->set<?=$this->_getCapital($column)?>($primaryKey['<?php echo $column ?>'])
 <?php endforeach; ?>
 <?php endif;?>
-                              ->save($ignoreEmptyValues, $recursive, false, $transactionTag);
+                              ->saveRecursive(false, $transactionTag);
                     }
 <?php endif; ?>
                 }
@@ -569,14 +573,14 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         } catch (\Exception $e) {
 <?php if (! empty($this->_loggerName)):?>
             $message = 'Exception encountered while attempting to save ' . get_class($this);
-            if (! empty($primary_key)) {
+            if (! empty($primaryKey)) {
 <?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
                 $message .= ' id:';
 <?php foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) : ?>
-                $message .= ' <?=$key['field']?> => ' . $primary_key['<?=$key['field']?>'];
+                $message .= ' <?=$key['field']?> => ' . $primaryKey['<?=$key['field']?>'];
 <?php endforeach; ?>
 <?php else: ?>
-                $message .= ' id: ' . $primary_key;
+                $message .= ' id: ' . $primaryKey;
 <?php endif; ?>
             } else {
                 $message .= ' with an empty primary key ';
@@ -620,24 +624,25 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
         if ($success === true) {
 
-            return $mainPrimaryKey;
+            return $primaryKey;
         }
 
         return $success;
     }
 
+
     /**
      * Finds row by primary key
      *
-     * @param <?=$this->_primaryKey[$this->getTablename()]['phptype']?> $primary_key
+     * @param <?=$this->_primaryKey[$this->getTablename()]['phptype']?> $primaryKey
      * @param <?=$namespace?>Model\<?=$this->_className?>|null $model
      * @return <?=$namespace?>Model\<?=$this->_className?>|null The object provided or null if not found
      */
-    public function find($primary_key, $model = null)
+    public function find($primaryKey, $model = null)
     {
-        if (!($this->_cache and $this->_cache->test("<?=$namespace?>\Model\\<?=$this->_className?>\\".$primary_key))) {
+        if (!($this->_cache and $this->_cache->test("<?=$namespace?>\Model\\<?=$this->_className?>\\".$primaryKey))) {
 
-            $result = $this->getRowset($primary_key);
+            $result = $this->getRowset($primaryKey);
 
             if (is_null($result)) {
                 return null;
@@ -648,12 +653,12 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             if ($this->_cache) {
 
-                $this->_cache->save($model->toArray(), get_class($model)."_".$primary_key);
+                $this->_cache->save($model->toArray(), get_class($model)."_".$primaryKey);
             }
 
         } else {
 
-            $tmp = $this->_cache->load("<?=$namespace?>\Model\\<?=$this->_className?>\\".$primary_key);
+            $tmp = $this->_cache->load("<?=$namespace?>\Model\\<?=$this->_className?>\\".$primaryKey);
             $model = $this->loadModel($tmp, $model);
         }
 
