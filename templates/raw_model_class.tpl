@@ -760,6 +760,11 @@ abstract class ModelAbstract implements \IteratorAggregate
 
         return false;
     }
+    
+    public function getFileObjects()
+    {
+        return array();
+    }
 
     public function getIterator()
     {
