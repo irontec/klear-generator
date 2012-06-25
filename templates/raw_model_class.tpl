@@ -23,7 +23,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
  
 namespace <?=$namespace?>Model\Raw;
 
-abstract class ModelAbstract implements \Iterator
+abstract class ModelAbstract implements \IteratorAggregate
 {
     /**
      * Mapper associated with this model instance
@@ -60,18 +60,6 @@ abstract class ModelAbstract implements \Iterator
      * @var array
      */
     protected $_columnsList;
-
-    /**
-     * Array of column keys for this model
-     *
-     * @var array
-     */
-    private $_columnsListKeys;
-
-    /**
-    * @var Int iterator position for this model
-    */
-    private $_position;
 
     /**
      * Associative array of columns for this model
@@ -771,47 +759,10 @@ abstract class ModelAbstract implements \Iterator
         }
 
         return false;
-   }
-
-   /**
-    * Iterator stuff
-    *
-    * @return string
-    */
-    public function rewind()
-    {
-        if (is_null($this->_columnsListKeys)) {
-
-            $this->_columnsListKeys = array_keys($this->_columnsList);
-        }
-
-        $this->_position = 0;
     }
 
-    public function current()
+    public function getIterator()
     {
-        $key = $this->_columnsListKeys[$this->_position];
-        return $this->_columnsList[$key];
-    }
-
-    public function key()
-    {
-        return $this->_position;
-    }
-
-    public function next()
-    {
-        ++$this->_position;
-    }
-
-    public function valid()
-    {
-        if (isset($this->_columnsListKeys[$this->_position])) {
-
-            $key = $this->_columnsListKeys[$this->_position];
-            return isset($this->_columnsList[$key]);
-        }
-
-        return false;
+        return new \ArrayIterator($this->_columnsList);
     }
 }
