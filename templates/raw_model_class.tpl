@@ -681,20 +681,26 @@ abstract class ModelAbstract implements \IteratorAggregate
     }
 
     /**
-     * Saves current loaded row
-     *
-     *  $ignoreEmptyValues by default is true.
-     *  This option will not update columns with empty values or
-     *  will insert NULL values if inserting
+     * Saves current row
      *
      * @see <?=$namespace?>Model\Mapper\MapperAbstract::save()
-     * @param boolean $ignoreEmptyValues
-     * @param boolean recursive
      * @return boolean If the save was sucessful
      */
-    public function save($ignoreEmptyValues = false, $recursive = false, $useTransaction = true)
+    public function save()
     {
-        return $this->getMapper()->save($this, $ignoreEmptyValues, $recursive, $useTransaction);
+        return $this->getMapper()->save($this);
+    }
+
+    /**
+     * Saves current and dependant rows
+     *
+     * @see <?=$namespace?>Model\Mapper\MapperAbstract::saveRecursive()
+     * @param boolean $useTransaction
+     * @return boolean If the save was sucessful
+     */
+    public function saveRecursive($useTransaction = true)
+    {
+        return $this->getMapper()->saveRecursive($this, $useTransaction);
     }
 
     /**
