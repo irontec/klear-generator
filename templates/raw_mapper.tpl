@@ -260,7 +260,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             }
 
             $fileObjects = array();
-            $availableObjects = method_exists($model, 'getFileObjects') ? $model->getFileObjects() : array();
+            $availableObjects = $model->getFileObjects();
 
             foreach ($availableObjects as $fso) {
 
@@ -321,7 +321,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
         $fileObjects = array();
 
-        $availableObjects = method_exists($model, 'getFileObjects') ? $model->getFileObjects() : array();
+        $availableObjects = $model->getFileObjects();
         $fileSpects = array();
 
         foreach ($availableObjects as $item) {
