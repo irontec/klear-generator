@@ -610,7 +610,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             Throw $e;
         }
 
-        if ($success and $this->_cache) {
+        if ($success && $this->_cache) {
 
             if ($useTransaction) {
 
