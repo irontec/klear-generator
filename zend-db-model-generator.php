@@ -14,7 +14,7 @@ if (!is_file(dirname(__FILE__).'/config/config.php')) {
 }
 
 define('VERSION', '0.6');
-define('AUTHOR',  'Kfir Ozer <kfirufk@gmail.com>');
+define('AUTHOR',  'Kfir Ozer <kfirufk@gmail.com>; Mikel Madariaga <mikel@irontec.com>; Alayn Gortazar <alayn@irontec.com>');
 
 
 require_once 'Zend/Loader/Autoloader.php';
@@ -35,19 +35,24 @@ if (!ini_get('register_argc_argv')) {
 $db_type = $config['db.type'];
 $class = 'Make_' . $db_type;
 
-require (__DIR__.DIRECTORY_SEPARATOR.'class'.DIRECTORY_SEPARATOR.'Make.'. $db_type . '.php');
+$dbFilePath = array(
+    __DIR__,
+    'class',
+    'Make.' . $db_type . '.php'
+);
+require(implode(DIRECTORY_SEPARATOR, $dbFilePath));
 
-if ( ! class_exists($class)) {
+if (!class_exists($class)) {
     die ("Database type specified is not supported\n");
 }
 
 $parser = new ArgvParser($argv,AUTHOR,VERSION);
-$params=$parser->checkParams();
+$params = $parser->checkParams();
 
-$namespace=$config['namespace.default'];
+$namespace = $config['namespace.default'];
 
 if (sizeof($params['--namespace']) == 1) {
-    $namespace=$params['--namespace'][0];
+    $namespace = $params['--namespace'][0];
 }
 
 if (sizeof($params['--tpl-prefix']) == 1) {
@@ -59,42 +64,43 @@ if (sizeof($params['--tpl-prefix']) == 1) {
     $tpl_prefix = null;
 }
 
-$dbname=$params['--database'][0];
+$dbname = $params['--database'][0];
 echo $class. "\n";
-$cls = new $class($config,$dbname,$namespace,$tpl_prefix);
-$tables=array();
+$modelCreator = new $class($config,$dbname,$namespace,$tpl_prefix);
+$tables = array();
 if ($params['--all-tables'] || sizeof($params['--tables-regex'])>0) {
-    $tables=$cls->getTablesNamesFromDb();
+    $tables = $modelCreator->getTablesNamesFromDb();
 }
 
-$tables=$parser->compileListOfTables($tables, $params);
+$tables = $parser->compileListOfTables($tables, $params);
 
 if (sizeof($tables) == 0) {
     die("error: please provide at least one table to parse.\n");
 }
 
-$path='';
-
+$path = array();
 if (sizeof($params['--location']) == 1) {
     // Check if a relative path
-    if (! realpath($params['--location'][0])) {
-        $path = realpath(__DIR__.DIRECTORY_SEPARATOR.$params['--location'][0]);
+    if (!realpath($params['--location'][0])) {
+        $path[] = __DIR__;
+        $path[] = $params['--location'][0];
     } else {
-        $path = realpath($params['--location'][0]);
+        $path[] = $params['--location'][0];
     }
-    $cls->setLocation($path);
-    $path .= DIRECTORY_SEPARATOR;
 } else {
-    $cls->setLocation(__DIR__.DIRECTORY_SEPARATOR.$params['--database'][0]);
-    $path=__DIR__.DIRECTORY_SEPARATOR.$params['--database'][0].DIRECTORY_SEPARATOR;
+    $path[] = __DIR__;
+    $PATH[] = $params['--database'][0];
 
-	echo "\n\nel path:\n\t".$path."\n\n";
 }
+$path = realpath(implode(DIRECTORY_SEPARATOR, $path));
+$modelCreator->setLocation($path);
+$path .= DIRECTORY_SEPARATOR;
+echo "\n\nEl path:\n\t".$path."\n\n";
 
 $folderList = array(
-    'Mapper', 
+    'Mapper',
         'Mapper/Sql',
-            'Mapper/Sql/DbTable', 
+            'Mapper/Sql/DbTable',
             'Mapper/Sql/Raw',
     'Model',
         'Model/Raw'
@@ -109,12 +115,13 @@ foreach ($folderList as $name) {
     }
 }
 
-$cls->setTableList($tables);
+$modelCreator->setTableList($tables);
 
 foreach ($tables as $table) {
-    $cls->setTableName($table);
+
+    $modelCreator->setTableName($table);
     try {
-        $cls->parseTable();
+        $modelCreator->parseTable();
     } catch (Exception $e) {
         echo "Warning: Failed to process $table: " . $e->getMessage(). " ... Skipping\n";
     }
@@ -122,9 +129,9 @@ foreach ($tables as $table) {
 }
 
 foreach ($tables as $table) {
-    $cls->setTableName($table);
+    $modelCreator->setTableName($table);
     try {
-        $cls->doItAll();
+        $modelCreator->doItAll();
     } catch (Exception $e) {
         echo "Warning: Failed to process $table: " . $e->getMessage(). " ... Skipping\n";
     }
