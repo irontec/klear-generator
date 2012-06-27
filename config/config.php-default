@@ -40,7 +40,7 @@ $config=array(
     'include.path' => 'includes',
 
     # default namespace name
-    'namespace.default' => 'Default',
+    'namespace.default' => 'MyApp',
 
     # The Cache Manager name in the Zend Registry. Leave blank to ignore
     'cache.manager_name' => '',
