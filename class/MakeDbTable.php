@@ -791,20 +791,32 @@ abstract class MakeDbTable {
         /********************************
          ************* Smart ************
          ********************************/
-        $mapperFile = $this->getLocation().DIRECTORY_SEPARATOR.'Mapper/Sql'.DIRECTORY_SEPARATOR.$this->_className.'.php';
-
+        $mapperFile = array(
+            $this->getLocation(),
+            'Mapper',
+            'Sql',
+            $this->_className . '.php'
+        );
+        $mapperFile = implode(DIRECTORY_SEPARATOR, $mapperFile);
         $mapperData = $this->getParsedTplContents('mapper.tpl');
 
-        if (!file_put_contents($mapperFile, $mapperData)) {
-            die("Error: could not write mapper file $mapperFile.");
+        if (!file_exists($mapperFile)) {
+            if (!file_put_contents($mapperFile, $mapperData)) {
+                die("Error: could not write mapper file $mapperFile.");
+            }
         }
-
 
         /********************************
          ************* Raw ************
          ********************************/
-        $mapperFile = $this->getLocation().DIRECTORY_SEPARATOR.'Mapper/Sql/Raw'.DIRECTORY_SEPARATOR.$this->_className.'.php';
-
+        $mapperFile = array(
+            $this->getLocation(),
+            'Mapper',
+            'Sql',
+            'Raw',
+            $this->_className . '.php'
+        );
+        $mapperFile = implode(DIRECTORY_SEPARATOR, $mapperFile);
         $mapperData = $this->getParsedTplContents('raw_mapper.tpl');
 
         if (!file_put_contents($mapperFile, $mapperData)) {
