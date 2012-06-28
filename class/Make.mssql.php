@@ -7,23 +7,19 @@ class Make_mssql extends MakeDbTable {
 
     protected $_server_version = null;
 
-    protected function getPDOString($host, $port = 1433, $dbname) {
-        $seperator = ':';
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $seperator = ',';
-        }
-
-        return "mssql:host=$host$seperator$port;dbname=$dbname";
+    protected function getAdapterType()
+    {
+        return 'PDO_Mssql';
     }
 
     protected function getServerVersion() {
         if ($this->_server_version === null) {
             // Get Server version. Try the SQL Server 2000+ method first
-            $version = $this->_pdo->query("select CAST(SERVERPROPERTY('productversion') as VARCHAR) as version");
+            $version = $this->_dbAdapter->query("select CAST(SERVERPROPERTY('productversion') as VARCHAR) as version");
 
             // For SQL Server 7 and older that don't have SERVERPROPERTY, try @@VERSION
             if (! $version) {
-                $version = $this->_pdo->query("select CAST(@@VERSION as VARCHAR)");
+                $version = $this->_dbAdapter->query("select CAST(@@VERSION as VARCHAR)");
             }
 
             if ($version) {
@@ -37,19 +33,6 @@ class Make_mssql extends MakeDbTable {
         }
 
         return $this->_server_version;
-    }
-
-    public function getTablesNamesFromDb() {
-        $res = $this->_pdo->query("select name
-                from sysobjects
-                where xtype = 'U' and uid = 1 and
-                name not in ('sysdiagrams', 'dtproperties')")->fetchAll();
-        $tables = array();
-        foreach ($res as $table){
-            $tables[] = $table[0];
-        }
-
-        return $tables;
     }
 
     /**
@@ -74,8 +57,8 @@ class Make_mssql extends MakeDbTable {
 
     public function parseForeignKeys() {
         $tbname = $this->getTableName();
-        // $this->_pdo->query("SET NAMES UTF8");
-        $qry = $this->_pdo->query("select
+        // $this->_dbAdapter->query("SET NAMES UTF8");
+        $qry = $this->_dbAdapter->query("select
         so_ftable.name as foreign_table, sc_fcol.name as foreign_column, sc_col.name as local_column, so_key.name as fk_name
             from sysforeignkeys as fk
             join sysobjects as so_table on so_table.name = '$tbname' and fk.fkeyid = so_table.id and xtype = 'U'
@@ -133,7 +116,7 @@ class Make_mssql extends MakeDbTable {
     public function parseDependentTables() {
         $tbname = $this->getTableName();
 
-        $qry = $this->_pdo->query("select so_ftable.name as foreign_table, sc_fcol.name as foreign_column, sc_col.name as local_column, so_key.name as fk_name
+        $qry = $this->_dbAdapter->query("select so_ftable.name as foreign_table, sc_fcol.name as foreign_column, sc_col.name as local_column, so_key.name as fk_name
             from sysforeignkeys as fk
             join sysobjects as so_table on so_table.name = '$tbname' and fk.rkeyid = so_table.id and xtype = 'U'
             join sysobjects as so_key on fk.constid = so_key.id
@@ -175,7 +158,7 @@ class Make_mssql extends MakeDbTable {
 
         // Determine if this is a one to many or one to one by comparing the primary key columns to the key columns
         foreach ($dependents as &$key) {
-            $pk_query = $this->_pdo->query("select c.name
+            $pk_query = $this->_dbAdapter->query("select c.name
                 from sysindexes i
                     join sysobjects o ON i.id = o.id
                     join sysobjects pk ON i.name = pk.name AND pk.parent_obj = i.id AND pk.xtype = 'PK'
@@ -228,7 +211,7 @@ class Make_mssql extends MakeDbTable {
         // Works with SQL Server < 2005
         $version = $this->getServerVersion();
         if (! $version || $version < 9) {
-            $columns_query = $this->_pdo->query("select
+            $columns_query = $this->_dbAdapter->query("select
                sc.name, st.name as type,sc.length as type_length,sp.value as comment
                 from syscolumns as sc
                 join sysobjects as so on sc.id = so.id and so.type = 'U' and so.name = '$tbname'
@@ -237,7 +220,7 @@ class Make_mssql extends MakeDbTable {
                order by sc.colorder");
         } else {
             // Works with SQL Server >= 2005
-            $columns_query = $this->_pdo->query("select
+            $columns_query = $this->_dbAdapter->query("select
                 sc.name, st.name as type,sc.length as type_length, ep.value as comment
                 from syscolumns as sc
                  join sysobjects as so on sc.id = so.id and so.type = 'U' and so.name = '$tbname'
@@ -268,7 +251,7 @@ class Make_mssql extends MakeDbTable {
             }
         }
 
-        $pk_query = $this->_pdo->query("select c.name
+        $pk_query = $this->_dbAdapter->query("select c.name
             from sysindexes i
                 join sysobjects o ON i.id = o.id
                 join sysobjects pk ON i.name = pk.name AND pk.parent_obj = i.id AND pk.xtype = 'PK'

@@ -1,10 +1,5 @@
 #!/usr/bin/php
 <?php
-
-// Define path to application directory
-defined('APPLICATION_PATH')
-    || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/application'));
-
 // Define application environment
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
@@ -51,22 +46,30 @@ $params = $parser->checkParams();
 
 $namespace = $config['namespace.default'];
 
+if (sizeof($params['--application']) == 1) {
+    $applicationPath = $params['--application'][0];
+    define('APPLICATION_PATH', $applicationPath);
+
+    $application = new Zend_Application(APPLICATION_ENV, $applicationPath . '/configs/application.ini');
+    $application->bootstrap('db');
+    $dbAdapter = Zend_Db_Table::getDefaultAdapter();
+    $dbParams = $dbAdapter->getConfig();
+
+    // Define application environment
+    $zendConfig = new Zend_Config_Ini($applicationPath . '/configs/application.ini', APPLICATION_ENV);
+
+    $params['--location'][0] = APPLICATION_PATH . '/../library';
+    $params['--database'][0] = $dbParams['dbname'];
+    $params['--namespace'][0] = $zendConfig->appnamespace;
+}
+
 if (sizeof($params['--namespace']) == 1) {
     $namespace = $params['--namespace'][0];
 }
 
-if (sizeof($params['--tpl-prefix']) == 1) {
-
-    $tpl_prefix = $params['--tpl-prefix'][0];
-
-} else {
-
-    $tpl_prefix = null;
-}
-
 $dbname = $params['--database'][0];
 echo $class. "\n";
-$modelCreator = new $class($config,$dbname,$namespace,$tpl_prefix);
+$modelCreator = new $class($config, $dbname, $namespace);
 $tables = array();
 if ($params['--all-tables'] || sizeof($params['--tables-regex'])>0) {
     $tables = $modelCreator->getTablesNamesFromDb();
@@ -90,7 +93,6 @@ if (sizeof($params['--location']) == 1) {
 } else {
     $path[] = __DIR__;
     $PATH[] = $params['--database'][0];
-
 }
 $path = realpath(implode(DIRECTORY_SEPARATOR, $path));
 $modelCreator->setLocation($path);

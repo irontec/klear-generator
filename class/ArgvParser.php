@@ -17,8 +17,9 @@ class ArgvParser {
     function getUsage() {
         return <<<USAGE
 parameters:
+    --application         : zend application path
     --database            : database name
-    --location            : specify where to create the files (default is current directory)
+    --location            : specify where to create the files (default is current directory or zend application library if --application is specified)
     --namespace           : override config file's default namespace
     --tpl-prefix          : template filename prefix
  *  --table               : table name (parameter can be used more then once)
@@ -37,15 +38,16 @@ USAGE;
 
     public function checkParams() {
         $params=array(
-                '--database'=>array(),
-                '--namespace'=>array(),
-                '--tpl-prefix'=>array(),
-                '--location'=>array(),
-                '--table'=>array(),
-                '--all-tables'=>false,
-                '--ignore-table'=>array(),
-                '--ignore-tables-regex'=>array(),
-                '--tables-regex'=>array()
+                '--application' => array(),
+                '--database' => array(),
+                '--namespace' => array(),
+                '--tpl-prefix' => array(),
+                '--location' => array(),
+                '--table' => array(),
+                '--all-tables' => false,
+                '--ignore-table' => array(),
+                '--ignore-tables-regex' => array(),
+                '--tables-regex' => array()
             );
         $argv=$this->_argv;
         array_shift($argv);
@@ -58,17 +60,17 @@ USAGE;
                     $params[$param][]=array_shift($argv);
             } else die ("error: unknown parameter '$param'\n".$this->getUsage());
         }
-        if (sizeof($params['--database']) != 1)
-                die("error: please provide one database parameter\n".$this->getUsage());
+        if (sizeof($params['--database']) != 1 && sizeof($params['--application']) != 1)
+                die("error: please provide a database or application parameter\n" . $this->getUsage());
         if (sizeof($params['--namespace'])>1)
-                die("error: namespace parameter can't be used more than once\n".$this->getUsage());
+                die("error: namespace parameter can't be used more than once\n" . $this->getUsage());
         if (sizeof($params['--location'])>1)
-                die("error: location parameter can't be used more than once\n".$this->getUsage());
+                die("error: location parameter can't be used more than once\n" . $this->getUsage());
         return $params;
 
     }
 
-    public function compileListOfTables($thetables,$params) {
+    public function compileListOfTables($thetables, $params) {
         $tables=array();
         if ($params['--all-tables'])
             $tables=array_flip($thetables);
@@ -93,10 +95,10 @@ USAGE;
         }
 
         $res=array();
-        
+
         foreach (array_keys($tables)  as $table)
             $res[]=$table;
-       
+
         return $res;
     }
 

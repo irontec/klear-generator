@@ -19,11 +19,6 @@ abstract class MakeDbTable {
      */
     protected $_dbname;
 
-    /**
-     *  @var PDO $_pdo;
-     */
-    protected $_pdo;
-
 
     /**
      *   @var Array $_columns;
@@ -517,7 +512,10 @@ abstract class MakeDbTable {
         return false;
     }
 
-    abstract public function getTablesNamesFromDb();
+    public function getTablesNamesFromDb()
+    {
+        return $this->_dbAdapter->listTables();
+    }
 
     /**
      * converts database specific data types to PHP data types
@@ -539,9 +537,7 @@ abstract class MakeDbTable {
 
     abstract public function parseDescribeTable();
 
-    abstract protected function getPDOString($host, $port, $dbname);
-
-    abstract protected function getPDOSocketString($socket, $dbname);
+    abstract protected function getAdapterType();
 
     /**
      *
@@ -551,47 +547,30 @@ abstract class MakeDbTable {
      * @param String $dbname
      * @param String $namespace
      */
-    function __construct($config,$dbname,$namespace, $tplPrefix = '') {
+    function __construct($config, $dbname, $namespace) {
 
         $columns=array();
         $primaryKey=array();
 
         $this->_config = $config;
-        $this->_addRequire=$config['include.addrequire'];
-        $pdoString = "";
-        if ($this->_config['db.socket']) {
+        $this->_addRequire = $config['include.addrequire'];
 
-             $pdoString=$this->getPDOSocketString($this->_config['db.socket'],$dbname);
+        $this->_dbAdapter = Zend_Db_Table::getDefaultAdapter();
 
-        } else {
-
-            $pdoString=$this->getPDOString($this->_config['db.host'], $this->_config['db.port'], $dbname);
-        }
-        try {
-         $pdo = new PDO($pdoString,
-            $this->_config['db.user'],
-            $this->_config['db.password']
-         );
-
-         if (isset($this->_dbAdapter)) {
-
-            require_once 'Zend/Db/Adapter/Pdo/Mysql.php';
-
-            $this->_dbAdapter = Zend_Db::factory('Pdo_Mysql', array(
-                'host'     => $this->_config['db.host'],
-                'dbname'   => $dbname,
-                'username' => $this->_config['db.user'],
-                'password' => $this->_config['db.password'],
-            ));
-         }
-
-         $this->_pdo=$pdo;
-        } catch (Exception $e) {
-            die("pdo error: ".$e->getMessage()."\n");
+        if (!$this->_dbAdapter) {
+            $this->_dbAdapter = Zend_Db::factory(
+                    $this->getAdapterType(),
+                    array(
+                        'host'     => $this->_config['db.socket']? $this->_config['db.socket']: $this->_config['db.host'],
+                        'dbname'   => $dbname,
+                        'username' => $this->_config['db.user'],
+                        'password' => $this->_config['db.password'],
+                    )
+            );
         }
 
         //$this->_tbname=$tbname;
-        $this->_namespace=$namespace;
+        $this->_namespace = $namespace;
 
         //tplPrefix
         if (empty($tplPrefix)) {
@@ -675,7 +654,7 @@ abstract class MakeDbTable {
         $referenceMap='';
         $dbTableFile = $this->getLocation() . DIRECTORY_SEPARATOR . 'Mapper/Sql/DbTable' . DIRECTORY_SEPARATOR . $this->_className . '.php';
 
-        $foreignKeysInfo=$this->getForeignKeysInfo();
+        $foreignKeysInfo = $this->getForeignKeysInfo();
         $references=array();
         foreach ($foreignKeysInfo as $info) {
             $refTableClass = $this->_namespace . '\\\\Mapper\\\\Sql\\\\DbTable\\\\' . $this->_getClassName($info['foreign_tbl_name']);

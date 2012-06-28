@@ -7,8 +7,6 @@ class Make_mysql extends MakeDbTable {
 
     protected $_triggers = array();
 
-    protected $_dbAdapter = true;
-
     public function getTriggers ()
     {
         return $this->_triggers;
@@ -60,25 +58,11 @@ class Make_mysql extends MakeDbTable {
         $this->_triggers[$fk] = $parsedTriggers;
     }
 
-    protected function getPDOString($host, $port = 3306, $dbname) {
-        return "mysql:host=$host;port=$port;dbname=$dbname";
+
+    protected function getAdapterType()
+    {
+        return 'Mysqli';
     }
-
-    protected function getPDOSocketString($host, $dbname) {
-        return "mysql:unix_socket=$host;dbname=$dbname";
-    }
-
-
-    public function getTablesNamesFromDb() {
-        $res = $this->_pdo->query('show tables')->fetchAll();
-        $tables = array();
-        foreach ($res as $table) {
-            $tables[]=$table[0];
-        }
-
-        return $tables;
-    }
-
 
     /**
      * converts MySQL data types to PHP data types
@@ -102,8 +86,8 @@ class Make_mysql extends MakeDbTable {
 
     public function parseForeignKeys() {
         $tbname = $this->getTableName();
-        $this->_pdo->query("SET NAMES UTF8");
-        $qry = $this->_pdo->query("show create table `$tbname`");
+        $this->_dbAdapter->query("SET NAMES UTF8");
+        $qry = $this->_dbAdapter->query("show create table `$tbname`");
 
         if (!$qry) {
             throw new Exception("`show create table $tbname` returned false!.");
@@ -178,12 +162,12 @@ class Make_mysql extends MakeDbTable {
     public function parseDependentTables() {
         $tbname = $this->getTableName();
         $tables = $this->getTableList();
-        $this->_pdo->query("SET NAMES UTF8");
+        $this->_dbAdapter->query("SET NAMES UTF8");
 
         $dependents = array();
 
         foreach ($tables as $table) {
-            $qry=$this->_pdo->query("show create table `$table`");
+            $qry=$this->_dbAdapter->query("show create table `$table`");
 
             if (!$qry) {
                 throw new Exception("`show create table $table` returned false!");
@@ -233,9 +217,9 @@ class Make_mysql extends MakeDbTable {
     public function parseDescribeTable() {
 
         $tbname=$this->getTableName();
-        $this->_pdo->query("SET NAMES UTF8");
+        $this->_dbAdapter->query("SET NAMES UTF8");
 
-        $qry_create = $this->_pdo->query("show create table `$tbname`");
+        $qry_create = $this->_dbAdapter->query("show create table `$tbname`");
 
         if (!$qry_create) {
             throw new Exception("`describe $tbname` returned false!.");
@@ -262,7 +246,7 @@ class Make_mysql extends MakeDbTable {
             $this->_classDesc[$this->getTableName()] = '';
         }
 
-        $qry = $this->_pdo->query("describe `$tbname`");
+        $qry = $this->_dbAdapter->query("describe `$tbname`");
 
         if (!$qry) {
             throw new Exception("`describe $tbname` returned false!.");
