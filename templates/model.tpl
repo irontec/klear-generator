@@ -133,6 +133,8 @@ echo "$vars\n\n";
     $mlFields = array();
     foreach ($this->_columns[$this->getTableName()] as $column):
         if($column['comment'] !== '[ML]') continue;
+
+        $mlFields[] = $column['field'];
 ?>
             '<?=$column['normalized']?>'=>'<?=$column['capital']?>',
 <?php endforeach;?>
@@ -146,6 +148,13 @@ echo "$vars\n\n";
         $current = explode("_", $column['field']);
 
         if (count($current) < 2) {
+
+            continue;
+        }
+
+		$parentField = implode("_", array_slice($current, 0, -1));
+
+        if (! in_array($parentField , $mlFields)) {
 
             continue;
         }
