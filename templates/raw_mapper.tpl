@@ -6,7 +6,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 /**
  * Application Model Mapper
  *
- * @package Mapper\Sql
+ * @package <?=$namespace?>Mapper\Sql
  * @subpackage Raw
  * @author <?=$this->_author . "\n"?>
  * @copyright <?=$this->_copyright . "\n"?>
@@ -16,7 +16,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 /**
  * Data Mapper implementation for <?=$namespace?>Model\<?=$this->_className."\n"?>
  *
- * @package Mapper\Sql
+ * @package <?=$namespace?>Mapper\Sql
  * @subpackage Raw
  * @author <?=$this->_author . "\n"?>
  */

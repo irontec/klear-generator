@@ -6,7 +6,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 /**
  * Application Model Mapper
  *
- * @package Mapper\Sql
+ * @package <?=$namespace?>Mapper\Sql
  * @subpackage Raw
  * @author <?=$this->_author."\n"?>
  * @copyright <?=$this->_copyright."\n"?>
@@ -16,7 +16,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 /**
  * Abstract class that is extended by all mappers
  *
- * @package Mapper\Sql
+ * @package <?=$namespace?>Mapper\Sql
  * @subpackage Raw
  * @author <?=$this->_author."\n"?>
  */
@@ -523,11 +523,8 @@ abstract class MapperAbstract
 
             } else {
 
-                $related = new $model_class();
-                $related->setOptions($obj->toArray());
                 $method_name = 'set' . $property;
-
-                $model->$method_name($related);
+                $model->$method_name($obj);
             }
         }
 

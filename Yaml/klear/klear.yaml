@@ -1,0 +1,27 @@
+production: 
+  main: 
+    log: 
+      writerName: Null
+      writerParams: 
+    sitename: MyApp
+    logo: images/logo.png
+    year: 2012
+    lang: Espanol
+    langs: 
+      Espanol: 
+        title: Español
+        language: es
+        locale: es_ES
+    jqueryUI: 
+      theme: redmond
+    cssExtended: 
+    actionHelpers: 
+      - MyApp_Controller_Action_Helper_Hooks
+    auth: 
+      adapter: App_Auth_Adapter
+      title: 
+        i18n: 
+          es: Acceso restringido
+      description: 
+        i18n: 
+          es: Introduce tu usuario de administrador de empresa
