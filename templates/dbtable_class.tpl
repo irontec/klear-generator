@@ -137,7 +137,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
     
     public function getReferenceMap($key)
     {
-        if (isset($this->_referenceMap[$key]['columns']) {
+        if (isset($this->_referenceMap[$key]['columns'])) {
             return $this->_referenceMap[$key]['columns'];
         }
         return null;
