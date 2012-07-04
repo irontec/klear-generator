@@ -3,34 +3,71 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 {
     protected $_namespace;
     protected $_table;
+    protected $_klearConfig;
     protected $_db;
 
-    public function __construct($table, $namespace)
+    public function __construct($table, $namespace, $klearConfig)
     {
         $this->_table = $table;
         $this->_namespace = $namespace;
+        $this->_klearConfig = $klearConfig;
         $this->_db = Zend_Db_Table::getDefaultAdapter();
 
-
-        $data['class'] = $this->_getClassName();
+        $data['class'] = $this->_getModelName();
         $data['fields'] = array();
 
-        $fields = Generator_Db::describeTable($table);
+        $fields = $this->_getFields($table);
 
         $firstField = true;
         foreach ($fields as $field) {
-            if (!$field['PRIMARY']) {
-                $data['fields'][$this->_getFieldName($field)] = $this->_getFieldConf($field);
-                if ($firstField) {
-                    $data['fields'][$this->_getFieldName($field)]['default'] = 'true';
-                    $firstField = false;
-                }
+            $fieldName = $this->_getFieldName($field);
+
+            $data['fields'][$fieldName] = $this->_getFieldConf($field);
+
+            // First field used as default field
+            if ($firstField) {
+
+                $data['fields'][$fieldName]['default'] = 'true';
+                $firstField = false;
             }
         }
         $this->_data['production'] = $data;
     }
 
-    protected function _getClassName()
+    /**
+     * Returns fields to be created. Remove multilanguage and primary key fields
+     * @param string $table tableName
+     * @return array with field descriptions
+     */
+    protected function _getFields($table)
+    {
+        $fields = Generator_Db::describeTable($table);
+
+        $tmpFields = $fields;
+        foreach ($tmpFields as $field) {
+
+            $fieldObj = new Generator_Db_Field($field);
+            $fieldName = $fieldObj->getName();
+
+            if ($fieldObj->isPrimaryKey()) {
+                unset($fields[$fieldName]);
+            }
+
+            if (isset($this->_klearConfig->klear->languages)) {
+                if ($fieldObj->isMultilang()) {
+
+                    foreach ($this->_klearConfig->klear->languages as $language) {
+
+                        unset($fields[$fieldName . '_' . $language]);
+                    }
+                }
+            }
+        }
+
+        return $fields;
+    }
+
+    protected function _getModelName()
     {
         return Generator_Yaml_StringUtils::getModelName($this->_table, $this->_namespace);
     }
