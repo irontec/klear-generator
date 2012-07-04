@@ -20,7 +20,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
  * @subpackage Model
  * @author <?=$this->_author."\n"?>
  */
- 
+
 namespace <?=$namespace?>Model\Raw;
 
 abstract class ModelAbstract implements \IteratorAggregate
@@ -749,13 +749,13 @@ abstract class ModelAbstract implements \IteratorAggregate
         return $attrs;
     }
 
-    public function getColumnForParentTable($parentTable)
+    public function getColumnForParentTable($parentTable, $propertyName)
     {
         $parents = $this->getParentList();
 
         foreach ($parents as $_fk => $parentData) {
 
-            if ($parentData['table_name'] == $parentTable) {
+            if ($parentData['table_name'] == $parentTable && $propertyName == $parentData['property']) {
 
                 return $this->columnNameToVar(
                             $this->getMapper()->getDbTable()->getReferenceMap($_fk)
@@ -766,7 +766,7 @@ abstract class ModelAbstract implements \IteratorAggregate
 
         return false;
     }
-    
+
     public function getFileObjects()
     {
         return array();
