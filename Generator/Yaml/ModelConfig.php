@@ -53,8 +53,13 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             $data['source'] = $this->_getRelatedData($fieldDesc);
         }
 
-        if ($data['type'] == 'picker') {
-            $data['source'] = $this->_getTimeSource($fieldDesc);
+        switch ($data['type']) {
+            case 'picker':
+                $data['source'] = $this->_getTimeSource($fieldDesc);
+                break;
+            case 'number':
+                $data['source'] = $this->_getNumberSource($fieldDesc);
+                break;
         }
 
         return $data;
@@ -126,12 +131,18 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getTimeSource($fieldDesc)
     {
-        $data = array(
+        return array(
             'control' => $fieldDesc['DATA_TYPE'],
             'setting' => array(
                 'disabled' => "'false'"
             )
         );
-        return $data;
+    }
+
+    protected function _getNumberSource($fieldDesc)
+    {
+        return array(
+            'control' => 'Spinner'
+        );
     }
 }
