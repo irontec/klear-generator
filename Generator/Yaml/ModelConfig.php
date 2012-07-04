@@ -16,9 +16,15 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         $data['fields'] = array();
 
         $fields = Generator_Db::describeTable($table);
+
+        $firstField = true;
         foreach ($fields as $field) {
             if (!$field['PRIMARY']) {
                 $data['fields'][$this->_getFieldName($field)] = $this->_getFieldConf($field);
+                if ($firstField) {
+                    $data['fields'][$this->_getFieldName($field)]['default'] = 'true';
+                    $firstField = false;
+                }
             }
         }
         $this->_data['production'] = $data;
@@ -47,9 +53,9 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 //             'readonly' => '${auth.readOnly}'
         );
 
-        if ($fieldDesc['DEFAULT']) {
-            $data['default'] = $fieldDesc['DEFAULT'];
-        }
+//         if ($fieldDesc['DEFAULT']) {
+//             $data['defaultValue'] = $fieldDesc['DEFAULT'];
+//         }
 
         if ($this->_isRelationship($fieldDesc)) {
             $data['source'] = $this->_getRelatedData($fieldDesc);
