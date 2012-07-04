@@ -17,7 +17,9 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
         $fields = Generator_Db::describeTable($table);
         foreach ($fields as $field) {
-            $data['fields'][$this->_getFieldName($field)] = $this->_getFieldConf($field);
+            if (!$field['PRIMARY']) {
+                $data['fields'][$this->_getFieldName($field)] = $this->_getFieldConf($field);
+            }
         }
         $this->_data['production'] = $data;
     }
