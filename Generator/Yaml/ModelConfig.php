@@ -85,8 +85,8 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     'es' => ucfirst($this->_getFieldName($fieldDesc))
                 )
             ),
-            'type' => $this->_getFieldDataType($fieldDesc),
             'required' => $fieldDesc['NULLABLE']? 'false' : 'true',
+            'type' => $this->_getFieldDataType($fieldDesc),
 //             'readonly' => '${auth.readOnly}'
         );
 
@@ -96,6 +96,14 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
         if ($this->_isRelationship($fieldDesc)) {
             $data['source'] = $this->_getRelatedData($fieldDesc);
+        }
+
+        if ($this->_isBoolean($fieldDesc)) {
+            $data['source'] = $this->_getBooleanSelector();
+        }
+
+        if ($this->_isEnum($fieldDesc)) {
+            $data['source'] = $this->_getEnumSelector($fieldDesc);
         }
 
         switch ($data['type']) {
@@ -117,6 +125,14 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
 
         if ($this->_isRelationship($fieldDesc)) {
+            return 'select';
+        }
+
+        if ($this->_isBoolean($fieldDesc)) {
+            return 'select';
+        }
+
+        if ($this->_isEnum($fieldDesc)) {
             return 'select';
         }
 
@@ -147,7 +163,18 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         return isset($fieldDesc['RELATED']);
     }
 
-    protected function _getRelatedData($fieldDesc) {
+    protected function _isBoolean($fieldDesc)
+    {
+        return $fieldDesc['DATA_TYPE'] == 'tinyint' && $fieldDesc['LENGTH'] == 1;
+    }
+
+    protected function _isEnum($fieldDesc)
+    {
+        return preg_match('/enum\(.*\)$/', $fieldDesc['DATA_TYPE']);
+    }
+
+    protected function _getRelatedData($fieldDesc)
+    {
         $data = array(
             'data' => 'mapper'
         );
@@ -172,6 +199,39 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             'order' => $fieldDesc['RELATED']['FIELD']
         );
         return $data;
+    }
+
+    protected function _getBooleanSelector()
+    {
+        return array(
+            'data' => 'inline',
+            'values' => array(
+                "'0'" => 'No',
+                "'1'" => 'Sí'
+            )
+        );
+    }
+
+    protected function _getEnumSelector($fieldDesc)
+    {
+        return array(
+            'data' => 'inline',
+            'values' => $this->_getEnumValues($fieldDesc)
+        );
+    }
+
+    protected function _getEnumValues($fieldDesc)
+    {
+        $values = array();
+        if (preg_match('/enum\((?P<values>.*)\)$/', $fieldDesc['DATA_TYPE'], $matches)) {
+            if (isset($matches['values'])) {
+                $untrimmedValues = explode(',', $matches[1]);
+                foreach ($untrimmedValues as $value) {
+                    $values[trim($value, '"\'')] = trim($value, '"\'');
+                }
+            }
+        }
+        return $values;
     }
 
     protected function _getTimeSource($fieldDesc)

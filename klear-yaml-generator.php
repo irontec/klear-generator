@@ -29,6 +29,11 @@ try {
         throw new Exception('Zend Application is not configured');
     }
 
+    if (!file_exists(APPLICATION_PATH . '/configs/klear.ini')) {
+        throw new Exception('klear.ini not found, should exist on application dir');
+    }
+
+    $klearConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/klear.ini', APPLICATION_ENV);
     $application = new Zend_Application(APPLICATION_ENV, APPLICATION_PATH . '/configs/application.ini');
     $application->bootstrap('db');
     $zendConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/application.ini', APPLICATION_ENV);
@@ -72,7 +77,7 @@ try {
     $tables = $dbAdapter->listTables();
 
     foreach ($tables as $table) {
-        $modelConfig = new Generator_Yaml_ModelConfig($table, $namespace);
+        $modelConfig = new Generator_Yaml_ModelConfig($table, $namespace, $klearConfig);
         $configWriter->write($klearDirs['model'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . '.yaml', $modelConfig->getConfig());
     }
 
