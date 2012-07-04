@@ -1,6 +1,11 @@
 <?php
-class Yaml_Db
+class Generator_Db
 {
+    /**
+     * Añade foreign keys y comments a la descripción de la tabla
+     * @param unknown_type $tablename
+     * @return Ambigous <multitype:unknown , unknown, multitype:>
+     */
     public static function describeTable($tablename)
     {
         $db = Zend_Db_Table::getDefaultAdapter();
@@ -11,11 +16,16 @@ class Yaml_Db
         $data = explode("\n", $createTable);
 
         foreach ($data as $dataRow) {
+            // Related tables/fields
             if (preg_match('/FOREIGN KEY \(.(?P<fieldName>.*).\)\s+REFERENCES\s+.(?P<foreignTable>.*).\s+\(.(?P<foreignField>.*).\)/', $dataRow, $matches)) {
                 $description[$matches['fieldName']]['RELATED'] = array(
                     'TABLE' => $matches['foreignTable'],
                     'FIELD' => $matches['foreignField']
                 );
+            }
+            // Comments
+            if (preg_match("/`(?P<fieldName>.*)`.*COMMENT\s+'(?P<comment>.*)'/", $dataRow, $matches)) {
+                $description[$matches['fieldName']]['COMMENT'] = $matches['comment'];
             }
         }
         return $description;

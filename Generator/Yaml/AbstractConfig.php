@@ -1,5 +1,5 @@
 <?php
-abstract class Yaml_AbstractConfig
+abstract class Generator_Yaml_AbstractConfig
 {
     protected $_data;
     public function getConfig()

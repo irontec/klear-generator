@@ -1,10 +1,10 @@
 <?php
-class Yaml_MappersFile extends Yaml_AbstractConfig
+class Generator_Yaml_MappersFile extends Generator_Yaml_AbstractConfig
 {
     public function __construct($tableList, $namespace)
     {
         foreach ($tableList as $table) {
-            $camelCaseTable = Yaml_StringUtils::toCamelCase($table);
+            $camelCaseTable = Generator_Yaml_StringUtils::toCamelCase($table);
             $mapper = array(
                 $namespace,
                 'Mapper',
@@ -12,7 +12,7 @@ class Yaml_MappersFile extends Yaml_AbstractConfig
                 ucfirst($camelCaseTable)
             );
             $mappers['&' . $camelCaseTable] = array (
-                 'mapper' => Yaml_StringUtils::getMapperName($table, $namespace),
+                 'mapper' => Generator_Yaml_StringUtils::getMapperName($table, $namespace),
                  'modelFile' => ucfirst($camelCaseTable)
             );
         }

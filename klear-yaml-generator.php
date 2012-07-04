@@ -9,7 +9,7 @@ define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
 
 require_once 'Zend/Loader/Autoloader.php';
 $loader = Zend_Loader_Autoloader::getInstance();
-$loader->registerNamespace('Yaml');
+$loader->registerNamespace('Generator');
 
 try {
     $opts = new Zend_Console_Getopt(
@@ -54,7 +54,7 @@ try {
     }
 
     /** Generate Main Config File **/
-    $mainConfig = new Yaml_MainConfig();
+    $mainConfig = new Generator_Yaml_MainConfig();
     $configWriter = new Zend_Config_Writer_Yaml();
     $configWriter->write($klearConfigFile, $mainConfig->getConfig());
 
@@ -64,12 +64,12 @@ try {
     $tables = $dbAdapter->listTables();
 
     foreach ($tables as $table) {
-        $modelConfig = new Yaml_ModelConfig($table, $namespace);
-        $configWriter->write($klearDirs['model'] . '/' . ucfirst(Yaml_StringUtils::toCamelCase($table)) . '.yaml', $modelConfig->getConfig());
+        $modelConfig = new Generator_Yaml_ModelConfig($table, $namespace);
+        $configWriter->write($klearDirs['model'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . '.yaml', $modelConfig->getConfig());
     }
 
     /** Generate mapper list file **/
-    $mappersFile = new Yaml_MappersFile($tables, $namespace);
+    $mappersFile = new Generator_Yaml_MappersFile($tables, $namespace);
     $configWriter->write($klearDirs['conf.d'] . '/mapperList.yaml', $mappersFile->getConfig());
 
 } catch (Zend_Console_Getopt_Exception $e) {

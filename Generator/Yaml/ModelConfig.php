@@ -1,5 +1,5 @@
 <?php
-class Yaml_ModelConfig extends Yaml_AbstractConfig
+class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 {
     protected $_namespace;
     protected $_table;
@@ -15,7 +15,7 @@ class Yaml_ModelConfig extends Yaml_AbstractConfig
         $data['class'] = $this->_getClassName();
         $data['fields'] = array();
 
-        $fields = Yaml_Db::describeTable($table);
+        $fields = Generator_Db::describeTable($table);
         foreach ($fields as $field) {
             $data['fields'][$this->_getFieldName($field)] = $this->_getFieldConf($field);
         }
@@ -24,12 +24,12 @@ class Yaml_ModelConfig extends Yaml_AbstractConfig
 
     protected function _getClassName()
     {
-        return Yaml_StringUtils::getMapperName($this->_table, $this->_namespace);
+        return Generator_Yaml_StringUtils::getMapperName($this->_table, $this->_namespace);
     }
 
     protected function _getFieldName($fieldDesc)
     {
-        return Yaml_StringUtils::toCamelCase($fieldDesc['COLUMN_NAME']);
+        return Generator_Yaml_StringUtils::toCamelCase($fieldDesc['COLUMN_NAME']);
     }
 
     protected function _getFieldConf($fieldDesc)
@@ -37,7 +37,7 @@ class Yaml_ModelConfig extends Yaml_AbstractConfig
         $data = array(
             'title' => array(
                 'i18n' => array(
-                    'es' => $this->_getFieldName($fieldDesc)
+                    'es' => ucfirst($this->_getFieldName($fieldDesc))
                 )
             ),
             'type' => $this->_getFieldDataType($fieldDesc),
@@ -111,7 +111,7 @@ class Yaml_ModelConfig extends Yaml_AbstractConfig
         }
 
         $data['config'] = array(
-            'mapperName' => Yaml_StringUtils::getMapperName($fieldDesc['RELATED']['TABLE'], $this->_namespace)
+            'mapperName' => Generator_Yaml_StringUtils::getMapperName($fieldDesc['RELATED']['TABLE'], $this->_namespace)
         );
 
         $data['fieldName'] = array(

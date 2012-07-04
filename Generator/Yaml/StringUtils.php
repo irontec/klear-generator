@@ -1,5 +1,5 @@
 <?php
-class Yaml_StringUtils
+class Generator_Yaml_StringUtils
 {
     public static function toCamelCase($name)
     {
