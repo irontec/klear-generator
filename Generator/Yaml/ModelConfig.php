@@ -24,7 +24,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getClassName()
     {
-        return Generator_Yaml_StringUtils::getMapperName($this->_table, $this->_namespace);
+        return Generator_Yaml_StringUtils::getModelName($this->_table, $this->_namespace);
     }
 
     protected function _getFieldName($fieldDesc)
