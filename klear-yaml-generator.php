@@ -62,6 +62,10 @@ try {
     $configWriter = new Zend_Config_Writer_Yaml();
     $configWriter->write($klearConfigFile, $mainConfig->getConfig());
 
+    /** Generate Errors File */
+    $errorsConfig = new Generator_Yaml_ErrorsConfig();
+    $configWriter = new Zend_Config_Writer_Yaml();
+    $configWriter->write($klearDirs['root'] . '/errors.yaml', $errorsConfig->getConfig());
 
     /** Generate Model Configuration Files **/
     $dbAdapter = Zend_Db_Table::getDefaultAdapter();
