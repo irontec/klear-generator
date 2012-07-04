@@ -19,6 +19,10 @@ try {
     );
     $opts->parse();
 
+    if (!$opts->getOptions('application')) {
+        throw new Zend_Console_Getopt_Exception('Parse error', $opts->getUsageMessage());
+    }
+
     define('APPLICATION_PATH', realpath($opts->getOption('application')));
 
     if (!file_exists(APPLICATION_PATH . '/configs/application.ini')) {
