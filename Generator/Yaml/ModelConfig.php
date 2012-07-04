@@ -94,24 +94,15 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 //             $data['defaultValue'] = $fieldDesc['DEFAULT'];
 //         }
 
-        if ($this->_isRelationship($fieldDesc)) {
-            $data['source'] = $this->_getRelatedData($fieldDesc);
-        }
-
-        if ($this->_isBoolean($fieldDesc)) {
-            $data['source'] = $this->_getBooleanSelector();
-        }
-
-        if ($this->_isEnum($fieldDesc)) {
-            $data['source'] = $this->_getEnumSelector($fieldDesc);
-        }
-
         switch ($data['type']) {
             case 'picker':
                 $data['source'] = $this->_getTimeSource($fieldDesc);
                 break;
             case 'number':
                 $data['source'] = $this->_getNumberSource($fieldDesc);
+                break;
+            case 'select':
+                $data['source'] = $this->_getSelectSource($fieldDesc);
                 break;
         }
 
@@ -124,15 +115,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             return 'password';
         }
 
-        if ($this->_isRelationship($fieldDesc)) {
-            return 'select';
-        }
-
-        if ($this->_isBoolean($fieldDesc)) {
-            return 'select';
-        }
-
-        if ($this->_isEnum($fieldDesc)) {
+        if ($this->_isSelectField($fieldDesc)) {
             return 'select';
         }
 
@@ -156,6 +139,13 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
     protected function _isPasswordField($fieldDesc)
     {
         return $fieldDesc['DATA_TYPE'] == 'varchar' && strstr($fieldDesc['COLUMN_NAME'], 'passw');
+    }
+
+    protected function _isSelectField($fieldDesc)
+    {
+        return $this->_isRelationship($fieldDesc)
+            || $this->_isBoolean($fieldDesc)
+            || $this->_isEnum($fieldDesc);
     }
 
     protected function _isRelationship($fieldDesc)
@@ -249,5 +239,20 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         return array(
             'control' => 'Spinner'
         );
+    }
+
+    protected function _getSelectSource($fieldDesc)
+    {
+        if ($this->_isRelationship($fieldDesc)) {
+            return $this->_getRelatedData($fieldDesc);
+        }
+
+        if ($this->_isBoolean($fieldDesc)) {
+            return  $this->_getBooleanSelector();
+        }
+
+        if ($this->_isEnum($fieldDesc)) {
+            return $this->_getEnumSelector($fieldDesc);
+        }
     }
 }
