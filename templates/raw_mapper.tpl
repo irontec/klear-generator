@@ -54,7 +54,7 @@ echo "\n$vars\n";
         $result = array(<?php echo "\n";
 foreach ($this->_columns[$this->getTableName()] as $column):
 
-    if ($column['comment'] == '[ML]') continue;
+    if (strtolower($column['comment']) == '[ml]') continue;
             ?>
             '<?=$column['field']?>' => $model->get<?=$column['capital']?>(),
 <?php endforeach;?>
@@ -684,7 +684,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 foreach ($this->_columns[$this->getTableName()] as $column):
                 $count--;
 
-                if ($column['comment'] == '[ML]') {
+                if (strtolower($column['comment']) == '[ml]') {
 
                     continue;
                 }
@@ -697,7 +697,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 foreach ($this->_columns[$this->getTableName()] as $column):
                 $count--;
 
-                if ($column['comment'] == '[ML]') {
+                if (strtolower($column['comment']) == '[ml]') {
 
                     continue;
                 }

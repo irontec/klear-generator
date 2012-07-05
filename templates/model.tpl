@@ -132,7 +132,7 @@ echo "$vars\n\n";
 <?php
     $mlFields = array();
     foreach ($this->_columns[$this->getTableName()] as $column):
-        if($column['comment'] !== '[ML]') continue;
+        if(strtolower($column['comment']) !== '[ml]') continue;
 
         $mlFields[] = $column['field'];
 ?>
@@ -327,7 +327,7 @@ echo "$vars\n\n";
     $getterParams = '';
     $multilang = false;
 
-    if ($column['comment'] === '[ML]') {
+    if (strtolower($column['comment']) === '[ml]') {
 
         $multilang = true;
         $setterParams = '$data, $language = \'\'';

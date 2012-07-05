@@ -46,7 +46,7 @@ try {
         foreach ($tables as $table) {
             $fieldsDescription = Generator_Db::describeTable($table);
             foreach ($fieldsDescription as $field) {
-                if (isset($field['COMMENT']) && strstr($field['COMMENT'], '[ML]')) {
+                if (isset($field['COMMENT']) && strstr(strtolower($field['COMMENT']), '[ml]')) {
                     foreach ($klearConfig->klear->languages as $language) {
                         $newFieldName = $field['COLUMN_NAME'] . '_' . $language;
 
