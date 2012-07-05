@@ -329,7 +329,7 @@ echo "$vars\n\n";
     $getterParams = '';
     $multilang = false;
 
-    if (stristr($column['comment'], '[ml'])) {
+    if (stristr($column['comment'], '[ml]')) {
 
         $multilang = true;
         $setterParams = '$data, $language = \'\'';
