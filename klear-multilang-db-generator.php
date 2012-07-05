@@ -40,37 +40,11 @@ try {
         $application->bootstrap('db');
 
         /** Generate Model Configuration Files **/
-        $dbAdapter = Zend_Db_Table::getDefaultAdapter();
-        $tables = $dbAdapter->listTables();
-
+        $tables = Zend_Db_Table::getDefaultAdapter()->listTables();
         foreach ($tables as $table) {
-            $fieldsDescription = Generator_Db::describeTable($table);
-            foreach ($fieldsDescription as $field) {
-                if (isset($field['COMMENT']) && strstr(strtolower($field['COMMENT']), '[ml]')) {
-                    foreach ($klearConfig->klear->languages as $language) {
-                        $newFieldName = $field['COLUMN_NAME'] . '_' . $language;
-
-                        if (!isset($fieldsDescription[$newFieldName])) {
-                            $query = 'ALTER TABLE ' . $dbAdapter->quoteIdentifier($field['TABLE_NAME'])
-                                   . ' ADD ' . $dbAdapter->quoteIdentifier($newFieldName)
-                                   . ' ' . $field['DATA_TYPE'] . '(' . $field['LENGTH'] . ')';
-
-                            if (!$field['NULLABLE']) {
-                                $query .= ' NOT NULL ';
-                            }
-
-                            if ($field['DEFAULT']) {
-                                $query .= ' DEFAULT ' . $dbAdapter->quote($field['DEFAULT']);
-                            }
-
-                            $query .= ' AFTER ' . $dbAdapter->quoteIdentifier($newFieldName);
-
-                            $dbAdapter->query($query);
-                            echo  "$newFieldName added to $table \n";
-                        }
-                    }
-                }
-            }
+            $table = new Generator_Db_Table($table, $klearConfig);
+            $table->generateMultilangFields();
+            $table->generateFileFields();
         }
     }
 

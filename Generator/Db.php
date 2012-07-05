@@ -28,6 +28,16 @@ class Generator_Db
                 $description[$matches['fieldName']]['COMMENT'] = $matches['comment'];
             }
         }
-        return $description;
+
+        $fieldsList = array();
+        foreach ($description as $name => $fieldDesc) {
+            $fieldsList[$name] = new Generator_Db_Field($fieldDesc);
+        }
+        return $fieldsList;
+    }
+
+    public function __construct($config)
+    {
+
     }
 }

@@ -718,7 +718,7 @@ abstract class MakeDbTable {
 
         foreach ($vars['multilang'] as $key => $val) {
 
-            if (strtolower($val['comment']) !== '[ml]') {
+            if (stristr($val['comment'], '[ml]') === false) {
 
                 unset($vars['multilang'][$key]);
 

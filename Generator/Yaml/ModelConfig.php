@@ -46,15 +46,14 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         $tmpFields = $fields;
         foreach ($tmpFields as $field) {
 
-            $fieldObj = new Generator_Db_Field($field);
-            $fieldName = $fieldObj->getName();
+            $fieldName = $field->getName();
 
-            if ($fieldObj->isPrimaryKey()) {
+            if ($field->isPrimaryKey()) {
                 unset($fields[$fieldName]);
             }
 
             if (isset($this->_klearConfig->klear->languages)) {
-                if ($fieldObj->isMultilang()) {
+                if ($field->isMultilang()) {
 
                     foreach ($this->_klearConfig->klear->languages as $language) {
 
@@ -74,7 +73,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFieldName($fieldDesc)
     {
-        return Generator_Yaml_StringUtils::toCamelCase($fieldDesc['COLUMN_NAME']);
+        return Generator_Yaml_StringUtils::toCamelCase($fieldDesc->getName());
     }
 
     protected function _getFieldConf($fieldDesc)
@@ -85,7 +84,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     'es' => ucfirst($this->_getFieldName($fieldDesc))
                 )
             ),
-            'required' => $fieldDesc['NULLABLE']? 'false' : 'true',
+            'required' => $fieldDesc->isNullable()? 'false' : 'true',
             'type' => $this->_getFieldDataType($fieldDesc),
 //             'readonly' => '${auth.readOnly}'
         );
@@ -104,6 +103,11 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             case 'select':
                 $data['source'] = $this->_getSelectSource($fieldDesc);
                 break;
+            case 'textarea':
+                if ($this->_isHtml($fieldDesc)) {
+                    $data['souce'] = $this->_getHtmlSource($fieldDesc);
+                }
+                break;
         }
 
         return $data;
@@ -111,7 +115,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFieldDataType($fieldDesc)
     {
-        if ($this->_isPasswordField($fieldDesc)) {
+        if ($fieldDesc->isPassword()) {
             return 'password';
         }
 
@@ -119,7 +123,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             return 'select';
         }
 
-        switch ($fieldDesc['DATA_TYPE']) {
+        switch ($fieldDesc->getType()) {
             case 'text':
             case 'mediumtext':
                 return 'textarea';
@@ -136,32 +140,13 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
     }
 
-    protected function _isPasswordField($fieldDesc)
-    {
-        return $fieldDesc['DATA_TYPE'] == 'varchar' && strstr($fieldDesc['COLUMN_NAME'], 'passw');
-    }
-
     protected function _isSelectField($fieldDesc)
     {
-        return $this->_isRelationship($fieldDesc)
-            || $this->_isBoolean($fieldDesc)
-            || $this->_isEnum($fieldDesc);
+        return $fieldDesc->isRelationship()
+            || $fieldDesc->isBoolean()
+            || $fieldDesc->isEnum();
     }
 
-    protected function _isRelationship($fieldDesc)
-    {
-        return isset($fieldDesc['RELATED']);
-    }
-
-    protected function _isBoolean($fieldDesc)
-    {
-        return $fieldDesc['DATA_TYPE'] == 'tinyint' && $fieldDesc['LENGTH'] == 1;
-    }
-
-    protected function _isEnum($fieldDesc)
-    {
-        return preg_match('/enum\(.*\)$/', $fieldDesc['DATA_TYPE']);
-    }
 
     protected function _getRelatedData($fieldDesc)
     {
@@ -169,7 +154,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             'data' => 'mapper'
         );
 
-        if ($fieldDesc['NULLABLE']) {
+        if ($fieldDesc->isNullable()) {
             $data["'null'"] = array(
                 'i18n' => array(
                     'es' => 'Sin asignar'
@@ -178,16 +163,17 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
 
         $data['config'] = array(
-            'mapperName' => Generator_Yaml_StringUtils::getMapperName($fieldDesc['RELATED']['TABLE'], $this->_namespace)
+            'mapperName' => Generator_Yaml_StringUtils::getMapperName($fieldDesc->getRelatedTable(), $this->_namespace)
         );
 
         $data['fieldName'] = array(
             'fields' => array(
-                $fieldDesc['RELATED']['FIELD']
+                $fieldDesc->getRelatedField()
             ),
-            'template' => "'%" . $fieldDesc['RELATED']['FIELD'] . "%'",
-            'order' => $fieldDesc['RELATED']['FIELD']
+            'template' => "'%" . $fieldDesc->getRelatedField() . "%'",
+            'order' => $fieldDesc->getRelatedField()
         );
+
         return $data;
     }
 
@@ -213,7 +199,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
     protected function _getEnumValues($fieldDesc)
     {
         $values = array();
-        if (preg_match('/enum\((?P<values>.*)\)$/', $fieldDesc['DATA_TYPE'], $matches)) {
+        if (preg_match('/enum\((?P<values>.*)\)$/', $fieldDesc->getType(), $matches)) {
             if (isset($matches['values'])) {
                 $untrimmedValues = explode(',', $matches[1]);
                 foreach ($untrimmedValues as $value) {
@@ -227,7 +213,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
     protected function _getTimeSource($fieldDesc)
     {
         return array(
-            'control' => $fieldDesc['DATA_TYPE'],
+            'control' => $fieldDesc->getType(),
             'setting' => array(
                 'disabled' => "'false'"
             )
@@ -243,16 +229,29 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getSelectSource($fieldDesc)
     {
-        if ($this->_isRelationship($fieldDesc)) {
+        if ($fieldDesc->isRelationship()) {
             return $this->_getRelatedData($fieldDesc);
         }
 
-        if ($this->_isBoolean($fieldDesc)) {
+        if ($fieldDesc->isBoolean()) {
             return  $this->_getBooleanSelector();
         }
 
-        if ($this->_isEnum($fieldDesc)) {
+        if ($fieldDesc->isEnum()) {
             return $this->_getEnumSelector($fieldDesc);
         }
     }
+
+    protected function _isHtml($fieldDesc)
+    {
+        return stristr($fieldDesc->getComment(), '[html]');
+    }
+
+    protected function _getHtmlSource()
+    {
+        return array(
+            'control' => 'tinymce'
+        );
+    }
+
 }
