@@ -66,7 +66,7 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function getComment()
     {
-        return $this->_fieldDesc['COMMENT'];
+        return $this->hasComment()? $this->_fieldDesc['COMMENT'] : '';
     }
 
     public function isMultilang()
