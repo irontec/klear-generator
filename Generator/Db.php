@@ -20,6 +20,12 @@ class Generator_Db
                     'FIELD' => $matches['foreignField']
                 );
             }
+
+            // TinyInt length for boolean detection
+            if (preg_match("/`(?P<fieldName>.*)`\s+tinyint\((?P<length>\d+)\)/", $dataRow, $matches)) {
+                $description[$matches['fieldName']]['LENGTH'] = (int)$matches['length'];
+            }
+
             // Comments
             if (preg_match("/`(?P<fieldName>.*)`.*COMMENT\s+'(?P<comment>.*)'/", $dataRow, $matches)) {
                 $description[$matches['fieldName']]['COMMENT'] = $matches['comment'];

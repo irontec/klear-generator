@@ -13,6 +13,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $normalizedTable = Generator_Yaml_StringUtils::toCamelCase($table);
 
         $listScreenName = lcfirst($normalizedTable) . 'List_screen';
+        $newScreenName = lcfirst($normalizedTable) . 'New_screen';
         $editScreenName = lcfirst($normalizedTable) . 'Edit_screen';
         $delDialogName = lcfirst($normalizedTable) . 'Del_dialog';
 
@@ -39,6 +40,16 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
                     ),
                     'default' => $listScreenName
                 )
+            ),
+            'options' => array(
+                'title' => array(
+                        'i18n' => array(
+                                'es' => 'Opciones'
+                        )
+                ),
+                'screens' => array(
+                    $newScreenName => 'true'
+                )
             )
         );
 
@@ -50,6 +61,19 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'title' => array(
                 'i18n' => array(
                     'es' => 'Editar ' . ucfirst($normalizedTable)
+                )
+            )
+        );
+
+        $newScreen = array(
+            '<<' => '*' . ucfirst($normalizedTable),
+            'controller' => 'new',
+            'class' =>  'ui-silk-add',
+            'label' => 'true',
+            'multiInstance' => 'true',
+            'title' => array(
+                'i18n' => array(
+                    'es' => 'Añadir ' . ucfirst($normalizedTable)
                 )
             )
         );
@@ -77,6 +101,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 
         $data['screens'] = array(
             $listScreenName => $listScreen,
+            $newScreenName => $newScreen,
             $editScreenName => $editScreen
         );
 

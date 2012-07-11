@@ -93,15 +93,19 @@ try {
 
         /** Generate ModelList files **/
         $listFile = $klearDirs['root'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . 'List.yaml';
-        $tableComment = Generator_Db::tableComment($table);
-        if (stristr($tableComment, '[entity]')) {
-            $listConfig = new Generator_Yaml_ListConfig($table);
-            $configWriter->write($listFile, $listConfig->getConfig());
-            $contents = "#include conf.d/mapperList.yaml\n";
-            $contents .= "#include conf.d/actions.yaml\n\n";
-            $contents .= file_get_contents($listFile);
-            file_put_contents($listFile, $contents);
-            $entities[] = $table;
+        if (file_exists($listFile)) {
+            echo "ModelList file allready exists in: " . $modelFile . "\n";
+        } else {
+            $tableComment = Generator_Db::tableComment($table);
+            if (stristr($tableComment, '[entity]')) {
+                $listConfig = new Generator_Yaml_ListConfig($table);
+                $configWriter->write($listFile, $listConfig->getConfig());
+                $contents = "#include conf.d/mapperList.yaml\n";
+                $contents .= "#include conf.d/actions.yaml\n\n";
+                $contents .= file_get_contents($listFile);
+                file_put_contents($listFile, $contents);
+                $entities[] = $table;
+            }
         }
     }
 

@@ -71,12 +71,12 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         return Generator_Yaml_StringUtils::getModelName($this->_table, $this->_namespace);
     }
 
-    protected function _getFieldName($fieldDesc)
+    protected function _getFieldName(Generator_Db_Field $fieldDesc)
     {
         return Generator_Yaml_StringUtils::toCamelCase($fieldDesc->getName());
     }
 
-    protected function _getFieldConf($fieldDesc)
+    protected function _getFieldConf(Generator_Db_Field $fieldDesc)
     {
         $data = array(
             'title' => array(
@@ -104,16 +104,19 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                 $data['source'] = $this->_getSelectSource($fieldDesc);
                 break;
             case 'textarea':
-                if ($this->_isHtml($fieldDesc)) {
+                if ($fieldDesc->isHtml()) {
                     $data['souce'] = $this->_getHtmlSource($fieldDesc);
                 }
+                break;
+            case 'password':
+                $data['adapter'] = 'Blowfish';
                 break;
         }
 
         return $data;
     }
 
-    protected function _getFieldDataType($fieldDesc)
+    protected function _getFieldDataType(Generator_Db_Field $fieldDesc)
     {
         if ($fieldDesc->isPassword()) {
             return 'password';
@@ -140,7 +143,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
     }
 
-    protected function _isSelectField($fieldDesc)
+    protected function _isSelectField(Generator_Db_Field $fieldDesc)
     {
         return $fieldDesc->isRelationship()
             || $fieldDesc->isBoolean()
@@ -148,7 +151,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
     }
 
 
-    protected function _getRelatedData($fieldDesc)
+    protected function _getRelatedData(Generator_Db_Field $fieldDesc)
     {
         $data = array(
             'data' => 'mapper'
@@ -182,13 +185,25 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         return array(
             'data' => 'inline',
             'values' => array(
-                "'0'" => 'No',
-                "'1'" => 'Sí'
+                "'0'" => array(
+                    'title' => array(
+                        'i18n' => array(
+                            'es' => '"No"'
+                        )
+                    )
+                ),
+                "'1'" => array(
+                    'title' => array(
+                        'i18n' => array(
+                            'es' => 'Sí'
+                        )
+                    )
+                )
             )
         );
     }
 
-    protected function _getEnumSelector($fieldDesc)
+    protected function _getEnumSelector(Generator_Db_Field $fieldDesc)
     {
         return array(
             'data' => 'inline',
@@ -196,7 +211,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         );
     }
 
-    protected function _getEnumValues($fieldDesc)
+    protected function _getEnumValues(Generator_Db_Field $fieldDesc)
     {
         $values = array();
         if (preg_match('/enum\((?P<values>.*)\)$/', $fieldDesc->getType(), $matches)) {
@@ -210,7 +225,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         return $values;
     }
 
-    protected function _getTimeSource($fieldDesc)
+    protected function _getTimeSource(Generator_Db_Field $fieldDesc)
     {
         return array(
             'control' => $fieldDesc->getType(),
@@ -220,14 +235,14 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         );
     }
 
-    protected function _getNumberSource($fieldDesc)
+    protected function _getNumberSource(Generator_Db_Field $fieldDesc)
     {
         return array(
             'control' => 'Spinner'
         );
     }
 
-    protected function _getSelectSource($fieldDesc)
+    protected function _getSelectSource(Generator_Db_Field $fieldDesc)
     {
         if ($fieldDesc->isRelationship()) {
             return $this->_getRelatedData($fieldDesc);
@@ -240,11 +255,6 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         if ($fieldDesc->isEnum()) {
             return $this->_getEnumSelector($fieldDesc);
         }
-    }
-
-    protected function _isHtml($fieldDesc)
-    {
-        return stristr($fieldDesc->getComment(), '[html]');
     }
 
     protected function _getHtmlSource()

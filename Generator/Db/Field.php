@@ -110,4 +110,9 @@ class Generator_Db_Field implements \IteratorAggregate
     {
         return $this->_fieldDesc['RELATED']['FIELD'];
     }
+
+    public function isHtml()
+    {
+        return (bool)stristr($this->getComment(), '[html]');
+    }
 }
