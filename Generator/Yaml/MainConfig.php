@@ -1,7 +1,7 @@
 <?php
 class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
 {
-    public function __construct()
+    public function __construct($entities = array())
     {
         $data = array();
         $data['log'] = array(
@@ -39,7 +39,7 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
 //                 'MyApp_Controller_Action_Helper_Hooks'
         );
 
-        $data['auth'] = array(
+//         $data['auth'] = array(
 //                 'adapter' => 'App_Auth_Adapter',
 //                 'title' => array(
 //                         'i18n' => array(
@@ -51,12 +51,48 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
 //                                 'es' => 'Introduce tu usuario de administrador de empresa'
 //                         )
 //                 )
+//         );
+
+        $data['timezone'] = 'Europe/Madrid';
+
+        $entitiesConfig = array();
+        foreach ($entities as $entity) {
+            $normalizedEntity = ucfirst(Generator_Yaml_StringUtils::toCamelCase($entity));
+            $entitiesConfig[$normalizedEntity . 'List'] = array(
+                'title' => array(
+                    'i18n' => array(
+                        'es' => 'Listado de ' . $normalizedEntity
+                    )
+                ),
+                'class' => 'ui-silk-user-suit',
+                'description' => array(
+                    'i18n' => array(
+                        'es' => 'Listado de ' . $normalizedEntity
+                    )
+                )
+            );
+        }
+
+        $menu['General'] = array(
+                'title' => array(
+                    'i18n' => array(
+                        'es' => 'Gestión general'
+                    )
+                ),
+                'description' => array(
+                    'i18n' => array(
+                        'es' => 'Gestión general'
+                    )
+                ),
+                'submenus' => $entitiesConfig
         );
 
         $this->_data = array(
             'production' => array(
-                'main' => $data
+                'main' => $data,
+                'menu' => $menu
             )
         );
+
     }
 }

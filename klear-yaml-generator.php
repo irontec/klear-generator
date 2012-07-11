@@ -50,10 +50,6 @@ try {
     );
     $klearConfigFile = $klearDir . '/klear.yaml';
 
-    if (file_exists($klearConfigFile)) {
-        throw new Exception('Klear is allready configured in: ' . $klearConfigFile);
-    }
-
     foreach ($klearDirs as $dir) {
         if (!file_exists($dir)) {
             if (!mkdir($dir)) {
@@ -62,28 +58,70 @@ try {
         }
     }
 
-    /** Generate Main Config File **/
-    $mainConfig = new Generator_Yaml_MainConfig();
     $configWriter = new Zend_Config_Writer_Yaml();
-    $configWriter->write($klearConfigFile, $mainConfig->getConfig());
 
     /** Generate Errors File */
-    $errorsConfig = new Generator_Yaml_ErrorsConfig();
-    $configWriter = new Zend_Config_Writer_Yaml();
-    $configWriter->write($klearDirs['root'] . '/errors.yaml', $errorsConfig->getConfig());
+    $errorsFile = $klearDirs['root'] . '/errors.yaml';
+    if (file_exists($errorsFile)) {
+        echo "Errors file allready exists in: " . $errorsFile . "\n";
+    } else {
+        $errorsConfig = new Generator_Yaml_ErrorsConfig();
+        $configWriter->write($errorsFile, $errorsConfig->getConfig());
+    }
+
+    /** Copy Actions File*/
+    $actionsFile = $klearDirs['conf.d'] . '/actions.yaml';
+    if (file_exists($actionsFile)) {
+        echo "Actions file allready exists in: " . $actionsFile . "\n";
+    } else {
+        copy(__DIR__ . "/Generator/Yaml/klear/conf.d/actions.yaml", $actionsFile);
+    }
 
     /** Generate Model Configuration Files **/
     $dbAdapter = Zend_Db_Table::getDefaultAdapter();
     $tables = $dbAdapter->listTables();
+    $entities = array();
 
     foreach ($tables as $table) {
-        $modelConfig = new Generator_Yaml_ModelConfig($table, $namespace, $klearConfig);
-        $configWriter->write($klearDirs['model'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . '.yaml', $modelConfig->getConfig());
+        $modelFile = $klearDirs['model'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . '.yaml';
+        if (file_exists($modelFile)) {
+            echo "Model file allready exists in: " . $modelFile . "\n";
+        } else {
+            $modelConfig = new Generator_Yaml_ModelConfig($table, $namespace, $klearConfig);
+            $configWriter->write($modelFile, $modelConfig->getConfig());
+        }
+
+        /** Generate ModelList files **/
+        $listFile = $klearDirs['root'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . 'List.yaml';
+        $tableComment = Generator_Db::tableComment($table);
+        if (stristr($tableComment, '[entity]')) {
+            $listConfig = new Generator_Yaml_ListConfig($table);
+            $configWriter->write($listFile, $listConfig->getConfig());
+            $contents = "#include conf.d/mapperList.yaml\n";
+            $contents .= "#include conf.d/actions.yaml\n\n";
+            $contents .= file_get_contents($listFile);
+            file_put_contents($listFile, $contents);
+            $entities[] = $table;
+        }
     }
 
+    /** Generate Main Config File **/
+    if (file_exists($klearConfigFile)) {
+        echo "klear.ini file allready exists\n";
+    } else {
+        $mainConfig = new Generator_Yaml_MainConfig($entities);
+        $configWriter->write($klearConfigFile, $mainConfig->getConfig());
+    }
+
+
     /** Generate mapper list file **/
-    $mappersFile = new Generator_Yaml_MappersFile($tables, $namespace);
-    $configWriter->write($klearDirs['conf.d'] . '/mapperList.yaml', $mappersFile->getConfig());
+    $mappersFile = $klearDirs['conf.d'] . '/mapperList.yaml';
+    if (file_exists($mappersFile)) {
+        echo "Mappers file allready exists in: " . $mappersFile . "\n";
+    } else {
+        $mappersConfig = new Generator_Yaml_MappersFile($tables, $namespace);
+        $configWriter->write($mappersFile, $mappersConfig->getConfig());
+    }
 
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";

@@ -10,10 +10,7 @@ class Generator_Db
     {
         $db = Zend_Db_Table::getDefaultAdapter();
         $description = $db->describeTable($tablename);
-
-        $sql = 'show create table ' . $db->quoteIdentifier($tablename);
-        $createTable = $db->fetchRow($sql)['Create Table'];
-        $data = explode("\n", $createTable);
+        $data = self::_getCreateTableData($tablename);
 
         foreach ($data as $dataRow) {
             // Related tables/fields
@@ -34,6 +31,26 @@ class Generator_Db
             $fieldsList[$name] = new Generator_Db_Field($fieldDesc);
         }
         return $fieldsList;
+    }
+
+    public static function tableComment($tablename)
+    {
+        $data = self::_getCreateTableData($tablename);
+        foreach ($data as $row) {
+            if (preg_match("/.*ENGINE.*COMMENT='(?P<comment>.*)'/", $row, $matches)) {
+                return $matches['comment'];
+            }
+        }
+        return '';
+    }
+
+    protected static function _getCreateTableData($tablename)
+    {
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $sql = 'show create table ' . $db->quoteIdentifier($tablename);
+        $createTable = $db->fetchRow($sql);
+        $data = explode("\n", $createTable['Create Table']);
+        return $data;
     }
 
     public function __construct($config)

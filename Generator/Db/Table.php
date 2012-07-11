@@ -39,7 +39,7 @@ class Generator_Db_Table
                         $query .= ' COMMENT ' . $this->_db->quote(str_ireplace('[ml]', '', $field->getComment()));
 
                         $query .= ' AFTER ' . $this->_db->quoteIdentifier($field->getName());
-var_dump($query);
+
                         $this->_db->query($query);
 
                         echo  "$newFieldName added to {$this->_table} \n";
@@ -99,7 +99,7 @@ var_dump($query);
                 $query = 'ALTER TABLE ' . $this->_db->quoteIdentifier($field->getTableName())
                      . ' DROP ' .  $field->getName();
                 $this->_db->query($query);
-                echo  $field->getName() . " deleted to {$this->_table} \n";
+                echo  $field->getName() . " deleted in {$this->_table} \n";
             }
         }
     }

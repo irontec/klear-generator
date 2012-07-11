@@ -86,7 +86,9 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function isPassword()
     {
-        return $this->_fieldDesc['DATA_TYPE'] == 'varchar' && strstr($this->getName(), 'passw');
+        return
+            $this->_fieldDesc['DATA_TYPE'] == 'varchar' && stristr($this->getName(), 'passw')
+            || stristr($this->getComment(), '[password]');
     }
 
     public function isBoolean()
