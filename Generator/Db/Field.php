@@ -115,4 +115,5 @@ class Generator_Db_Field implements \IteratorAggregate
     {
         return (bool)stristr($this->getComment(), '[html]');
     }
+
 }

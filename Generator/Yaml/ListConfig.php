@@ -65,6 +65,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             )
         );
 
+
         $newScreen = array(
             '<<' => '*' . ucfirst($normalizedTable),
             'controller' => 'new',
@@ -93,8 +94,15 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
                             'es' => '¿Está seguro que desea eliminar este ' . ucfirst($normalizedTable) . '?'
                     )
             ),
-
         );
+
+        $tableDescription = Generator_Db::describeTable($table);
+        $newBlackList = $this->_getNewBlackList($tableDescription);
+        if (sizeof($newBlackList) > 0) {
+            $newScreen['fields'] = array(
+                'blacklist' => $newBlackList
+            );
+        }
 
         $data['main']['module'] = 'klearMatrix';
         $data['defaultScreen'] = $listScreenName;
@@ -111,4 +119,16 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 
         $this->_data['production'] = $data;
     }
+
+    protected function _getNewBlacklist($tableDescription)
+    {
+        $blacklist = array();
+        foreach ($tableDescription as $field) {
+            if ($field->getType() == 'timestamp' && $field->getDefaultValue() == 'CURRENT_TIMESTAMP') {
+                $blacklist[$field->getName()] = 'true';
+            }
+        }
+        return $blacklist;
+    }
+
 }
