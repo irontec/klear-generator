@@ -18,7 +18,7 @@ class Generator_Yaml_MappersFile extends Generator_Yaml_AbstractConfig
                  'modelFile: ' . ucfirst($camelCaseTable)
             );
 
-            $mappers[] = '&' . $camelCaseTable . ' {' . implode(',', $declaration) . '}';
+            $mappers[] = '&' . $camelCaseTable . ' {' . implode(', ', $declaration) . '}';
         }
         $this->_data['mappers'] = $mappers;
     }
