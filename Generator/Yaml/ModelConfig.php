@@ -166,16 +166,14 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
 
         $data['config'] = array(
-            'mapperName' => Generator_Yaml_StringUtils::getMapperName($fieldDesc->getRelatedTable(), $this->_namespace)
-        );
-
-        $data['fieldName'] = array(
+            'mapperName' => Generator_Yaml_StringUtils::getMapperName($fieldDesc->getRelatedTable(), $this->_namespace),
             'fields' => array(
                 $fieldDesc->getRelatedField()
             ),
             'template' => "'%" . $fieldDesc->getRelatedField() . "%'",
             'order' => $fieldDesc->getRelatedField()
         );
+
 
         return $data;
     }
