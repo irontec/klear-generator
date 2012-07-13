@@ -39,19 +39,19 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
 //                 'MyApp_Controller_Action_Helper_Hooks'
         );
 
-//         $data['auth'] = array(
-//                 'adapter' => 'App_Auth_Adapter',
-//                 'title' => array(
-//                         'i18n' => array(
-//                                 'es' => 'Acceso restringido'
-//                         )
-//                 ),
-//                 'description' => array(
-//                         'i18n' => array(
-//                                 'es' => 'Introduce tu usuario de administrador de empresa'
-//                         )
-//                 )
-//         );
+        $data['auth'] = array(
+                'adapter' => 'Klear_Auth_Adapter_Basic',
+                'title' => array(
+                        'i18n' => array(
+                                'es' => 'Acceso restringido'
+                        )
+                ),
+                'description' => array(
+                        'i18n' => array(
+                                'es' => 'Introduce tu usuario'
+                        )
+                )
+        );
 
         $data['timezone'] = 'Europe/Madrid';
 
