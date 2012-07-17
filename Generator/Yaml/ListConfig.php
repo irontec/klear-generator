@@ -97,10 +97,18 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         );
 
         $tableDescription = Generator_Db::describeTable($table);
+
+        // Add blacklists
         $newBlackList = $this->_getNewBlackList($tableDescription);
         if (sizeof($newBlackList) > 0) {
             $newScreen['fields'] = array(
                 'blacklist' => $newBlackList
+            );
+        }
+        $editBlackList = $this->_getEditBlackList($tableDescription);
+        if (sizeof($editBlackList) > 0) {
+            $editScreen['fields'] = array(
+                    'blacklist' => $editBlackList
             );
         }
 
@@ -120,7 +128,21 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $this->_data['production'] = $data;
     }
 
-    protected function _getNewBlacklist($tableDescription)
+    protected function _getNewBlackList($tableDescription)
+    {
+        $blacklist = array();
+        foreach ($tableDescription as $field) {
+            if (
+                $field->getType() == 'timestamp' && $field->getDefaultValue() == 'CURRENT_TIMESTAMP'
+                || $field->isUrlIdentifier()
+            ) {
+                $blacklist[$field->getName()] = 'true';
+            }
+        }
+        return $blacklist;
+    }
+
+    protected function _getEditBlackList($tableDescription)
     {
         $blacklist = array();
         foreach ($tableDescription as $field) {

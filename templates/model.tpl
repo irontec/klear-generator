@@ -68,7 +68,7 @@ class <?=$this->_className?> extends <?=$this->_includeModel->getParentClass() .
 ?>
 <?php foreach ($this->_columns[$this->getTableName()] as $column): ?>
     /**
-<?php if (! empty($column['comment'])) : ?>
+<?php if (!empty($column['comment'])) : ?>
      * <?=$column['comment'] . "\n"?>
 <?php endif; ?>
      * Database var type <?=$column['type'] . "\n"?>
@@ -107,7 +107,7 @@ foreach ($this->getDependentTables() as $key):
 
 <?php endforeach;?>
 <?php $vars = $this->_includeModel->getVars();
-if (! empty($vars)) {
+if (!empty($vars)) {
 echo "$vars\n\n";
 }
 ?>
@@ -156,7 +156,7 @@ echo "$vars\n\n";
 
 		$parentField = implode("_", array_slice($current, 0, -1));
 
-        if (! in_array($parentField , $mlFields)) {
+        if (!in_array($parentField , $mlFields)) {
 
             continue;
         }
@@ -232,7 +232,7 @@ echo "$vars\n\n";
         $this->_defaultValues = array(
 <?php
     foreach ($this->_columns[$this->getTableName()] as $column):
-        if ($column['nullable'] == false and ! is_null($column['default']) and !in_array($column['default'], array('CURRENT_TIMESTAMP'))) {
+        if ($column['nullable'] == false and !is_null($column['default']) and !in_array($column['default'], array('CURRENT_TIMESTAMP'))) {
 ?>
             '<?php echo $column['normalized'];?>' => '<?php echo $column['default']; ?>',
 <?php
@@ -358,19 +358,19 @@ echo "$vars\n\n";
             $data = null;
         }
 
-        if (! is_null($data) and ! $data instanceof Zend_Date) {
+        if (!is_null($data) && !$data instanceof Zend_Date) {
 
             $data = new \Zend_Date($data, \Zend_Date::ISO_8601, 'es_ES');
         }
 
         if (
             $this->_logChanges === true
-            and (
-                ($data instanceof Zend_Date and !$this->_<?=$column['normalized']?> instanceof Zend_Date)
-                or (!$data instanceof Zend_Date and $this->_<?=$column['normalized']?> instanceof Zend_Date)
-                or (
-                    $data instanceof Zend_Date and $this->_<?=$column['normalized']?> instanceof Zend_Date
-                    and $this->_<?=$column['normalized']?>->setTimezone(date_default_timezone_get())->toString()  !== $data->setTimezone(date_default_timezone_get())->toString()
+            && (
+                ($data instanceof Zend_Date && !$this->_<?=$column['normalized']?> instanceof Zend_Date)
+                || (!$data instanceof Zend_Date && $this->_<?=$column['normalized']?> instanceof Zend_Date)
+                || (
+                    $data instanceof Zend_Date && $this->_<?=$column['normalized']?> instanceof Zend_Date
+                    && $this->_<?=$column['normalized']?>->setTimezone(date_default_timezone_get())->toString()  !== $data->setTimezone(date_default_timezone_get())->toString()
                 )
             )
         ) {
@@ -383,20 +383,20 @@ endif;
 if ($multilang):
 ?>
         $defaultLang = $this->getDefaultUserLanguage();
-        if (empty($language) and !empty($defaultLang)) {
+        if (empty($language) && !empty($defaultLang)) {
 
             $language = $this->getDefaultUserLanguage();
         }
 
         $language = strtolower($language);
 
-        if (! in_array($language, $this->getAvailableLangs())) {
+        if (!in_array($language, $this->getAvailableLangs())) {
 
             Throw new \Exception($language . " is not an available language");
         }
 
         $methodName = "set<?=$column['capital']?>". ucfirst($language);
-        if (! method_exists($this, $methodName)) {
+        if (!method_exists($this, $methodName)) {
 
             //Throw new \Exception('Unavailable language');
             $this->_<?=$column['normalized']?> = $data;
@@ -406,7 +406,7 @@ if ($multilang):
 <?php
     else:
 ?>
-        if ($this->_logChanges === true and $this->_<?=$column['normalized']?>  != $data) {
+        if ($this->_logChanges === true && $this->_<?=$column['normalized']?> != $data) {
 
             $this->_logChange('<?=$column['normalized']?>');
         }
@@ -460,20 +460,20 @@ if ($multilang):
 elseif ($multilang):
 ?>
         $defaultLang = $this->getDefaultUserLanguage();
-        if (empty($language) and !empty($defaultLang)) {
+        if (empty($language) && !empty($defaultLang)) {
 
             $language = $this->getDefaultUserLanguage();
         }
 
         $language = strtolower($language);
 
-        if (! in_array($language, $this->getAvailableLangs())) {
+        if (!in_array($language, $this->getAvailableLangs())) {
 
             Throw new \Exception($language . " is not an available language");
         }
 
         $methodName = "get<?=$column['capital']?>". ucfirst($language);
-        if (! method_exists($this, $methodName)) {
+        if (!method_exists($this, $methodName)) {
 
             //Throw new \Exception('Unavailable language');
             return $this->_<?=$column['normalized']?>;
@@ -500,18 +500,18 @@ elseif ($multilang):
     {
         $this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> = $data;
 
-        $primary_key = $data->getPrimaryKey();
+        $primaryKey = $data->getPrimaryKey();
 <?php if (is_array($key['foreign_tbl_column_name']) && is_array($key['column_name'])) : ?>
 <?php while ($column = next($key['foreign_tbl_column_name'])) :
         $foreign_column = next($key['column_name']); ?>
-        $this->set<?=$this->_getCapital($column)?>($primary_key['<?php echo $foreign_column ?>']);
+        $this->set<?=$this->_getCapital($column)?>($primaryKey['<?php echo $foreign_column ?>']);
 <?php endwhile;
 else : ?>
-        if (is_array($primary_key)) {
-            $primary_key = $primary_key['<?=$key['foreign_tbl_column_name']?>'];
+        if (is_array($primaryKey)) {
+            $primaryKey = $primaryKey['<?=$key['foreign_tbl_column_name']?>'];
         }
 
-        $this->set<?=$this->_getCapital($key['column_name'])?>($primary_key);
+        $this->set<?=$this->_getCapital($key['column_name'])?>($primaryKey);
 <?php endif; ?>
 
         return $this;
@@ -593,7 +593,7 @@ else : ?>
 
                 foreach ($oldRelations as $oldItem) {
 
-                    if (! in_array($oldItem->getPrimaryKey(), $dataPKs)) {
+                    if (!in_array($oldItem->getPrimaryKey(), $dataPKs)) {
 
                         $this->_orphans[] = $oldItem;
                     }
@@ -692,16 +692,16 @@ else : ?>
     public function deleteRowByPrimaryKey()
     {
 <?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') { ?>
-        $primary_key = array();
+        $primaryKey = array();
 <?php foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) { ?>
-        if (! $this->get<?php echo $key['capital']; ?>()) {
-<?php if (! empty($this->_loggerName)):?>
+        if (!$this->get<?php echo $key['capital']; ?>()) {
+<?php if (!empty($this->_loggerName)):?>
             $this->_logger->log('The value for <?=$key['capital']?> cannot be empty in deleteRowByPrimaryKey for ' . get_class($this), \Zend_Log::ERR);
 
 <?php endif; ?>
             throw new \Exception('Primary Key <?php echo $key['capital']; ?> does not contain a value');
         } else {
-            $primary_key['<?php echo $key['field']?>'] = $this->get<?php echo $key['capital']?>();
+            $primaryKey['<?php echo $key['field']?>'] = $this->get<?php echo $key['capital']?>();
         }
 
 <?php } ?>
@@ -710,7 +710,7 @@ else : ?>
                 $i = 0;
                 foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) {
                     echo $key['field'] . ' = \'
-                    . $this->getMapper()->getDbTable()->getAdapter()->quote($primary_key[\'' . $key['field'] . '\'])';
+                    . $this->getMapper()->getDbTable()->getAdapter()->quote($primaryKey[\'' . $key['field'] . '\'])';
                     $i++;
                     if ($i != $fields) {
                         echo "
@@ -720,24 +720,21 @@ else : ?>
         ?>);
 <?php } else { ?>
         if ($this->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>() === null) {
-<?php if (! empty($this->_loggerName)):?>
+<?php if (!empty($this->_loggerName)):?>
             $this->_logger->log('The value for <?=$this->_primaryKey[$this->getTablename()]['capital']?> cannot be null in deleteRowByPrimaryKey for ' . get_class($this), \Zend_Log::ERR);
 
 <?php endif; ?>
             throw new \Exception('Primary Key does not contain a value');
         }
 
-        return $this->getMapper()
-                    ->getDbTable()
-                    ->delete('<?=$this->_primaryKey[$this->getTablename()]['field']?> = ' .
-                             $this->getMapper()
-                                  ->getDbTable()
-                                  ->getAdapter()
-                                  ->quote($this->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>()));
+        return $this->getMapper()->getDbTable()->delete(
+            '<?=$this->_primaryKey[$this->getTablename()]['field']?> = ' .
+             $this->getMapper()->getDbTable()->getAdapter()->quote($this->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>())
+        );
 <?php } ?>
     }
 <?php $functions = $this->_includeModel->getFunctions();
-if (! empty($functions)) {
+if (!empty($functions)) {
 echo "\n$functions\n";
 } ?>
 }
