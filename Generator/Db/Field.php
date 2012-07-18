@@ -101,6 +101,11 @@ class Generator_Db_Field implements \IteratorAggregate
         return preg_match('/enum\(.*\)$/', $this->_fieldDesc['DATA_TYPE']);
     }
 
+    public function isFso()
+    {
+        return (bool)stristr($this->getComment(), '[fso]');
+    }
+
     public function getRelatedTable()
     {
         return $this->_fieldDesc['RELATED']['TABLE'];

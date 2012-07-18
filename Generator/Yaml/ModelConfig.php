@@ -18,17 +18,31 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
         $fields = $this->_getFields($table);
 
+        $ignoredFieldEndings = array(
+            'MimeType',
+            'BaseName'
+        );
+
         $firstField = true;
         foreach ($fields as $field) {
             $fieldName = $this->_getFieldName($field);
 
-            $data['fields'][$fieldName] = $this->_getFieldConf($field);
+            $ignore = false;
+            foreach ($ignoredFieldEndings as $ignoreEnding) {
+                if (preg_match('/' . $ignoreEnding . '$/', $fieldName)) {
+                    $ignore = true;
+                }
+            }
 
-            // First field used as default field
-            if ($firstField) {
+            if (!$ignore) {
+                $data['fields'][$fieldName] = $this->_getFieldConf($field);
 
-                $data['fields'][$fieldName]['default'] = 'true';
-                $firstField = false;
+                // First field used as default field
+                if ($firstField) {
+
+                    $data['fields'][$fieldName]['default'] = 'true';
+                    $firstField = false;
+                }
             }
         }
         $this->_data['production'] = $data;
@@ -73,7 +87,15 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFieldName(Generator_Db_Field $fieldDesc)
     {
-        return Generator_Yaml_StringUtils::toCamelCase($fieldDesc->getName());
+        $fieldName = Generator_Yaml_StringUtils::toCamelCase($fieldDesc->getName());
+
+        if ($fieldDesc->isFso()) {
+            if (preg_match('/(?P<fieldname>.*)FileSize$/', $fieldName, $matches)) {
+                $fieldName = $matches['fieldname'];
+            }
+        }
+
+        return $fieldName;
     }
 
     protected function _getFieldConf(Generator_Db_Field $fieldDesc)
@@ -108,7 +130,11 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     $data['souce'] = $this->_getHtmlSource($fieldDesc);
                 }
                 break;
-            case 'password':
+            case 'file':
+                $data['source'] = $this->_getFileSource($fieldDesc);
+                break;
+            break;
+                case 'password':
                 $data['adapter'] = 'Blowfish';
                 break;
         }
@@ -124,6 +150,10 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
         if ($this->_isSelectField($fieldDesc)) {
             return 'select';
+        }
+
+        if ($fieldDesc->isFso()) {
+            return 'file';
         }
 
         switch ($fieldDesc->getType()) {
@@ -263,4 +293,37 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         );
     }
 
+    protected function _getFileSource($fieldDesc)
+    {
+        return array(
+            'data' => 'fso',
+            'size_limit' => '20M',
+//             'extensions' => array(),
+            'options' => array(
+                'download' => array(
+                    'external' => 'true',
+                    'type' => 'command',
+                    'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Download_command',
+                    'icon' => 'ui-silk-bullet-disk',
+                    'title' => array(
+                        'i18n' => array(
+                            'en' => 'Download file'
+                        )
+                    ),
+                    'onNull' => 'hide'
+                ),
+                'upload' => array(
+                    'type' => 'command',
+                    'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Upload_command',
+                    'title' => array(
+                        'i18n' => array(
+                            'en' => 'Upload file'
+                        )
+                    ),
+                    'class' => 'qq-uploader',
+                    'onNull' => 'show'
+                ),
+            )
+        );
+    }
 }
