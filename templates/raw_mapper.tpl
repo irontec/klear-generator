@@ -143,7 +143,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                         $depMapperName = '<?=$namespace?>\Mapper\\Sql\\' . $depList[$capitzalizedFk]["table_name"];
                         $depModelName = '<?=$namespace?>\Model\\' . $depList[$capitzalizedFk]["table_name"];
 
-                        if ( class_exists($relDbAdapName) and class_exists($depModelName) ) {
+                        if ( class_exists($relDbAdapName) && class_exists($depModelName) ) {
 
                             $relDbAdapter = new $relDbAdapName;
                             $references = $relDbAdapter->getReference('<?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className?>', $capitzalizedFk);
@@ -191,7 +191,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                         $depMapperName = '<?=$namespace?>\Mapper\\Sql\\' . $depList[$capitzalizedFk]["table_name"];
                         $depModelName = '<?=$namespace?>\Model\\' . $depList[$capitzalizedFk]["table_name"];
 
-                        if ( class_exists($relDbAdapName) and class_exists($depModelName) ) {
+                        if ( class_exists($relDbAdapName) && class_exists($depModelName) ) {
 
                             $relDbAdapter = new $relDbAdapName;
                             $references = $relDbAdapter->getReference('<?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className?>', $capitzalizedFk);
@@ -343,7 +343,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             $objectMethod = 'fetch' . $item;
             $fso = $model->$objectMethod(false);
 
-            if ( !is_null($fso) and $fso->mustFlush() ) {
+            if (!is_null($fso) && $fso->mustFlush()) {
 
                 $fileObjects[$item] = $fso;
                 $specMethod = 'get'.$item.'Specs';
@@ -353,7 +353,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 $baseNameSetter = 'set' . $fileSpects[$item]['baseNameName'];
                 $mimeTypeSetter = 'set' . $fileSpects[$item]['mimeName'];
 
-                   $model->$fileSizeSetter($fso->getSize())
+                $model->$fileSizeSetter($fso->getSize())
                       ->$baseNameSetter($fso->getBaseName())
                       ->$mimeTypeSetter($fso->getMimeType());
             }
@@ -383,7 +383,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             try {
 
-                if ($recursive and is_null($transactionTag)) {
+                if ($recursive && is_null($transactionTag)) {
 
                     //$this->getDbTable()->getAdapter()->query('SET transaction_allow_batching = 1');
                 }
@@ -413,7 +413,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             try {
 
-                if ($recursive and is_null($transactionTag)) {
+                if ($recursive && is_null($transactionTag)) {
 
                     //$this->getDbTable()->getAdapter()->query('SET transaction_allow_batching = 1');
                 }
@@ -499,7 +499,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 );
             }
 
-            if (is_numeric($primaryKey) and !empty($fileObjects)) {
+            if (is_numeric($primaryKey) && !empty($fileObjects)) {
 
                 foreach ($fileObjects as $key => $fso) {
 
@@ -642,7 +642,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
      */
     public function find($primaryKey, $model = null)
     {
-        if (!($this->_cache and $this->_cache->test("<?=$namespace?>\Model\\<?=$this->_className?>\\".$primaryKey))) {
+        if (!($this->_cache && $this->_cache->test("<?=$namespace?>\Model\\<?=$this->_className?>\\".$primaryKey))) {
 
             $result = $this->getRowset($primaryKey);
 

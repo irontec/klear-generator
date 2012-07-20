@@ -2,15 +2,17 @@
 class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 {
     protected $_namespace;
-    protected $_table;
     protected $_klearConfig;
     protected $_db;
+    protected $_tableDescription;
+    protected $_normalizedTable;
 
     public function __construct($table)
     {
-        $this->_table = $table;
+        $this->_tableDescription = Generator_Db::describeTable($table);
 
         $normalizedTable = Generator_Yaml_StringUtils::toCamelCase($table);
+        $this->_normalizedTable = $normalizedTable;
 
         $listScreenName = lcfirst($normalizedTable) . 'List_screen';
         $newScreenName = lcfirst($normalizedTable) . 'New_screen';
@@ -96,16 +98,15 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             ),
         );
 
-        $tableDescription = Generator_Db::describeTable($table);
 
         // Add blacklists
-        $newBlackList = $this->_getNewBlackList($tableDescription);
+        $newBlackList = $this->_getNewBlackList();
         if (sizeof($newBlackList) > 0) {
             $newScreen['fields'] = array(
                 'blacklist' => $newBlackList
             );
         }
-        $editBlackList = $this->_getEditBlackList($tableDescription);
+        $editBlackList = $this->_getEditBlackList();
         if (sizeof($editBlackList) > 0) {
             $editScreen['fields'] = array(
                     'blacklist' => $editBlackList
@@ -125,13 +126,17 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             $delDialogName => $delDialog
         );
 
+        if ($this->_hasFsoFields()) {
+            $data['commands'] = $this->_getFsoFieldCommands();
+        }
+
         $this->_data['production'] = $data;
     }
 
-    protected function _getNewBlackList($tableDescription)
+    protected function _getNewBlackList()
     {
         $blacklist = array();
-        foreach ($tableDescription as $field) {
+        foreach ($this->_tableDescription as $field) {
             if (
                 $field->getType() == 'timestamp' && $field->getDefaultValue() == 'CURRENT_TIMESTAMP'
                 || $field->isUrlIdentifier()
@@ -142,15 +147,58 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         return $blacklist;
     }
 
-    protected function _getEditBlackList($tableDescription)
+    protected function _getEditBlackList()
     {
         $blacklist = array();
-        foreach ($tableDescription as $field) {
+        foreach ($this->_tableDescription as $field) {
             if ($field->getType() == 'timestamp' && $field->getDefaultValue() == 'CURRENT_TIMESTAMP') {
                 $blacklist[$field->getName()] = 'true';
             }
         }
         return $blacklist;
+    }
+
+    protected function _hasFsoFields()
+    {
+        foreach ($this->_tableDescription as $field) {
+            if ($field->isFso()) {
+                return true;
+            }
+        }
+    }
+
+    protected function _getFsoFieldCommands()
+    {
+        $fsoFields = $this->_getFsoFields();
+        $data = array();
+        foreach ($fsoFields as $fieldName) {
+            $data[ucfirst($fieldName) . 'Download_command'] = array(
+                '<<' => '*' . ucfirst($this->_normalizedTable),
+                'controller' => 'File',
+                'action' => 'force-download',
+                'mainColumn' =>  $fieldName
+            );
+            $data[ucfirst($fieldName) . 'Upload_command'] = array(
+                '<<' => '*' . ucfirst($this->_normalizedTable),
+                'controller' => 'File',
+                'action' => 'upload',
+                'mainColumn' =>  $fieldName
+            );
+        }
+        return $data;
+    }
+
+    protected function _getFsoFields()
+    {
+        $fields = array();
+        foreach ($this->_tableDescription as $field) {
+            if ($field->isFso()) {
+                if (preg_match('/^(?P<fieldname>.*)FileSize$/', $field->getName(), $matches)) {
+                    $fields[] = $matches['fieldname'];
+                }
+            }
+        }
+        return $fields;
     }
 
 }
