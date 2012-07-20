@@ -36,9 +36,8 @@ class <?=$this->_className?> extends <?=$this->_includeModel->getParentClass() .
 
  endforeach;
 
+$objects = array();
  if (count($fsoFields)) {
-
-    $objects = array();
 
      foreach ($fsoFields as $field) {
 
@@ -240,22 +239,51 @@ echo "$vars\n\n";
     endforeach;
 ?>
         );
+        
+        $this->_initFileObjects();
 
         parent::__construct();
     }
 
-<?php
- if (count($fsoFields) > 0) {
-
-?>
     /**************************************************************************
     ************************** File System Object (FSO)************************
     ***************************************************************************/
 
+    protected function _initFileObjects()
+    {
+<?php
+foreach ($objects as $fsoObject):
+?>
+        $this->_<?php echo lcfirst($fsoObject); ?>Fso = new \KlearMatrix_Model_Fso($this, $this->get<?php echo ucfirst($fsoObject); ?>Specs());
+<?php
+endforeach;
+?>
+        
+        return $this;
+    }
+    
     public function getFileObjects()
     {
+    
+<?php
+    if (count($fsoFields) > 0) :
+?>
         return array('<?php echo implode("','", $objects); ?>');
+        
+<?php
+    else:
+?>
+
+        return array();
+<?php
+    endif;
+?>
     }
+    
+<?php
+ if (count($fsoFields) > 0) {
+
+?>
 <?php
  foreach ($objects as $item) {
 ?>
@@ -271,9 +299,7 @@ echo "$vars\n\n";
 
     public function put<?php echo ucfirst($item); ?>($filePath = '',$baseName = '')
     {
-        $this->_init<?php echo ucfirst($item); ?>Fso();
-
-        $this->_<?php echo lcfirst($item); ?>Fso->put($this->get<?php echo ucfirst($item); ?>Specs(), $filePath, $this);
+        $this->_<?php echo lcfirst($item); ?>Fso->put($filePath);
 
         if (!empty($baseName)) {
 
@@ -285,9 +311,7 @@ echo "$vars\n\n";
     {
         if ($autoload === true) {
 
-            $this->_init<?php echo ucfirst($item); ?>Fso();
-
-            $this->_<?php echo lcfirst($item); ?>Fso->fetch($this->get<?php echo ucfirst($item); ?>Specs(), $this);
+            $this->_<?php echo lcfirst($item); ?>Fso->fetch();
         }
 
         return $this->_<?php echo lcfirst($item); ?>Fso;
@@ -295,35 +319,24 @@ echo "$vars\n\n";
 
     public function remove<?php echo ucfirst($item); ?>()
     {
-        $this->_init<?php echo ucfirst($item); ?>Fso();
-
-        $this->_<?php echo lcfirst($item); ?>Fso->remove($this->get<?php echo ucfirst($item); ?>Specs(), $this);
+        $this->_<?php echo lcfirst($item); ?>Fso->remove();
 
         $this->_<?php echo lcfirst($item); ?>Fso = null;
 
         return true;
     }
     
-    protected function _init<?php echo ucfirst($item); ?>Fso()
-    {
-        if (is_null($this->_<?php echo lcfirst($item); ?>Fso)) {
-
-            $this->_<?php echo lcfirst($item); ?>Fso = new \KlearMatrix_Model_Fso();
-        }
-        return $this;
-    }
-    
-
 <?php
  } //endforeach
 ?>
-    /**************************************************************************
-    *********************************** /FSO ***********************************
-    ***************************************************************************/
 <?php
  } //endif
  echo "\n";
 ?>
+
+    /**************************************************************************
+    *********************************** /FSO ***********************************
+    ***************************************************************************/
 <?php foreach ($this->_columns[$this->getTableName()] as $column):
 
     $setterParams = '';
