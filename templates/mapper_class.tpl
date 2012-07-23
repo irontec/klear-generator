@@ -567,6 +567,49 @@ abstract class MapperAbstract
         return $paginator;
     }
 
+      /**
+     * Cleans $data to be able to use it as an url identifier
+     * Returns alphanumeric value and replaces spaces with hyphens (-)
+     * @param string $data
+     * @return string
+     */
+    protected function _getUrlValue($data)
+    {
+        $alnumFilter = new \Zend_Filter_Alnum(true);
+        $iden = $alnumFilter->filter($data);
+        return str_replace(' ', '-', $iden);
+    }
+
+    /**
+     * Creates a unique value to be stored in $field by appending a number at the end of $data
+     * @param string $data
+     * @param string $field
+     * @return string
+     */
+    protected function _getUniqueValue($data, $field)
+    {
+        $validator = new \Zend_Validate_Db_NoRecordExists(
+                array(
+                        'table' => $this->getDbTable()->info('name'),
+                        'field' => $field
+                )
+        );
+
+        $value = $data;
+        $num = 0;
+        if (preg_match('/(<?P<value>.*)-(<?P<num>\d+)$/', $data, $matches)) {
+            $value = $matches['value'];
+            $num = (int)$matches['num']++;
+        }
+
+        while (!$validator->isValid($data)) {
+            $data = sprintf('%s-%02d', $value, $num);
+            $num++;
+        }
+
+        return $data;
+    }
+
     /**
      * Returns the dbTable class
      *
