@@ -597,7 +597,7 @@ abstract class MapperAbstract
 
         $value = $data;
         $num = 0;
-        if (preg_match('/(<?P<value>.*)-(<?P<num>\d+)$/', $data, $matches)) {
+        if (preg_match('/(?<value>.*)-(?<num>\d+)$/', $data, $matches)) {
             $value = $matches['value'];
             $num = (int)$matches['num']++;
         }
