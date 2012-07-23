@@ -637,7 +637,7 @@ abstract class ModelAbstract implements \IteratorAggregate
     /**
      * Returns the primary key column name
      *
-     * @see <?=$namespace?>Model\DbTable\TableAbstract::getPrimaryKeyName()
+     * @see <?=$namespace?>Mapper\DbTable\TableAbstract::getPrimaryKeyName()
      * @return string|array The name or array of names which form the primary key
      */
     public function getPrimaryKeyName()

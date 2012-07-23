@@ -86,7 +86,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 <?php else: ?>delete
 <?php endif;?>
 <?php if ($this->_softDeleteColumn == null): ?>
-     * @see <?=$namespace?>Model\DbTable\TableAbstract::delete()
+     * @see <?=$namespace?>Mapper\DbTable\TableAbstract::delete()
 <?php endif;?>
      * @return int
      */

@@ -25,9 +25,9 @@ namespace <?=$namespace?>Mapper\Sql\Raw;
 abstract class MapperAbstract
 {
     /**
-     * $_dbTable - instance of <?=$namespace?>Model\DbTable\TableAbstract
+     * $_dbTable - instance of <?=$namespace?>Mapper\DbTable\TableAbstract
      *
-     * @var <?=$namespace?>Model\DbTable\TableAbstract
+     * @var <?=$namespace?>Mapper\DbTable\TableAbstract
      */
     protected $_dbTable;
 
@@ -113,7 +113,7 @@ abstract class MapperAbstract
     /**
      * Sets the dbTable class
      *
-     * @param <?=$namespace?>Model\DbTable\TableAbstract $dbTable
+     * @param <?=$namespace?>Mapper\DbTable\TableAbstract $dbTable
      * @return <?=$namespace?>Mapper\Sql\Raw\MapperAbstract
      */
     public function setDbTable($dbTable)
@@ -534,7 +534,7 @@ abstract class MapperAbstract
     /**
      * Returns the number of rows in the table
      *
-     * @see <?=$namespace?>Model\DbTable\TableAbstract::countAllRows()
+     * @see <?=$namespace?>Mapper\DbTable\TableAbstract::countAllRows()
      * @return int The total count
      */
     public function countAllRows()
@@ -546,7 +546,7 @@ abstract class MapperAbstract
      * Returns the count of this object
      * Optionally with a where parameter specified
      *
-     * @see <?=$namespace?>Model\DbTable\TableAbstract::countByQuery()
+     * @see <?=$namespace?>Mapper\DbTable\TableAbstract::countByQuery()
      * @return int Count with the given parameters
      */
     public function countByQuery($where = '')
@@ -856,7 +856,7 @@ abstract class MapperAbstract
     /**
      * Returns the dbTable class
      *
-     * @return <?=$namespace?>Model\DbTable\TableAbstract
+     * @return <?=$namespace?>Mapper\DbTable\TableAbstract
      */
     public abstract function getDbTable();
 

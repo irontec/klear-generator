@@ -16,7 +16,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 
 /**
  * Table definition for this class
- * @see <?=$namespace?>Model\DbTable\<?=$this->_className."\n"?>
+ * @see <?=$namespace?>Mapper\DbTable\<?=$this->_className."\n"?>
  */
 require_once dirname(__FILE__) . '/../DbTable/<?=$this->_className?>.php';
 <?php endif ?>
