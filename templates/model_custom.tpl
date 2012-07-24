@@ -23,6 +23,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
  
 namespace <?=$namespace?>Model;
 class <?=$this->_className?> extends Raw\<?=$this->_className?>
+
 {
     /**
      * Sets up column and relationship lists

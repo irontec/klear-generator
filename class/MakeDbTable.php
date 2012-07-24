@@ -7,18 +7,10 @@ abstract class MakeDbTable {
 
     protected $_existingAttributes = array();
 
-
     /**
      *  @var String $_tbname;
      */
     protected $_tbname;
-
-    /**
-     *
-     *  @var String $_dbname;
-     */
-    protected $_dbname;
-
 
     /**
      *   @var Array $_columns;
@@ -547,30 +539,18 @@ abstract class MakeDbTable {
      * @param String $dbname
      * @param String $namespace
      */
-    function __construct($config, $dbname, $namespace) {
+    function __construct($config) {
 
         $columns=array();
         $primaryKey=array();
 
         $this->_config = $config;
-        $this->_addRequire = $config['include.addrequire'];
+        $this->_addRequire = $this->_config->include->addrequire;
 
         $this->_dbAdapter = Zend_Db_Table::getDefaultAdapter();
 
-        if (!$this->_dbAdapter) {
-            $this->_dbAdapter = Zend_Db::factory(
-                    $this->getAdapterType(),
-                    array(
-                        'host'     => $this->_config['db.socket']? $this->_config['db.socket']: $this->_config['db.host'],
-                        'dbname'   => $dbname,
-                        'username' => $this->_config['db.user'],
-                        'password' => $this->_config['db.password'],
-                    )
-            );
-        }
-
         //$this->_tbname=$tbname;
-        $this->_namespace = $namespace;
+        $this->_namespace = $this->_config->namespace;
 
         //tplPrefix
         if (empty($tplPrefix)) {
@@ -583,19 +563,19 @@ abstract class MakeDbTable {
         }
 
         //docs section
-        $this->_author = $this->_config['docs.author'];
-        $this->_license = $this->_config['docs.license'];
-        $this->_copyright = $this->_config['docs.copyright'];
+        $this->_author = $this->_config->docs->author;
+        $this->_license = $this->_config->docs->license;
+        $this->_copyright = $this->_config->docs->copyright;
 
-        $this->_cacheManagerName = $this->_config['cache.manager_name'];
-        $this->_cacheName = $this->_config['cache.name'];
+        $this->_cacheManagerName = $this->_config->cache->manager_name;
+        $this->_cacheName = $this->_config->cache->name;
 
-        $this->_loggerName = $this->_config['log.logger_name'];
+        $this->_loggerName = $this->_config->log->logger_name;
 
-        $path = $this->_config['include.path'];
-        if ( ! is_dir($path)) {
+        $path = $this->_config->include->path;
+        if (!is_dir($path)) {
             // Use path relative to root of the application
-            $path = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . $this->_config['include.path'];
+            $path = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . $this->_config->include->path;
         }
 
         $this->setIncludePath($path . DIRECTORY_SEPARATOR);
@@ -617,19 +597,13 @@ abstract class MakeDbTable {
     public function getParsedTplContents($tplFile, $vars = array()) {
         extract($vars);
 
-        //var_dump($this->_tplPrefix); .$tplFile."\n";
-
         ob_start();
 
         if (file_exists(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.$tplFile)) { //$this->_tplPrefix.$tplFile
 
           require(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.$tplFile);  //$this->_tplPrefix.$tplFile
 
-        } /*else {
-
-
-           require(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.$tplFile);
-        }*/
+        }
 
         $data=ob_get_contents();
         ob_end_clean();
@@ -777,7 +751,7 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $mapperFile = implode(DIRECTORY_SEPARATOR, $mapperFile);
-        $mapperData = $this->getParsedTplContents('mapper.tpl');
+        $mapperData = $this->getParsedTplContents('mapper_custom.tpl');
 
         if (!file_exists($mapperFile)) {
             if (!file_put_contents($mapperFile, $mapperData)) {
@@ -796,7 +770,7 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $mapperFile = implode(DIRECTORY_SEPARATOR, $mapperFile);
-        $mapperData = $this->getParsedTplContents('raw_mapper.tpl');
+        $mapperData = $this->getParsedTplContents('mapper_raw.tpl');
 
         if (!file_put_contents($mapperFile, $mapperData)) {
             die("Error: could not write mapper file $mapperFile.");
@@ -827,7 +801,7 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $modelFile = implode(DIRECTORY_SEPARATOR , $modelFile);
-        $modelData = $this->getParsedTplContents('model.tpl');
+        $modelData = $this->getParsedTplContents('model_raw.tpl');
 
         $smartModelFile = array(
             $this->getLocation(),
@@ -835,7 +809,7 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $smartModelFile = implode(DIRECTORY_SEPARATOR , $smartModelFile);
-        $smartModelData = $this->getParsedTplContents('smart_model.tpl');
+        $smartModelData = $this->getParsedTplContents('model_custom.tpl');
 
         if (!file_put_contents($modelFile, $modelData)) {
             die("Error: could not write model file $modelFile.");
@@ -855,7 +829,29 @@ abstract class MakeDbTable {
      *
      * @return Boolean
      */
-    function doItAll() {
+    function doItAll()
+    {
+        foreach ($this->_tableList as $table) {
+            $this->setTableName($table);
+            try {
+                $this->parseTable();
+            } catch (Exception $e) {
+                echo "Warning: Failed to process $table: " . $e->getMessage(). " ... Skipping\n";
+            }
+        }
+
+        foreach ($this->_tableList as $table) {
+            $this->setTableName($table);
+            try {
+                $this->_doItAll();
+            } catch (Exception $e) {
+                echo "Warning: Failed to process $table: " . $e->getMessage(). " ... Skipping\n";
+            }
+        }
+    }
+
+    function _doItAll()
+    {
 
         $this->makeDbTableFile();
         $this->makeMapperFile();
@@ -867,7 +863,7 @@ abstract class MakeDbTable {
         $modelFile = $this->getLocation() . DIRECTORY_SEPARATOR . 'Model/ModelAbstract.php';
         $rawModelFile = $this->getLocation() . DIRECTORY_SEPARATOR . 'Model/Raw/ModelAbstract.php';
 
-        $rawModelData = $this->getParsedTplContents('raw_model_class.tpl');
+        $rawModelData = $this->getParsedTplContents('model_raw_abstract.tpl');
 
         if (!file_put_contents($rawModelFile, $rawModelData))
             die("Error: could not write model file $rawModelFile.");
@@ -884,7 +880,7 @@ abstract class MakeDbTable {
          ********** Mappers *********
          ****************************/
         $mapperData = $this->getParsedTplContents('mapper_class.tpl');
-        $rawMapperData = $this->getParsedTplContents('raw_mapper_class.tpl');
+        $rawMapperData = $this->getParsedTplContents('mapper_raw_abstract.tpl');
 
         if (!file_put_contents($mapperFile, $rawMapperData))
             die("Error: could not write mapper file $mapperFile.");
@@ -894,7 +890,7 @@ abstract class MakeDbTable {
         /****************************
          ********** DBTable *********
          ****************************/
-        $tableData = $this->getParsedTplContents('dbtable_class.tpl');
+        $tableData = $this->getParsedTplContents('dbtable_abstract.tpl');
 
         if (!file_put_contents($tableFile, $tableData))
             die("Error: could not write model file $tableFile.");

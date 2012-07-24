@@ -69,7 +69,7 @@ if (sizeof($params['--namespace']) == 1) {
 
 $dbname = $params['--database'][0];
 echo $class. "\n";
-$modelCreator = new $class($config, $dbname, $namespace);
+$modelCreator = new $class($config, $namespace);
 $tables = array();
 if ($params['--all-tables'] || sizeof($params['--tables-regex'])>0) {
     $tables = $modelCreator->getTablesNamesFromDb();
@@ -118,6 +118,8 @@ foreach ($folderList as $name) {
 }
 
 $modelCreator->setTableList($tables);
+
+$modelCreator->create();
 
 foreach ($tables as $table) {
 

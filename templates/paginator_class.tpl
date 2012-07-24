@@ -26,7 +26,7 @@ class Paginator extends Zend_Paginator_Adapter_DbSelect
     /**
      * Object mapper
      *
-     * @var <?=$namespace?>Model\MapperAbstract
+     * @var <?=$namespace?>Mapper\Sql\Raw\MapperAbstract
      */
     protected $_mapper = null;
 
@@ -34,9 +34,9 @@ class Paginator extends Zend_Paginator_Adapter_DbSelect
      * Constructor.
      *
      * @param Zend_Db_Select $select The select query
-     * @param <?=$namespace?>Model\MapperAbstract $mapper The mapper associated with the object type
+     * @param <?=$namespace?>Mapper\Sql\Raw\MapperAbstract $mapper The mapper associated with the object type
      */
-    public function __construct(Zend_Db_Select $select, Mapper\MapperAbstract $mapper)
+    public function __construct(Zend_Db_Select $select, <?=$namespace?>Mapper\Sql\Raw\MapperAbstract $mapper)
     {
         $this->_mapper = $mapper;
         parent::__construct($select);
@@ -47,7 +47,7 @@ class Paginator extends Zend_Paginator_Adapter_DbSelect
      *
      * @param  integer $offset Page offset
      * @param  integer $itemCountPerPage Number of items per page
-     * @return array An array of <?=$namespace?>ModelAbstract objects
+     * @return array An array of <?=$namespace?>\Raw\ModelAbstract objects
      */
     public function getItems($offset, $itemCountPerPage)
     {

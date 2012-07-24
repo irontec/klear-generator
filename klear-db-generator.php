@@ -13,13 +13,13 @@ $loader->registerNamespace('Generator');
 
 try {
     $opts = new Zend_Console_Getopt(
-            array(
-                    'application|a=s' => 'Zend Framework APPLICATION_PATH'
-            )
+        array(
+            'application|a=s' => 'Zend Framework APPLICATION_PATH'
+        )
     );
     $opts->parse();
 
-    if (!$opts->getOptions('application')) {
+    if (!$opts->getOption('application')) {
         throw new Zend_Console_Getopt_Exception('Parse error', $opts->getUsageMessage());
     }
 

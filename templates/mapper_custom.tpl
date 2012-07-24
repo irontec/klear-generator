@@ -30,6 +30,7 @@ require_once dirname(__FILE__) . '/../DbTable/<?=$this->_className?>.php';
  */
 namespace <?=$namespace?>Mapper\Sql;
 class <?=$this->_className?> extends Raw\<?=$this->_className?>
+
 {
 
 }

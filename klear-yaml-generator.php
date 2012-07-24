@@ -19,7 +19,7 @@ try {
     );
     $opts->parse();
 
-    if (!$opts->getOptions('application')) {
+    if (!$opts->getOption('application')) {
         throw new Zend_Console_Getopt_Exception('Parse error', $opts->getUsageMessage());
     }
 
@@ -111,7 +111,7 @@ try {
 
     /** Generate Main Config File **/
     if (file_exists($klearConfigFile)) {
-        echo "klear.ini file allready exists\n";
+        echo "klear.yaml file allready exists\n";
     } else {
         $mainConfig = new Generator_Yaml_MainConfig($entities);
         $configWriter->write($klearConfigFile, $mainConfig->getConfig());

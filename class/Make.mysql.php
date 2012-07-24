@@ -1,5 +1,6 @@
 <?php
 
+require_once(__DIR__ . '/MakeDbTable.php');
 /**
  * MySQL specific class for model creation
  */
