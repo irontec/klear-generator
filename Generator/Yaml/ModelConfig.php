@@ -100,11 +100,16 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFieldConf(Generator_Db_Field $fieldDesc)
     {
+        if (isset($this->_klearConfig->klear->languages)) {
+            foreach ($this->_klearConfig->klear->languages as $language) {
+                $titles[$language] = ucfirst($this->_getFieldName($fieldDesc));
+            }
+        } else {
+            $titles = array('es' => ucfirst($this->_getFieldName($fieldDesc)));
+        }
         $data = array(
             'title' => array(
-                'i18n' => array(
-                    'es' => ucfirst($this->_getFieldName($fieldDesc))
-                )
+                'i18n' => $titles
             ),
             'required' => $fieldDesc->isNullable()? 'false' : 'true',
             'type' => $this->_getFieldDataType($fieldDesc),
@@ -157,12 +162,20 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
 
         switch ($fieldDesc->getType()) {
+            case 'blob':
+            case 'mediumblob':
+            case 'longblob':
             case 'text':
             case 'mediumtext':
+            case 'longtext':
                 return 'textarea';
+            case 'bigint':
+            case 'int':
             case 'mediumint':
+            case 'smallint':
             case 'tinyint':
                 return 'number';
+            case 'timestamp':
             case 'datetime':
             case 'date':
             case 'time':
@@ -187,11 +200,17 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             'data' => 'mapper'
         );
 
+        if (isset($this->_klearConfig->klear->languages)) {
+            foreach ($this->_klearConfig->klear->languages as $language) {
+                $unasigned[$language] = 'unasigned';
+            }
+        } else {
+            $unasigned = array('es' => 'Sin asignar');
+        }
+
         if ($fieldDesc->isNullable()) {
             $data["'null'"] = array(
-                'i18n' => array(
-                    'es' => 'Sin asignar'
-                )
+                'i18n' => $unasigned
             );
         }
 
@@ -211,21 +230,27 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getBooleanSelector()
     {
+        if (isset($this->_klearConfig->klear->languages)) {
+            foreach ($this->_klearConfig->klear->languages as $language) {
+                $yes[$language] = '"Yes"';
+                $no[$language] = '"No"';
+            }
+        } else {
+            $yes['es'] = '"Sí"';
+            $no['es'] = '"No"';
+        }
+
         return array(
             'data' => 'inline',
             'values' => array(
                 "'0'" => array(
                     'title' => array(
-                        'i18n' => array(
-                            'es' => '"No"'
-                        )
+                        'i18n' => $no
                     )
                 ),
                 "'1'" => array(
                     'title' => array(
-                        'i18n' => array(
-                            'es' => 'Sí'
-                        )
+                        'i18n' => $yes
                     )
                 )
             )
@@ -256,6 +281,10 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getTimeSource(Generator_Db_Field $fieldDesc)
     {
+        $control = $fieldDesc->getType();
+        if ($control == 'timestamp') {
+            $control = 'datetime';
+        }
         return array(
             'control' => $fieldDesc->getType(),
             'setting' => array(
@@ -295,6 +324,16 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFileSource($fieldDesc)
     {
+        if (isset($this->_klearConfig->klear->languages)) {
+            foreach ($this->_klearConfig->klear->languages as $language) {
+                $download[$language] = '"Download file"';
+                $upload[$language] = '"Upload file"';
+            }
+        } else {
+            $download['es'] = '"Descargar fichero"';
+            $upload['en'] = '"Subir fichero"';
+        }
+
         return array(
             'data' => 'fso',
             'size_limit' => '20M',
@@ -306,9 +345,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Download_command',
                     'icon' => 'ui-silk-bullet-disk',
                     'title' => array(
-                        'i18n' => array(
-                            'en' => 'Download file'
-                        )
+                        'i18n' => $download
                     ),
                     'onNull' => 'hide'
                 ),
@@ -316,9 +353,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     'type' => 'command',
                     'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Upload_command',
                     'title' => array(
-                        'i18n' => array(
-                            'en' => 'Upload file'
-                        )
+                        'i18n' => $upload
                     ),
                     'class' => 'qq-uploader',
                     'onNull' => 'show'

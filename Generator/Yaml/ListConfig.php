@@ -7,8 +7,9 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
     protected $_tableDescription;
     protected $_normalizedTable;
 
-    public function __construct($table)
+    public function __construct($table, $klearConfig)
     {
+        $this->_klearConfig = $klearConfig;
         $this->_tableDescription = Generator_Db::describeTable($table);
 
         $normalizedTable = Generator_Yaml_StringUtils::toCamelCase($table);
@@ -19,20 +20,34 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $editScreenName = lcfirst($normalizedTable) . 'Edit_screen';
         $delDialogName = lcfirst($normalizedTable) . 'Del_dialog';
 
+        if (isset($this->_klearConfig->klear->languages)) {
+            foreach ($this->_klearConfig->klear->languages as $language) {
+                $listTitles[$language] = 'List of ' . ucfirst($normalizedTable);
+                $options[$language] = 'Options';
+                $editTitles[$language] = 'Edit ' . ucfirst($normalizedTable);
+                $addTitles[$language] = 'Add ' . ucfirst($normalizedTable);
+                $deleteTitles[$language] = 'Delete ' . ucfirst($normalizedTable);
+                $askDeleteTitles[$language] = 'You want to delete this ' . ucfirst($normalizedTable) . '?';
+            }
+        } else {
+            $options = array('es' => 'Opciones');
+            $listTitles = array('es' => 'Listado de ' . ucfirst($normalizedTable));
+            $editTitles = array('es' => 'Editar ' . ucfirst($normalizedTable));
+            $addTitles = array('es' => 'Añadir ' . ucfirst($normalizedTable));
+            $deleteTitles = array('es' => 'Eliminar ' . ucfirst($normalizedTable));
+            $askDeleteTitles = array('es' => '¿Está seguro que desea eliminar este ' . ucfirst($normalizedTable) . '?');
+        }
+
         $listScreen = array(
             'controller' => 'list',
             '<<' => '*' . ucfirst($normalizedTable),
             'title' => array(
-                'i18n' => array(
-                    'es' => 'Listado de ' . ucfirst($normalizedTable)
-                )
+                'i18n' => $listTitles
             ),
             'fields' => array(
                 'options' => array(
                     'title' => array(
-                        'i18n' => array(
-                            'es' => 'Opciones'
-                        )
+                        'i18n' => $options
                     ),
                     'screens' => array(
                         $editScreenName => 'true',
@@ -45,9 +60,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             ),
             'options' => array(
                 'title' => array(
-                        'i18n' => array(
-                                'es' => 'Opciones'
-                        )
+                    'i18n' => $options
                 ),
                 'screens' => array(
                     $newScreenName => 'true'
@@ -61,9 +74,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'class' =>  'ui-silk-pencil',
             'label' => 'false',
             'title' => array(
-                'i18n' => array(
-                    'es' => 'Editar ' . ucfirst($normalizedTable)
-                )
+                'i18n' => $editTitles
             )
         );
 
@@ -75,9 +86,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'label' => 'true',
             'multiInstance' => 'true',
             'title' => array(
-                'i18n' => array(
-                    'es' => 'Añadir ' . ucfirst($normalizedTable)
-                )
+                'i18n' => $addTitles
             )
         );
 
@@ -87,14 +96,10 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'class' => 'ui-silk-bin',
             'labelOption' => 'false',
             'title' => array(
-                'i18n' => array(
-                    'es' => 'Eliminar ' . ucfirst($normalizedTable)
-                )
+                'i18n' => $deleteTitles
             ),
             'description' => array(
-                    'i18n' => array(
-                            'es' => '¿Está seguro que desea eliminar este ' . ucfirst($normalizedTable) . '?'
-                    )
+                'i18n' => $askDeleteTitles
             ),
         );
 
