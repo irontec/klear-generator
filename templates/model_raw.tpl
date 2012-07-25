@@ -141,31 +141,15 @@ echo "$vars\n\n";
 <?php endforeach;?>
         ));
 
-        $this->setAvailableLangs(array(<?php
-    $languages = array();
-
-    foreach ($this->_columns[$this->getTableName()] as $column) {
-
-        $current = explode("_", $column['field']);
-
-        if (count($current) < 2) {
-
-            continue;
-        }
-
-		$parentField = implode("_", array_slice($current, 0, -1));
-
-        if (!in_array($parentField , $mlFields)) {
-
-            continue;
-        }
-
-        $languages[] = "'" . strtolower(end($current)) . "'";
+<?php
+    if (isset($this->_config->klear->languages)) {
+        $languages = $this->_config->klear->languages->toArray();
+        $languages = "'" . implode("', '", $languages) . "'";
+    } else {
+        $languages = null;
     }
-
-    echo implode(",", array_unique($languages));
-
-?>));
+?>
+        $this->setAvailableLangs(array(<?php echo $languages?>));
 
         $this->setParentList(array(
 <?php foreach ($this->getForeignKeysInfo() as $key): ?>
@@ -402,14 +386,12 @@ if ($multilang):
             $language = $this->getDefaultUserLanguage();
         }
 
-        $language = strtolower($language);
-
         if (!in_array($language, $this->getAvailableLangs())) {
 
             Throw new \Exception($language . " is not an available language");
         }
 
-        $methodName = "set<?=$column['capital']?>". ucfirst($language);
+        $methodName = "set<?=$column['capital']?>". ucfirst(str_replace('_', '', $language));
         if (!method_exists($this, $methodName)) {
 
             //Throw new \Exception('Unavailable language');
@@ -479,14 +461,12 @@ elseif ($multilang):
             $language = $this->getDefaultUserLanguage();
         }
 
-        $language = strtolower($language);
-
         if (!in_array($language, $this->getAvailableLangs())) {
 
             Throw new \Exception($language . " is not an available language");
         }
 
-        $methodName = "get<?=$column['capital']?>". ucfirst($language);
+        $methodName = "get<?=$column['capital']?>". ucfirst(str_replace('_', '', $language));
         if (!method_exists($this, $methodName)) {
 
             //Throw new \Exception('Unavailable language');
