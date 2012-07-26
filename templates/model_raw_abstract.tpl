@@ -143,7 +143,9 @@ abstract class ModelAbstract implements \IteratorAggregate
 
     public function __construct()
     {
-        if (count($this->getAvailableLangs()) > 0) {
+        $availableLangs = $this->getAvailableLangs();
+
+        if (count($availableLangs) > 0) {
 
             $bootstrap = \Zend_Controller_Front::getInstance()->getParam('bootstrap');
 
@@ -157,16 +159,19 @@ abstract class ModelAbstract implements \IteratorAggregate
                 $conf = (Object) $bootstrap->getOptions();
             }
 
-            if ( isset($conf->defaultLanguageZendRegistryKey) ) {
+            if (isset($conf->defaultLanguageZendRegistryKey)) {
 
                 if (\Zend_Registry::isRegistered($conf->defaultLanguageZendRegistryKey)) {
 
                     $this->_defaultUserLanguage = \Zend_Registry::get($conf->defaultLanguageZendRegistryKey);
                 }
+            } else {
+
+                $this->_defaultUserLanguage = $availableLangs[0];
             }
         }
     }
-
+    
     public function initChangeLog()
     {
         $this->_logChanges = true;

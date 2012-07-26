@@ -819,7 +819,7 @@ abstract class MapperAbstract
     protected function _getUrlValue($data)
     {
         $alnumFilter = new \Zend_Filter_Alnum(true);
-        $iden = $alnumFilter->filter($data);
+        $iden = strtolower($alnumFilter->filter($data));
         return str_replace(' ', '-', $iden);
     }
 
@@ -832,10 +832,10 @@ abstract class MapperAbstract
     protected function _getUniqueValue($data, $field)
     {
         $validator = new \Zend_Validate_Db_NoRecordExists(
-                array(
-                        'table' => $this->getDbTable()->info('name'),
-                        'field' => $field
-                )
+            array(
+                'table' => $this->getDbTable()->info('name'),
+                'field' => $field
+            )
         );
 
         $value = $data;
