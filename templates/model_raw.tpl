@@ -513,14 +513,14 @@ else : ?>
 
     /**
      * Gets parent <?=$this->_getClassName($key['column_name']) . "\n"?>
-     *
-     * @param boolean $load Load the object if it is not already
+     * TODO: Mejorar esto para los casos en que la relación no exista. Ahora mismo siempre se pediría el padre
      * @return \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
-    public function get<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>($load = true, $where = '', $orderBy = '')
+    public function get<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>($where = null, $orderBy = null)
     {
-        if ($this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> === null && $load) {
-            $this->getMapper()->loadRelated('<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+        if ($this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> === null) {
+            $related = $this->getMapper()->loadRelated('<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+            $this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> = array_shift($related);
         }
 
         return $this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>;
@@ -547,10 +547,11 @@ else : ?>
      * @param boolean $load Load the object if it is not already
      * @return \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
-    public function get<?=$this->_getRelationName($key, 'dependent')?>($load = true, $where = '', $orderBy = '')
+    public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null)
     {
-        if ($this->_<?=$this->_getRelationName($key, 'dependent')?> === null && $load) {
-            $this->getMapper()->loadRelated('<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+        if ($this->_<?=$this->_getRelationName($key, 'dependent')?> === null) {
+            $related = $this->getMapper()->loadRelated('<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+            $this->_<?=$this->_getRelationName($key, 'dependent')?> = $related;
         }
 
         return $this->_<?=$this->_getRelationName($key, 'dependent')?>;
@@ -622,10 +623,11 @@ else : ?>
      * @param boolean $load Load the object if it is not already
      * @return array The array of \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
-    public function get<?=$this->_getRelationName($key, 'dependent')?>($load = true, $where = '', $orderBy = '')
+    public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null)
     {
-        if ($this->_<?=$this->_getRelationName($key, 'dependent')?> === null && $load) {
-            $this->getMapper()->loadRelated('<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+        if ($this->_<?=$this->_getRelationName($key, 'dependent')?> === null) {
+            $related = $this->getMapper()->loadRelated('<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+            $this->_<?=$this->_getRelationName($key, 'dependent')?> = $related;
         }
 
         return $this->_<?=$this->_getRelationName($key, 'dependent')?>;

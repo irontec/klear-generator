@@ -197,10 +197,12 @@ abstract class MapperAbstract
      *
      * @param string $name Key or table name of the relation (key or table) to load
      * @param <?=$namespace?>Model\ModelAbstract $model
+     * @param $conditions string|array of condition(s)
+     * @param $orderBy string|array of order conditions
      * @throws \Exception If the relation could not be found
      * @return $model
      */
-    public function loadRelated($name, $model, $conditions = '', $orderBy = '')
+    public function loadRelated($name, $model, $conditions = null, $orderBy = null)
     {
         // Create a Zend_Db_Table_Row from the data in $model
         $row = $this->getDbTable()->createRow($this->toArray($model));
@@ -340,7 +342,7 @@ abstract class MapperAbstract
                 foreach ($columns as $column) {
                     if ($model->$column === null) {
 
-                        return $model;
+                        return array();
                     }
                 }
 
@@ -348,7 +350,7 @@ abstract class MapperAbstract
 
                 if ($model->$columns === null) {
 
-                    return $model;
+                    return array();
                 }
             }
 
@@ -393,7 +395,7 @@ abstract class MapperAbstract
 
             if (count($where) < 1) {
 
-                return $model;
+                return array();
             }
 
             $relMapperClassName = "\\<?=$namespace?>\Mapper\\Sql\\" . $object_table_name;
@@ -414,7 +416,7 @@ abstract class MapperAbstract
 
                 $binding = false;
 
-                if (! empty($conditions)) {
+                if ($conditions) {
 
                     if (is_array($conditions)) {
 
@@ -496,39 +498,16 @@ abstract class MapperAbstract
 
         //-------------------------------------------------------------------------------------------------------------
 
-        if (! empty($obj)) {
-
-            $model_class = '<?=$namespace?>\Model\\' . $object_table_name;
+        if (!empty($obj)) {
 
             if (is_array($obj)) {
-
-                if (method_exists($model, 'add' . $property)) {
-                    $class_method = 'add' . $property;
-
-                    foreach ($obj as $related) {
-
-                        $model->$class_method($related);
-                    }
-
-                } else {
-
-                    $class_method = 'set' . $property;
-                    if (count($obj) == 1) {
-
-                        $obj = array_shift($obj);
-                    }
-
-                    $model->$class_method($obj);
-                }
-
+                return $obj;
             } else {
-
-                $method_name = 'set' . $property;
-                $model->$method_name($obj);
+                return array($obj);
             }
         }
-
-        return $model;
+        
+        return array();
     }
 
     /**

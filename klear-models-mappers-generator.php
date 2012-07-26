@@ -105,7 +105,7 @@ try {
         throw new Exception("Specified Database type is not supported\n");
     }
 
-    $path = realpath(APPLICATION_PATH . '/../library');
+    $path = realpath(APPLICATION_PATH . '/../library') . DIRECTORY_SEPARATOR;
 
     $folderList = array(
             'Mapper',

@@ -642,7 +642,16 @@ foreach ($this->_columns[$this->getTableName()] as $column):
      */
     public function find($primaryKey, $model = null)
     {
-        if (!($this->_cache && $this->_cache->test("<?=$namespace?>\Model\\<?=$this->_className?>\\".$primaryKey))) {
+        if (!is_array($primaryKey)) {
+            $primaryKey = array($primaryKey);
+        }
+ 
+        if (!is_null($model) && sizeof($primaryKey) > 1) {
+            throw \Exception('Model cannot be poblated with multiple rows');
+        }
+        
+        $cacheKey = "<?=$namespace?>\Model\\<?=$this->_className?>\\" . implode('.', $primaryKey);
+        if (!($this->_cache && $this->_cache->test(cacheKey))) {
 
             $result = $this->getRowset($primaryKey);
 
@@ -650,21 +659,33 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 return null;
             }
 
-            $row = $result->current();
-            $model = $this->loadModel($row, $model);
-
+            foreach ($result as $row) {
+                $models[] = $this->loadModel($row, $model);
+            }
+            
             if ($this->_cache) {
+                $arrayModels = array();
+                foreach ($models as $curModel) {
+                    $arrayModels[] = $curModel->toArray();
+                }
 
-                $this->_cache->save($model->toArray(), get_class($model)."_".$primaryKey);
+                $this->_cache->save($arrayModels, $cacheKey);
             }
 
         } else {
 
-            $tmp = $this->_cache->load("<?=$namespace?>\Model\\<?=$this->_className?>\\".$primaryKey);
-            $model = $this->loadModel($tmp, $model);
+            $tmp = $this->_cache->load($cacheKey);
+            foreach ($tmp as $modelArray) {
+                $models[] = $this->loadModel($modelArray, $model);
+            }
+
         }
 
-        return $model;
+        if (sizeof($models) > 1) {
+            return $models;
+        } else {
+            return array_shift($models);
+        }
     }
 
     /**

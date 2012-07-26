@@ -304,7 +304,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             $control = 'datetime';
         }
         return array(
-            'control' => $fieldDesc->getType(),
+            'control' => $control,
             'setting' => array(
                 'disabled' => "'false'"
             )
