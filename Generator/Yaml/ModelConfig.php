@@ -214,15 +214,33 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             );
         }
 
+        $relatedTableFields = Generator_Db::describeTable($fieldDesc->getRelatedTable());
+        foreach ($relatedTableFields as $field) {
+            if ($field->isPrimaryKey()) {
+                $relatedField = $field;
+            }
+            if ($field->getType() == 'varchar') {
+                $relatedField = $field;
+                break;
+            }
+        }
+
+        $relatedFieldName = $relatedField->getName();
+
+        $orderField = $relatedFieldName;
+        if ($relatedField->isMultilang()) {
+            $orderField = $relatedFieldName . '_${lang}';
+        }
+
         $data['config'] = array(
             'mapperName' => Generator_Yaml_StringUtils::getMapperName($fieldDesc->getRelatedTable(), $this->_namespace),
             'fieldName' => array(
                 'fields' => array(
-                    $fieldDesc->getRelatedField()
+                    $relatedFieldName,
                 ),
-                'template' => "'%" . $fieldDesc->getRelatedField() . "%'",
-                'order' => $fieldDesc->getRelatedField()
-            )
+                'template' => "'%" . $relatedFieldName. "%'",
+            ),
+            'order' => $orderField
         );
 
         return $data;
