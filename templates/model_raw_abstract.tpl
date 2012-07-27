@@ -165,11 +165,24 @@ abstract class ModelAbstract implements \IteratorAggregate
 
                     $this->_defaultUserLanguage = \Zend_Registry::get($conf->defaultLanguageZendRegistryKey);
                 }
+
             } else {
 
-                $this->_defaultUserLanguage = $availableLangs[0];
+                    $this->_defaultUserLanguage = $availableLangs[0];
             }
         }
+    }
+    
+    protected function _getCurrentLanguage($language = null)
+    {
+        if ($language) {
+            if (!in_array($language, $this->getAvailableLangs())) {
+                throw new \Exception($language . " is not an available language");
+            }
+            return $language;
+        }
+        
+        return $this->getDefaultUserLanguage();
     }
     
     public function initChangeLog()

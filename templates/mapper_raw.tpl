@@ -24,6 +24,8 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 namespace <?=$namespace?>Mapper\Sql\Raw;
 class <?=$this->_className?> extends <?=$this->_includeMapper->getParentClass() . "\n"?>
 {
+    protected $_modelName = '<?=$namespace?>\Model\\<?=$this->_className?>';
+    
 <?php $vars = $this->_includeMapper->getVars();
 if (! empty($vars)) {
 echo "\n$vars\n";
@@ -376,7 +378,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         }
 <?php endforeach; ?>
 
-        $exists = $this->find($primaryKey, null);
+        $exists = $this->find($primaryKey);
         $success = true;
 
         if ($useTransaction) {
@@ -435,7 +437,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         try {
             if (is_null($primaryKey) || empty($primaryKey)) {
 <?php else: ?>
-        $exists = $this->find($primaryKey, null);
+        $exists = $this->find($primaryKey);
 
         try {
             if (is_null($exists)) {
@@ -632,62 +634,6 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         return $success;
     }
 
-
-    /**
-     * Finds row by primary key
-     *
-     * @param <?=$this->_primaryKey[$this->getTablename()]['phptype']?> $primaryKey
-     * @param <?=$namespace?>Model\<?=$this->_className?>|null $model
-     * @return <?=$namespace?>Model\<?=$this->_className?>|null The object provided or null if not found
-     */
-    public function find($primaryKey, $model = null)
-    {
-        if (!is_array($primaryKey)) {
-            $primaryKey = array($primaryKey);
-        }
- 
-        if (!is_null($model) && sizeof($primaryKey) > 1) {
-            throw \Exception('Model cannot be poblated with multiple rows');
-        }
-        
-        $cacheKey = "<?=$namespace?>\Model\\<?=$this->_className?>\\" . implode('.', $primaryKey);
-        if (!($this->_cache && $this->_cache->test(cacheKey))) {
-
-            $result = $this->getRowset($primaryKey);
-
-            if (is_null($result)) {
-                return null;
-            }
-
-            foreach ($result as $row) {
-                $models[] = $this->loadModel($row, $model);
-            }
-            
-            if ($this->_cache) {
-                $arrayModels = array();
-                foreach ($models as $curModel) {
-                    $arrayModels[] = $curModel->toArray();
-                }
-
-                $this->_cache->save($arrayModels, $cacheKey);
-            }
-
-        } else {
-
-            $tmp = $this->_cache->load($cacheKey);
-            foreach ($tmp as $modelArray) {
-                $models[] = $this->loadModel($modelArray, $model);
-            }
-
-        }
-
-        if (sizeof($models) > 1) {
-            return $models;
-        } else {
-            return array_shift($models);
-        }
-    }
-
     /**
      * Loads the model specific data into the model object
      *
@@ -714,7 +660,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
               ?>->set<?=$column['capital']?>($data['<?=$column['field']?>'])<?if ($count> 0) echo "\n                  ";
               endforeach; ?>;
-        } elseif ($data instanceof \Zend_Db_Table_Row_Abstract || $data instanceof \stdClass) {
+        } else if ($data instanceof \Zend_Db_Table_Row_Abstract || $data instanceof \stdClass) {
             $entry<?php
                 $count = count($this->_columns[$this->getTableName()]);
                 foreach ($this->_columns[$this->getTableName()] as $column):
@@ -727,6 +673,21 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
               ?>->set<?=$column['capital']?>($data->{'<?=$column['field']?>'})<?if ($count> 0) echo "\n                  ";
               endforeach; ?>;
+              
+        } else if ($data instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
+            $entry<?php
+                $count = count($this->_columns[$this->getTableName()]);
+                foreach ($this->_columns[$this->getTableName()] as $column):
+                $count--;
+
+                if (stristr($column['comment'], '[ml]')) {
+
+                    continue;
+                }
+
+              ?>->set<?=$column['capital']?>($data->get<?=$column['capital']?>())<?if ($count> 0) echo "\n                  ";
+              endforeach; ?>;
+              
         }
 
         $entry->resetChangeLog()->initChangeLog()->setMapper($this);

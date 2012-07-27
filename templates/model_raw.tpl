@@ -228,7 +228,7 @@ echo "$vars\n\n";
 
         parent::__construct();
     }
-
+    
     /**************************************************************************
     ************************** File System Object (FSO)************************
     ***************************************************************************/
@@ -380,16 +380,8 @@ endforeach;
 endif;
 if ($multilang):
 ?>
-        $defaultLang = $this->getDefaultUserLanguage();
-        if (empty($language) && !empty($defaultLang)) {
-
-            $language = $this->getDefaultUserLanguage();
-        }
-
-        if (!in_array($language, $this->getAvailableLangs())) {
-
-            Throw new \Exception($language . " is not an available language");
-        }
+        
+        $language = $this->_getCurrentLanguage($language);
 
         $methodName = "set<?=$column['capital']?>". ucfirst(str_replace('_', '', $language));
         if (!method_exists($this, $methodName)) {
@@ -455,16 +447,8 @@ if ($multilang):
 <?php
 elseif ($multilang):
 ?>
-        $defaultLang = $this->getDefaultUserLanguage();
-        if (empty($language) && !empty($defaultLang)) {
 
-            $language = $this->getDefaultUserLanguage();
-        }
-
-        if (!in_array($language, $this->getAvailableLangs())) {
-
-            Throw new \Exception($language . " is not an available language");
-        }
+        $language = $this->_getCurrentLanguage($language);
 
         $methodName = "get<?=$column['capital']?>". ucfirst(str_replace('_', '', $language));
         if (!method_exists($this, $methodName)) {

@@ -831,6 +831,70 @@ abstract class MapperAbstract
 
         return $data;
     }
+    
+    /**
+     * Fetch array of objects based on asked primary key(s)
+     * @param string|array $primaryKey claves primarias
+     * @return array:NULL Modelos recuperados
+     */
+    public function fetch($primaryKey)
+    {
+        if (!is_array($primaryKey)) {
+            $primaryKeys = array($primaryKey);
+        } else {
+            $primaryKeys = $primaryKey;
+        }
+
+        $models = array();
+
+        if ($this->_cache) {
+            $unloadedKeys = array();
+            foreach ($primaryKeys as $key) {
+                $cacheKey = $this->_modelName . '\\' . $key;
+                if ($this->_cache->test($cachekey)) {
+                    $models[] = $this->_loadModel($this->_cache->load($cachekey));
+                } else {
+                    $unloadedKeys[] = $key;
+                }
+            }
+        } else {
+            $unloadedKeys = $primaryKeys;
+        }
+
+        //Si hay elementos que no estaban en la caché
+        if (sizeof($unloadedKeys) > 0) {
+
+            $result = $this->getRowset($unloadedKeys);
+            if ($result) {
+                foreach ($result as $row) {
+                    $model = $this->loadModel($row);
+                    $models[] = $model;
+                    if ($this->_cache) {
+                        $cacheKey = $this->_modelName . '\\' . $model->getPrimaryKey();
+                        $this->_cache->save($model->toArray(), $cachekey);
+                    }
+                }
+            }
+        }
+
+        return $models;
+    }
+    
+    /**
+     * Finds row by primary key
+     *
+     * @param string|array $primary_key
+     */
+    public function find($primaryKey)
+    {
+        $models = $this->fetch($primaryKey);
+        
+        if (!$models) {
+            return null;
+        }
+        
+        return array_shift($models);
+    }
 
     /**
      * Returns the dbTable class
@@ -855,11 +919,4 @@ abstract class MapperAbstract
      */
     protected abstract function loadModel($data, $entry);
 
-    /**
-     * Finds row by primary key
-     *
-     * @param string|array $primary_key
-     * @param <?=$namespace?>Model\ModelAbstract $model
-     */
-    public abstract function find($primary_key, $model);
 }
