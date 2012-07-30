@@ -132,7 +132,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                 break;
             case 'textarea':
                 if ($fieldDesc->isHtml()) {
-                    $data['souce'] = $this->_getHtmlSource($fieldDesc);
+                    $data['source'] = $this->_getHtmlSource($fieldDesc);
                 }
                 break;
             case 'file':

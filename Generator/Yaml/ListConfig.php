@@ -114,7 +114,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $editBlackList = $this->_getEditBlackList();
         if (sizeof($editBlackList) > 0) {
             $editScreen['fields'] = array(
-                    'blacklist' => $editBlackList
+                'blacklist' => $editBlackList
             );
         }
 
