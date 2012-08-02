@@ -834,10 +834,11 @@ abstract class MapperAbstract
     
     /**
      * Fetch array of objects based on asked primary key(s)
-     * @param string|array $primaryKey claves primarias
+     * @param string|array $primaryKey primary keys
+     * @param bool $keepOrder if set to true, objects are returned in the same order as the primaryKeys
      * @return array:NULL Modelos recuperados
      */
-    public function fetch($primaryKey)
+    public function fetch($primaryKey, $keepOrder = true)
     {
         if (!is_array($primaryKey)) {
             $primaryKeys = array($primaryKey);
@@ -863,7 +864,6 @@ abstract class MapperAbstract
 
         //Si hay elementos que no estaban en la caché
         if (sizeof($unloadedKeys) > 0) {
-
             $result = $this->getRowset($unloadedKeys);
             if ($result) {
                 foreach ($result as $row) {
@@ -877,9 +877,29 @@ abstract class MapperAbstract
             }
         }
 
+        if ($keepOrder) {
+            return $this->_orderModels($models, $primaryKeys);
+        }
+
         return $models;
     }
-    
+
+    protected function _orderModels($models, $orderList)
+    {
+        $orderedModels = array();
+        foreach ($orderList as $key) {
+            foreach ($models as $modelsKey => $model) {
+                if ($model->getPrimaryKey() == $key) {
+                    $orderedModels[] = $model;
+                    unset($models[$modelsKey]);
+                    break;
+                }
+            }
+        }
+
+        return array_merge($orderedModels, $models);
+    }
+
     /**
      * Finds row by primary key
      *
