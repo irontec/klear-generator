@@ -336,7 +336,18 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
     protected function _getHtmlSource()
     {
         return array(
-            'control' => 'tinymce'
+            'control' => 'tinymce',
+            'template' => 'simple',
+            'removeButtons' => array('italic'),
+            'addButtons' => array(
+                'method' => 'prepend',
+                'order' => '0',
+                'buttons' => array('media', '"|"', 'print'),
+            ),
+            'addBar' => array(
+                'order' => '1',
+                'buttons' => array('media', 'del', 'ins', '"|"', 'attribs', 'visualchars', 'nonbreaking'),
+            )
         );
     }
 
