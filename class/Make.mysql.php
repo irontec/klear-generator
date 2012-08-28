@@ -76,7 +76,7 @@ class Make_mysql extends MakeDbTable {
             $res = 'boolean';
         } elseif(preg_match('/(datetime|timestamp|blob|char|enum|date|time)/', $str)) {
             $res = 'string';
-        } elseif (preg_match('/(decimal|numeric)/', $str)) {
+        } elseif (preg_match('/(decimal|numeric|float)/', $str)) {
             $res = 'float';
         } elseif (preg_match('#^(?:tiny|small|medium|long|big|var)?(\w+)(?:\(\d+\))?(?:\s\w+)*$#',$str,$matches)) {
             $res = $matches[1];
