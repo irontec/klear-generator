@@ -40,6 +40,9 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 
         $listScreen = array(
             'controller' => 'list',
+            'pagination' => array(
+                    'items' => '25'
+                            ),
             '<<' => '*' . ucfirst($normalizedTable),
             'title' => array(
                 'i18n' => $listTitles
