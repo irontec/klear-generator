@@ -56,3 +56,17 @@ actions:
     title: Subir un archivo
     class: qq-uploader
     onNull: show
+    
+  - &previewCommandAction
+    controller: file
+    action: preview
+    
+  - &previewCommand
+    type: command
+    class: filePreview
+    external: true
+    props:
+      width: 200
+      height: 200
+      crop: true
+    onNull: hide
