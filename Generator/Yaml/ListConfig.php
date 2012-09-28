@@ -77,8 +77,8 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
                 'active' => 'true',
                 'filename' => $table,
                 'headers' => 'true',
-                'enclosure' => '"',
-                'separator' => ';'
+                'enclosure' => "'\"'",
+                'separator' => "','"
             );
             $listScreen['fields']['whitelist'] = array(
                 $this->_getPrimaryKey() => 'true'
