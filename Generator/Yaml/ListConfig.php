@@ -68,8 +68,22 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
                 'screens' => array(
                     $newScreenName => 'true'
                 )
-            )
+            ),
         );
+
+        $tableComment = Generator_Db::tableComment($table);
+        if (stristr($tableComment, '[csv]')) {
+            $listScreen['csv'] = array(
+                'active' => 'true',
+                'filename' => $table,
+                'headers' => 'true',
+                'enclosure' => '"',
+                'separator' => ';'
+            );
+            $listScreen['fields']['whitelist'] = array(
+                $this->_getPrimaryKey() => 'true'
+            );
+        }
 
         $editScreen = array(
             '<<' => '*' . ucfirst($normalizedTable),
@@ -209,4 +223,12 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         return $fields;
     }
 
+    protected function _getPrimaryKey()
+    {
+        foreach ($this->_tableDescription as $field) {
+            if ($field->isPrimaryKey()) {
+                return $field->getName();
+            }
+        }
+    }
 }
