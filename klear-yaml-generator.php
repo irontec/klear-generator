@@ -47,12 +47,12 @@ try {
     // Sistema actual en uso, no sobreescribe ficheros existentes
     $klearDir = APPLICATION_PATH . '/configs/klear';
     $yamlFactory = new Generator_Yaml_Factory($klearDir, $namespace);
-    $yamlFactory->createAll();
+    $yamlFactory->createAllFiles();
 
     // Sistema base en raw, siempre se sobreescribe
     $klearDirRaw = APPLICATION_PATH . '/configs/klearRaw';
     $rawYamlFactory = new Generator_Yaml_Factory($klearDirRaw, $namespace, true);
-    $rawYamlFactory->createAll();
+    $rawYamlFactory->createAllFiles();
 
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";
