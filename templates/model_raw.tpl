@@ -20,7 +20,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
  * @subpackage Model
  * @author <?=$this->_author."\n"?>
  */
- 
+
 namespace <?=$namespace?>Model\Raw;
 class <?=$this->_className?> extends <?=$this->_includeModel->getParentClass() . "\n"?>
 {
@@ -223,12 +223,12 @@ echo "$vars\n\n";
     endforeach;
 ?>
         );
-        
+
         $this->_initFileObjects();
 
         parent::__construct();
     }
-    
+
     /**************************************************************************
     ************************** File System Object (FSO)************************
     ***************************************************************************/
@@ -242,18 +242,18 @@ foreach ($objects as $fsoObject):
 <?php
 endforeach;
 ?>
-        
+
         return $this;
     }
-    
+
     public function getFileObjects()
     {
-    
+
 <?php
     if (count($fsoFields) > 0) :
 ?>
         return array('<?php echo implode("','", $objects); ?>');
-        
+
 <?php
     else:
 ?>
@@ -263,12 +263,13 @@ endforeach;
     endif;
 ?>
     }
-    
+
 <?php
  if (count($fsoFields) > 0) {
 
 ?>
 <?php
+ $columns = $this->_columns[$this->getTableName()];
  foreach ($objects as $item) {
 ?>
     public function get<?php echo ucfirst($item); ?>Specs()
@@ -277,7 +278,24 @@ endforeach;
             'basePath' => '<?php echo lcfirst($item); ?>',
             'sizeName' => '<?php echo lcfirst($item); ?>FileSize',
             'mimeName' => '<?php echo lcfirst($item); ?>MimeType',
-            'baseNameName' => '<?php echo lcfirst($item); ?>BaseName'
+            'baseNameName' => '<?php echo lcfirst($item); ?>BaseName',
+<?php
+
+$md5Column = false;
+foreach ($columns as $column) {
+    if ($column['normalized'] == $item .'Md5Sum') {
+
+        $md5Column = true;
+        break;
+    }
+}
+
+if($md5Column === true) {
+?>
+            'md5SumName' => '<?php echo lcfirst($item); ?>Md5Sum'
+<?php
+}
+?>
         );
     }
 
@@ -309,7 +327,7 @@ endforeach;
 
         return true;
     }
-    
+
 <?php
  } //endforeach
 ?>
@@ -380,7 +398,7 @@ endforeach;
 endif;
 if ($multilang):
 ?>
-        
+
         $language = $this->_getCurrentLanguage($language);
 
         $methodName = "set<?=$column['capital']?>". ucfirst(str_replace('_', '', $language));
