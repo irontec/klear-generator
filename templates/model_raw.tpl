@@ -271,6 +271,15 @@ endforeach;
 <?php
  $columns = $this->_columns[$this->getTableName()];
  foreach ($objects as $item) {
+ 
+    $md5Column = false;
+    foreach ($columns as $column) {
+        if ($column['normalized'] == $item .'Md5Sum') {
+    
+            $md5Column = true;
+            break;
+        }
+    }
 ?>
     public function get<?php echo ucfirst($item); ?>Specs()
     {
@@ -280,19 +289,9 @@ endforeach;
             'mimeName' => '<?php echo lcfirst($item); ?>MimeType',
             'baseNameName' => '<?php echo lcfirst($item); ?>BaseName',
 <?php
-
-$md5Column = false;
-foreach ($columns as $column) {
-    if ($column['normalized'] == $item .'Md5Sum') {
-
-        $md5Column = true;
-        break;
-    }
-}
-
 if($md5Column === true) {
 ?>
-            'md5SumName' => '<?php echo lcfirst($item); ?>Md5Sum'
+            'md5SumName' => '<?php echo lcfirst($item); ?>Md5Sum',
 <?php
 }
 ?>

@@ -60,10 +60,10 @@ class Generator_Db_Table
                 'type' => 'VARCHAR(80)',
                 'comment' => ''
             ),
-            /*'Md5Sum' => array(
-                'type' => 'VARCHAR(80)',
-                'comment' => ''
-            ),*/
+//             'Md5Sum' => array(
+//                 'type' => 'VARCHAR(80)',
+//                 'comment' => ''
+//             ),
             'FileSize' => array(
                 'type' => 'INT(11) UNSIGNED',
                 'comment' => '[FSO]'

@@ -305,7 +305,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
         return array(
             'control' => $control,
-            'setting' => array(
+            'settings' => array(
                 'disabled' => "'false'"
             )
         );
