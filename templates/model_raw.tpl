@@ -271,11 +271,11 @@ endforeach;
 <?php
  $columns = $this->_columns[$this->getTableName()];
  foreach ($objects as $item) {
- 
+
     $md5Column = false;
     foreach ($columns as $column) {
         if ($column['normalized'] == $item .'Md5Sum') {
-    
+
             $md5Column = true;
             break;
         }
@@ -310,7 +310,7 @@ if($md5Column === true) {
 
     public function fetch<?php echo ucfirst($item); ?>($autoload = true)
     {
-        if ($autoload === true) {
+        if ($autoload === true && $this->get<?php echo $item; ?>FileSize() > 0) {
 
             $this->_<?php echo lcfirst($item); ?>Fso->fetch();
         }
