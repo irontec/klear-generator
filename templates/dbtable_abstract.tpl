@@ -94,7 +94,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
             $query->where($where);
             $query->bind($bind);
 
-        } else if (! empty($where)) {
+        } else if (!empty($where)) {
 
             $query->where($where);
         }
@@ -127,7 +127,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
             $select->where($where);
             $select->bind($bind);
 
-        } else if (! empty($where)) {
+        } else if (!empty($where)) {
 
             $select->where($where);
         }

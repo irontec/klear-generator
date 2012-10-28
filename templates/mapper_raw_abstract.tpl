@@ -31,7 +31,7 @@ abstract class MapperAbstract
      */
     protected $_dbTable;
 
-<?php if (! empty($this->_cacheManagerName)):?>
+<?php if (!empty($this->_cacheManagerName)):?>
     /**
      * $_cache - Zend_Cache object as configured by Cache manager
      *
@@ -40,7 +40,7 @@ abstract class MapperAbstract
     protected $_cache;
 
 <?php endif; ?>
-<?php if (! empty($this->_loggerName)):?>
+<?php if (!empty($this->_loggerName)):?>
     /**
      * $_logger - Zend_Log object
      *
@@ -63,7 +63,7 @@ abstract class MapperAbstract
      */
     public function __construct()
     {
-<?php if (! empty($this->_cacheManagerName)):?>
+<?php if (!empty($this->_cacheManagerName)):?>
 
         if( false and \Zend_Registry::isRegistered('memcache') ) {
 
@@ -77,7 +77,7 @@ abstract class MapperAbstract
 <?php else: ?>
         $this->_cache = false;
 <?php endif; ?>
-<?php if (! empty($this->_loggerName)):?>
+<?php if (!empty($this->_loggerName)):?>
         $this->_logger = \Zend_Registry::get('<?=$this->_loggerName ?>');
 <?php endif; ?>
 
@@ -122,8 +122,8 @@ abstract class MapperAbstract
             $dbTable = new $dbTable();
         }
 
-        if (! $dbTable instanceof \Zend_Db_Table_Abstract) {
-<?php if (! empty($this->_loggerName)):?>
+        if (!$dbTable instanceof \Zend_Db_Table_Abstract) {
+<?php if (!empty($this->_loggerName)):?>
             if (is_object($dbTable)) {
                 $message = get_class($dbTable) . " is not a Zend_Db_Table_Abstract object in setDbTable for " . get_class($this);
             } else {
@@ -155,7 +155,7 @@ abstract class MapperAbstract
             // Determine if this is array to include multiple rows, or an array for a composite key
             $keys = array_keys($primary_key);
             foreach ($keys as $key) {
-                if (! is_numeric($key)) {
+                if (!is_numeric($key)) {
                     $composite = true;
                 }
             }
@@ -232,7 +232,7 @@ abstract class MapperAbstract
             $rule = $name;
 
         } else {
-<?php if (! empty($this->_loggerName)):?>
+<?php if (!empty($this->_loggerName)):?>
             $this->_logger->log("$name is not a defined relationship in loadRelated for " . get_class($this), \Zend_Log::ERR);
 
 <?php endif; ?>
@@ -326,7 +326,7 @@ abstract class MapperAbstract
 
             $reference = $ref_table->getReference($table_name, $rule);
             if (empty($reference)) {
-    <?php if (! empty($this->_loggerName)):?>
+    <?php if (!empty($this->_loggerName)):?>
                 $this->_logger->log("Could not find a reference for $rule in $table_name in loadRelated for " . get_class($this), \Zend_Log::ERR);
 
     <?php endif; ?>
@@ -468,7 +468,7 @@ abstract class MapperAbstract
 
                 $obj = $relMapper->fetchList($where, $orderBy);
 
-                if (! empty($obj) and is_array($obj) and $this->_cache) {
+                if (!empty($obj) and is_array($obj) and $this->_cache) {
 
                     $pks = array();
                     $objClass = null;

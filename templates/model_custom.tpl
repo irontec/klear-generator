@@ -26,10 +26,9 @@ class <?=$this->_className?> extends Raw\<?=$this->_className?>
 
 {
     /**
-     * Sets up column and relationship lists
+     * This method is called just after parent's constructor
      */
-    public function __construct()
+    public function init()
     {
-        parent::__construct();
     }
 }

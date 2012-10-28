@@ -22,7 +22,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
  */
 
 namespace <?=$namespace?>Model\Raw;
-class <?=$this->_className?> extends <?=$this->_includeModel->getParentClass() . "\n"?>
+abstract class <?=$this->_className?> extends <?=$this->_includeModel->getParentClass() . "\n"?>
 {
 <?php
  $fsoFields = array();
@@ -115,7 +115,6 @@ echo "$vars\n\n";
      */
     public function __construct()
     {
-        parent::init();
         $this->setColumnsList(array(
 <?php
     foreach ($this->_columns[$this->getTableName()] as $column):
@@ -225,7 +224,6 @@ echo "$vars\n\n";
         );
 
         $this->_initFileObjects();
-
         parent::__construct();
     }
 
