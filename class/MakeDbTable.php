@@ -719,7 +719,7 @@ abstract class MakeDbTable {
         /****************************
          ********** DBTable *********
          ****************************/
-        $dbTableData=$this->getParsedTplContents('dbtable.tpl', $vars);
+        $dbTableData=$this->getParsedTplContents('dbtable.tpl.php', $vars);
 
         if (!file_put_contents($dbTableFile, $dbTableData))
             die("Error: could not write db table file $dbTableFile.");
@@ -751,7 +751,7 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $mapperFile = implode(DIRECTORY_SEPARATOR, $mapperFile);
-        $mapperData = $this->getParsedTplContents('mapper_custom.tpl');
+        $mapperData = $this->getParsedTplContents('mapper_custom.tpl.php');
 
         if (!file_exists($mapperFile)) {
             if (!file_put_contents($mapperFile, $mapperData)) {
@@ -770,7 +770,7 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $mapperFile = implode(DIRECTORY_SEPARATOR, $mapperFile);
-        $mapperData = $this->getParsedTplContents('mapper_raw.tpl');
+        $mapperData = $this->getParsedTplContents('mapper_raw.tpl.php');
 
         if (!file_put_contents($mapperFile, $mapperData)) {
             die("Error: could not write mapper file $mapperFile.");
@@ -801,7 +801,7 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $modelFile = implode(DIRECTORY_SEPARATOR , $modelFile);
-        $modelData = $this->getParsedTplContents('model_raw.tpl');
+        $modelData = $this->getParsedTplContents('model_raw.tpl.php');
 
         $smartModelFile = array(
             $this->getLocation(),
@@ -809,7 +809,7 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $smartModelFile = implode(DIRECTORY_SEPARATOR , $smartModelFile);
-        $smartModelData = $this->getParsedTplContents('model_custom.tpl');
+        $smartModelData = $this->getParsedTplContents('model_custom.tpl.php');
 
         if (!file_put_contents($modelFile, $modelData)) {
             die("Error: could not write model file $modelFile.");
@@ -863,13 +863,13 @@ abstract class MakeDbTable {
         $modelFile = $this->getLocation() . DIRECTORY_SEPARATOR . 'Model/ModelAbstract.php';
         $rawModelFile = $this->getLocation() . DIRECTORY_SEPARATOR . 'Model/Raw/ModelAbstract.php';
 
-        $rawModelData = $this->getParsedTplContents('model_raw_abstract.tpl');
+        $rawModelData = $this->getParsedTplContents('model_raw_abstract.tpl.php');
 
         if (!file_put_contents($rawModelFile, $rawModelData))
             die("Error: could not write model file $rawModelFile.");
 
         $paginatorFile=$this->getLocation().DIRECTORY_SEPARATOR.'Model/Paginator.php';
-        $paginatorData=$this->getParsedTplContents('paginator_class.tpl');
+        $paginatorData=$this->getParsedTplContents('paginator_class.tpl.php');
 
         if (!file_put_contents($paginatorFile, $paginatorData))
             die("Error: could not write model file $paginatorFile.");
@@ -879,8 +879,8 @@ abstract class MakeDbTable {
         /****************************
          ********** Mappers *********
          ****************************/
-        $mapperData = $this->getParsedTplContents('mapper_class.tpl');
-        $rawMapperData = $this->getParsedTplContents('mapper_raw_abstract.tpl');
+        $mapperData = $this->getParsedTplContents('mapper_class.tpl.php');
+        $rawMapperData = $this->getParsedTplContents('mapper_raw_abstract.tpl.php');
 
         if (!file_put_contents($mapperFile, $rawMapperData))
             die("Error: could not write mapper file $mapperFile.");
@@ -890,7 +890,7 @@ abstract class MakeDbTable {
         /****************************
          ********** DBTable *********
          ****************************/
-        $tableData = $this->getParsedTplContents('dbtable_abstract.tpl');
+        $tableData = $this->getParsedTplContents('dbtable_abstract.tpl.php');
 
         if (!file_put_contents($tableFile, $tableData))
             die("Error: could not write model file $tableFile.");
