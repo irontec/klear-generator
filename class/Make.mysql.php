@@ -270,10 +270,13 @@ class Make_mysql extends MakeDbTable {
 
         foreach ($res as $row) {
 
+            $comment = null;
             if (isset($comments[$row['Field']])) {
                 $comment = $comments[$row['Field']];
-            } else {
-                $comment = null;
+            }
+
+            if (stristr('[ignore]', $comment)) {
+                continue;
             }
 
             if ($row['Key'] == 'PRI') {
