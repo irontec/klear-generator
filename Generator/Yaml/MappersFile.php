@@ -5,7 +5,7 @@ class Generator_Yaml_MappersFile extends Generator_Yaml_AbstractConfig
     {
         $mappers = array();
         foreach ($tableList as $table) {
-            $camelCaseTable = ucfirst(Generator_Yaml_StringUtils::toCamelCase($table));
+            $camelCaseTable = Generator_Yaml_StringUtils::toCamelCase($table, 'upper');
             $mapper = array(
                 $namespace,
                 'Mapper',

@@ -1,9 +1,13 @@
 <?php
 class Generator_Yaml_StringUtils
 {
-    public static function toCamelCase($name)
+    public static function toCamelCase($name, $type = 'lower')
     {
-        return preg_replace('/_(\w)/e', "strtoupper('\\1')", $name);
+        $camelCasedName = preg_replace('/[_|-](\w)/e', "strtoupper('\\1')", $name);
+        if ($type == 'upper') {
+            return ucfirst($camelCasedName);
+        }
+        return $camelCasedName;
     }
 
     public static function getMapperName($table, $namespace)
@@ -12,7 +16,7 @@ class Generator_Yaml_StringUtils
             $namespace,
             'Mapper',
             'Sql',
-            ucfirst(self::toCamelCase($table))
+            self::toCamelCase($table, 'upper')
         );
 
         return '\\' . implode('\\', $class);
@@ -23,7 +27,7 @@ class Generator_Yaml_StringUtils
         $class = array(
             $namespace,
             'Model',
-            ucfirst(self::toCamelCase($table))
+            self::toCamelCase($table, 'upper')
         );
 
         return '\\' . implode('\\', $class);

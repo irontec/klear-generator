@@ -8,15 +8,9 @@ class Generator_Db
      */
     public static function describeTable($tablename)
     {
-        try {
-            $db = Zend_Db_Table::getDefaultAdapter();
-            $description = $db->describeTable($tablename);
-            $data = self::_getCreateTableData($tablename);
-        } catch (Exception $e) {
-            echo $e->getMessage();
-            return false;
-        }
-
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $description = $db->describeTable($tablename);
+        $data = self::_getCreateTableData($tablename);
 
         foreach ($data as $dataRow) {
             // Related tables/fields
@@ -45,6 +39,11 @@ class Generator_Db
         return $fieldsList;
     }
 
+    /**
+     * Returns table comment (if any)
+     * @param unknown_type $tablename
+     * @return unknown|string
+     */
     public static function tableComment($tablename)
     {
         try {
@@ -68,15 +67,10 @@ class Generator_Db
         $sql = 'show create table ' . $db->quoteIdentifier($tablename);
         $createTable = $db->fetchRow($sql);
         if (isset($createTable['Create View'])) {
-            Throw new Exception($db->quoteIdentifier($tablename) . " is a view. Skipping.");
+            throw new Exception($db->quoteIdentifier($tablename) . " is a view. Skipping.");
         }
 
         $data = explode("\n", $createTable['Create Table']);
         return $data;
-    }
-
-    public function __construct($config)
-    {
-
     }
 }

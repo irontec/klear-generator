@@ -97,7 +97,6 @@ class Make_mysql extends MakeDbTable {
 
         $res = $qry->fetchAll();
 
-
         if (!isset($res[0]['Create Table'])) {
             throw new Exception("`show create table $tbname` did not provide known output");
         }

@@ -81,8 +81,12 @@ class Generator_Yaml_Factory
         foreach ($tables as $table) {
             $modelFile = $this->_klearDirs['model'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . '.yaml';
             if (!file_exists($modelFile) || $this->_override) {
-                $modelConfig = new Generator_Yaml_ModelConfig($table, $this->_namespace, $this->_klearConfig);
-                $this->_configWriter->write($modelFile, $modelConfig->getConfig());
+                try {
+                    $modelConfig = new Generator_Yaml_ModelConfig($table, $this->_namespace, $this->_klearConfig);
+                    $this->_configWriter->write($modelFile, $modelConfig->getConfig());
+                } catch (Exception $e) {
+                    echo 'Error: ' . $e->getMessage() . "\n";
+                }
             }
         }
         return $this;

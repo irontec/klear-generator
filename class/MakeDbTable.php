@@ -331,7 +331,7 @@ abstract class MakeDbTable {
             }
         }
 
-        return ucFirst($this->_normalize($str));
+        return $this->_getCapital($str);
     }
 
     /**
@@ -821,23 +821,10 @@ abstract class MakeDbTable {
      */
     function doItAll()
     {
-        foreach ($this->_tableList as $idx => $table) {
+        foreach ($this->_tableList as $index => $table) {
             $this->setTableName($table);
             try {
                 $this->parseTable();
-
-            } catch (Exception $e) {
-
-                unset($this->_tableList[$idx]);
-
-                echo "Warning: Failed to process $table: " . $e->getMessage(). " ... Skipping\n";
-
-            }
-        }
-
-        foreach ($this->_tableList as $table) {
-            $this->setTableName($table);
-            try {
                 $this->_doItAll();
             } catch (Exception $e) {
                 echo "Warning: Failed to process $table: " . $e->getMessage(). " ... Skipping\n";

@@ -22,7 +22,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
  */
 
 namespace <?=$namespace?>Model\Raw;
-abstract class <?=$this->_className?> extends <?=$this->_includeModel->getParentClass() . "\n"?>
+class <?=$this->_className?> extends <?=$this->_includeModel->getParentClass() . "\n"?>
 {
 <?php
  $fsoFields = array();
@@ -227,6 +227,12 @@ echo "$vars\n\n";
         parent::__construct();
     }
 
+    /**
+     * This method is called just after parent's constructor
+     */
+    public function init()
+    {
+    }
     /**************************************************************************
     ************************** File System Object (FSO)************************
     ***************************************************************************/

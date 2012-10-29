@@ -42,7 +42,7 @@ try {
     $defaultValues = array(
         'dbtype' => 'mysql',
         'docs' => array(
-            'author' => 'Anonymous',
+            'author' => 'Irontec',
             'license' => 'http://framework.zend.com/license/new-bsd     New BSD License',
             'copyright' => 'ZF model generator'
         ),
