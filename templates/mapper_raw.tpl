@@ -27,7 +27,7 @@ class <?=$this->_className?> extends <?=$this->_includeMapper->getParentClass() 
     protected $_modelName = '<?=$namespace?>\Model\\<?=$this->_className?>';
     
 <?php $vars = $this->_includeMapper->getVars();
-if (!empty($vars)) {
+if (! empty($vars)) {
 echo "\n$vars\n";
 }
 ?>
@@ -39,8 +39,8 @@ echo "\n$vars\n";
      */
     public function toArray($model)
     {
-        if (!$model instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
-<?php if (!empty($this->_loggerName)):?>
+        if (! $model instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
+<?php if (! empty($this->_loggerName)):?>
             if (is_object($model)) {
                 $message = get_class($model) . " is not a \<?=$namespace?>Model\<?=$this->_className?> object in toArray for " . get_class($this);
             } else {
@@ -94,8 +94,8 @@ foreach ($this->_columns[$this->getTableName()] as $column):
      */
     public function delete(\<?=$namespace?>Model\Raw\ModelAbstract $model)
     {
-        if (!$model instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
-<?php if (!empty($this->_loggerName)):?>
+        if (! $model instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
+<?php if (! empty($this->_loggerName)):?>
             if (is_object($model)) {
                 $message = get_class($model) . " is not a \\<?=$namespace?>\Model\\<?=$this->_className?> object in delete for " . get_class($this);
             } else {
@@ -135,7 +135,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                         $capitzalizedFk .= ucfirst($part);
                     }
 
-                    if (!isset($depList[$capitzalizedFk])) {
+                    if (! isset($depList[$capitzalizedFk])) {
 
                         continue;
 
@@ -183,7 +183,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                         $capitzalizedFk .= ucfirst($part);
                     }
 
-                    if (!isset($depList[$capitzalizedFk])) {
+                    if (! isset($depList[$capitzalizedFk])) {
 
                         continue;
 
@@ -280,7 +280,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             $pk_val = $model->get<?=$key['capital']?>();
             if (is_null($pk_val)) {
-<?php if (!empty($this->_loggerName)):?>
+<?php if (! empty($this->_loggerName)):?>
                 $this->_logger->log('The value for <?=$key['capital']?> cannot be null in delete for ' . get_class($this), \Zend_Log::ERR);
 
 <?php endif; ?>
@@ -312,10 +312,10 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 $this->getDbTable()->getAdapter()->commit();
             }
 
-        } catch (\Exception $exception) {
-<?php if (!empty($this->_loggerName)):?>
+        } catch (\Exception $e) {
+<?php if (! empty($this->_loggerName)):?>
             $message = 'Exception encountered while attempting to delete ' . get_class($this);
-            if (!empty($where)) {
+            if (! empty($where)) {
                 $message .= ' Where: ';
 <?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
                 foreach ($where as $where_clause) {
@@ -328,9 +328,9 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 $message .= ' with an empty where';
             }
 
-            $message .= ' Exception: ' . $exception->getMessage();
+            $message .= ' Exception: ' . $e->getMessage();
             $this->_logger->log($message, \Zend_Log::ERR);
-            $this->_logger->log($exception->getTraceAsString(), \Zend_Log::DEBUG);
+            $this->_logger->log($e->getTraceAsString(), \Zend_Log::DEBUG);
 
 <?php endif; ?>
 
@@ -339,7 +339,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 $this->getDbTable()->getAdapter()->rollback();
             }
 
-            throw $exception;
+            $result = false;
         }
 
         return $result;
@@ -405,7 +405,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
         $pk_val = $model->get<?=$key['capital']?>();
         if (is_null($pk_val)) {
-<?php if (!empty($this->_loggerName)):?>
+<?php if (! empty($this->_loggerName)):?>
             $this->_logger->log('The value for <?=$key['capital']?> cannot be null in save for ' . get_class($this), \Zend_Log::ERR);
 <?php endif; ?>
             Throw new \Exception("The value for <?=$key['capital']?> cannot be null", 2000);
@@ -467,7 +467,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             $transactionTag = 't_' . rand(1, 999) . str_replace(array('.', ' '), '', microtime());
         }
 
-<?php if (!$this->_primaryKey[$this->getTablename()]['foreign_key']): ?>
+<?php if (! $this->_primaryKey[$this->getTablename()]['foreign_key']): ?>
         unset($data['<?=$this->_primaryKey[$this->getTablename()]['field']?>']);
 
         try {
@@ -543,7 +543,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
                     $baseName = $fso->getBaseName();
 
-                    if (!empty($baseName)) {
+                    if (! empty($baseName)) {
 
                         $fso->flush($primaryKey);
                     }
@@ -611,9 +611,9 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             }
 
         } catch (\Exception $e) {
-<?php if (!empty($this->_loggerName)):?>
+<?php if (! empty($this->_loggerName)):?>
             $message = 'Exception encountered while attempting to save ' . get_class($this);
-            if (!empty($primaryKey)) {
+            if (! empty($primaryKey)) {
 <?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
                 $message .= ' id:';
 <?php foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) : ?>
@@ -731,7 +731,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         return $entry;
     }
 <?php $functions = $this->_includeMapper->getFunctions();
-if (!empty($functions)) {
+if (! empty($functions)) {
 echo "\n$functions\n";
 } ?>
 }

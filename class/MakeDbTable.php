@@ -270,17 +270,8 @@ abstract class MakeDbTable {
      * @return String
      */
     protected function _getCapital($str) {
-        $temp='';
-        foreach (explode("_",$str) as $part) {
-            $temp.=ucfirst($part);
-        }
 
-        $temp2 = '';
-        foreach (explode("-",$temp) as $part) {
-            $temp2.=ucfirst($part);
-        }
-
-        return $temp2;
+        return ucFirst($this->_normalize($str));
     }
 
 
@@ -297,7 +288,9 @@ abstract class MakeDbTable {
         $temp = '';
         $iteration = 0;
 
-        foreach (explode("-",$str) as $part) {
+        $parts = preg_split("[\-|\_]", $str);
+
+        foreach ($parts as $part) {
 
             if ($iteration > 0) {
 
@@ -338,10 +331,7 @@ abstract class MakeDbTable {
             }
         }
 
-        foreach (explode("_",$str) as $part) {
-            $temp.=ucfirst($part);
-        }
-        return $temp;
+        return ucFirst($this->_normalize($str));
     }
 
     /**
@@ -831,12 +821,17 @@ abstract class MakeDbTable {
      */
     function doItAll()
     {
-        foreach ($this->_tableList as $table) {
+        foreach ($this->_tableList as $idx => $table) {
             $this->setTableName($table);
             try {
                 $this->parseTable();
+
             } catch (Exception $e) {
+
+                unset($this->_tableList[$idx]);
+
                 echo "Warning: Failed to process $table: " . $e->getMessage(). " ... Skipping\n";
+
             }
         }
 

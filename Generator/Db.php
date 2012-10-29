@@ -8,9 +8,15 @@ class Generator_Db
      */
     public static function describeTable($tablename)
     {
-        $db = Zend_Db_Table::getDefaultAdapter();
-        $description = $db->describeTable($tablename);
-        $data = self::_getCreateTableData($tablename);
+        try {
+            $db = Zend_Db_Table::getDefaultAdapter();
+            $description = $db->describeTable($tablename);
+            $data = self::_getCreateTableData($tablename);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            return false;
+        }
+
 
         foreach ($data as $dataRow) {
             // Related tables/fields
@@ -41,13 +47,19 @@ class Generator_Db
 
     public static function tableComment($tablename)
     {
-        $data = self::_getCreateTableData($tablename);
-        foreach ($data as $row) {
-            if (preg_match("/.*ENGINE.*COMMENT='(?P<comment>.*)'/", $row, $matches)) {
-                return $matches['comment'];
+        try {
+            $data = self::_getCreateTableData($tablename);
+            foreach ($data as $row) {
+                if (preg_match("/.*ENGINE.*COMMENT='(?P<comment>.*)'/", $row, $matches)) {
+                    return $matches['comment'];
+                }
             }
+        } catch(Exception $e) {
+            echo $e->getMessage() ."\n";
         }
+
         return '';
+
     }
 
     protected static function _getCreateTableData($tablename)
@@ -55,6 +67,10 @@ class Generator_Db
         $db = Zend_Db_Table::getDefaultAdapter();
         $sql = 'show create table ' . $db->quoteIdentifier($tablename);
         $createTable = $db->fetchRow($sql);
+        if (isset($createTable['Create View'])) {
+            Throw new Exception($db->quoteIdentifier($tablename) . " is a view. Skipping.");
+        }
+
         $data = explode("\n", $createTable['Create Table']);
         return $data;
     }

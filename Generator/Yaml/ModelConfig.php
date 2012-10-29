@@ -17,7 +17,9 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         $data['fields'] = array();
 
         $fields = $this->_getFields($table);
-
+        if (!$fields) {
+            return false;
+        }
         $ignoredFieldEndings = array(
             'MimeType',
             'BaseName'
@@ -55,8 +57,11 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
      */
     protected function _getFields($table)
     {
-        $fields = Generator_Db::describeTable($table);
 
+        $fields = Generator_Db::describeTable($table);
+        if (!$fields) {
+            return false;
+        }
         $tmpFields = $fields;
         foreach ($tmpFields as $field) {
 

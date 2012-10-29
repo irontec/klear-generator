@@ -36,7 +36,7 @@ try {
     }
 
     if (!file_exists(APPLICATION_PATH . '/configs/klear.ini')) {
-        throw new Exception('klear.ini not found, should exist on application dir');
+        throw new Exception('klear.ini not found, should exist on application (config) dir');
     }
 
     $defaultValues = array(
@@ -135,11 +135,13 @@ try {
     $tables = $dbAdapter->listTables();
 
     $modelCreator->setTableList($tables);
+
     $modelCreator->doItAll();
 
     echo "Done!\n";
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";
+    echo $e->getMessage() . "\n";
     exit(1);
 } catch (Exception $e) {
     echo "Error: ";

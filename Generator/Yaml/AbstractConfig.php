@@ -15,7 +15,9 @@ abstract class Generator_Yaml_AbstractConfig
                 '_extends' => 'production'
             );
         }
-
+        if (is_null($data)) {
+            $data = array();
+        }
         return new Zend_Config($data);
     }
 }

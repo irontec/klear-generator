@@ -5,17 +5,17 @@ class Generator_Yaml_MappersFile extends Generator_Yaml_AbstractConfig
     {
         $mappers = array();
         foreach ($tableList as $table) {
-            $camelCaseTable = Generator_Yaml_StringUtils::toCamelCase($table);
+            $camelCaseTable = ucfirst(Generator_Yaml_StringUtils::toCamelCase($table));
             $mapper = array(
                 $namespace,
                 'Mapper',
                 'Sql',
-                ucfirst($camelCaseTable)
+                $camelCaseTable
             );
 
             $declaration = array(
                  'mapper: ' . Generator_Yaml_StringUtils::getMapperName($table, $namespace),
-                 'modelFile: ' . ucfirst($camelCaseTable)
+                 'modelFile: ' . $camelCaseTable
             );
 
             $mappers[] = '&' . $camelCaseTable . ' {' . implode(', ', $declaration) . '}';

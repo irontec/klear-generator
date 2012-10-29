@@ -87,6 +87,7 @@ class Make_mysql extends MakeDbTable {
 
     public function parseForeignKeys() {
         $tbname = $this->getTableName();
+
         $this->_dbAdapter->query("SET NAMES UTF8");
         $qry = $this->_dbAdapter->query("show create table `$tbname`");
 
@@ -95,6 +96,8 @@ class Make_mysql extends MakeDbTable {
         }
 
         $res = $qry->fetchAll();
+
+
         if (!isset($res[0]['Create Table'])) {
             throw new Exception("`show create table $tbname` did not provide known output");
         }
@@ -175,6 +178,10 @@ class Make_mysql extends MakeDbTable {
             }
 
             $res = $qry->fetchAll();
+            if (isset($res[0]['Create View'])) {
+                continue;
+            }
+
             if (!isset($res[0]['Create Table'])) {
                 throw new Exception("`show create table $table` did not provide known output");
             }
@@ -227,6 +234,11 @@ class Make_mysql extends MakeDbTable {
         }
 
         $res_create = $qry_create->fetchAll();
+
+        if (isset($res_create[0]['Create View'])) {
+            throw new Exception("`$tbname` is a View");
+        }
+
         if (!isset($res_create[0]['Create Table'])) {
             throw new Exception("`show create table $tbname` did not provide known output");
         }
@@ -254,6 +266,7 @@ class Make_mysql extends MakeDbTable {
         }
 
         $res = $qry->fetchAll();
+
         $primaryKey = array();
 
         foreach ($res as $row) {
@@ -289,7 +302,8 @@ class Make_mysql extends MakeDbTable {
             );
 
             if (in_array(strtolower($row['Field']), $this->_softDeleteColumnNames)) {
-                $this->_softDeleteColumn = $row['name'];
+
+                $this->_softDeleteColumn = $row['Field'];
             }
         }
 
@@ -326,6 +340,7 @@ class Make_mysql extends MakeDbTable {
 
         $this->_primaryKey[$this->getTablename()] = $primaryKey;
         $this->_columns[$this->getTableName()] = $columns;
+
     }
 
 }
