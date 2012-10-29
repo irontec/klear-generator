@@ -62,7 +62,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
             $fieldName = $field->getName();
 
-            if ($field->isPrimaryKey()) {
+            if ($field->isPrimaryKey() || $field->mustBeIgnored()) {
                 unset($fields[$fieldName]);
             }
 

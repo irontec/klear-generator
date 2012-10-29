@@ -161,7 +161,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         foreach ($this->_tableDescription as $field) {
             if (
                 $field->getType() == 'timestamp' && $field->getDefaultValue() == 'CURRENT_TIMESTAMP'
-                || $field->isUrlIdentifier()
+                || $field->isUrlIdentifier() || $field->mustBeIgnored()
             ) {
                 $blacklist[$field->getName()] = 'true';
             }

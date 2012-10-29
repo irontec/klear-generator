@@ -126,4 +126,9 @@ class Generator_Db_Field implements \IteratorAggregate
         return (bool)stristr($this->getComment(), '[urlIdentifier]') || (bool)stristr($this->getComment(), '[urlIdentifier:');
     }
 
+    public function mustBeIgnored()
+    {
+        return (bool)stristr($this->getComment(), '[ignore]');
+    }
+
 }
