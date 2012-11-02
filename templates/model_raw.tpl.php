@@ -370,36 +370,33 @@ if($md5Column === true) {
      */
     public function set<?=$column['capital']?>(<?= $multilang ? $setterParams : '$data'; ?>)
     {
-<?php if (in_array($column['type'], array('datetime', 'timestamp', 'date'))):
+<?php
+    if (in_array($column['type'], array('datetime', 'timestamp', 'date'))):
 ?>
         if ($data == '0000-00-00 00:00:00') {
 
             $data = null;
         }
 
-        if (!is_null($data) && !$data instanceof Zend_Date) {
-
-            $data = new \Zend_Date($data, \Zend_Date::ISO_8601, 'es_ES');
+        if ($data instanceof \Zend_Date) {
+            $data = $data->toString('yyyy-MM-dd HH:mm:ss');
         }
 
-        if (
-            $this->_logChanges === true
-            && (
-                ($data instanceof Zend_Date && !$this->_<?=$column['normalized']?> instanceof Zend_Date)
-                || (!$data instanceof Zend_Date && $this->_<?=$column['normalized']?> instanceof Zend_Date)
-                || (
-                    $data instanceof Zend_Date && $this->_<?=$column['normalized']?> instanceof Zend_Date
-                    && $this->_<?=$column['normalized']?>->setTimezone(date_default_timezone_get())->toString()  !== $data->setTimezone(date_default_timezone_get())->toString()
-                )
-            )
-        ) {
+        if (!is_null($data) && !$data instanceof \DateTime) {
+            $data = new \DateTime($data);
+        }
 
-            $this->_logChange('<?=$column['normalized']?>');
+        //We set same timezone in both objects to be able to compare them
+        if ($data instanceof \DateTime && $this->_<?=$column['normalized']?> instanceof \DateTime) {
+            $defaultTimeZone = new \DateTimeZone(date_default_timezone_get());
+            $data->setTimezone($defaultTimeZone);
+            $this->_<?=$column['normalized']?>->setTimezone($defaultTimeZone);
         }
 
 <?php
-endif;
-if ($multilang):
+    endif;
+
+    if ($multilang):
 ?>
 
         $language = $this->_getCurrentLanguage($language);
@@ -439,27 +436,34 @@ if ($multilang):
      */
     public function get<?=$column['capital']?>(<?php
 
-        if (in_array($column['type'], array('datetime', 'timestamp', 'date'))): ?>$returnZendDate = false<?php endif;
+        if (in_array($column['type'], array('datetime', 'timestamp', 'date'))) {
+            echo '$returnZendDate = false';
+        }
         if ($multilang) {
             echo $getterParams;
         }
     ?>)
-    {<?php if (in_array($column['type'], array('datetime', 'timestamp', 'date'))): ?>
+    {
+    <?php
+        if (in_array($column['type'], array('datetime', 'timestamp', 'date'))):
+    ?>
 
-        if (is_null($this->_<?= $column['normalized']; ?>)) {
+        if (is_null($this->_<?=$column['normalized']; ?>)) {
 
             return null;
         }
 
-        if ($returnZendDate) {
+        $defaultTimezone = new \DateTimeZone(date_default_timezone_get());
+        $this->_<?=$column['normalized']; ?>->setTimezone($defaultTimezone);
 
-            return $this->_<?= $column['normalized']; ?>->setTimezone(date_default_timezone_get());
+        if ($returnZendDate) {
+            return new \Zend_Date($this->_<?=$column['normalized']; ?>->format('Y-m-d H:i:s'));
         }
 
 <?php if ($column['type'] =='date'): ?>
-        return $this->_<?=$column['normalized']?>->setTimezone(date_default_timezone_get())->toString('yyyy-MM-dd');
+        return $this->_<?=$column['normalized']; ?>->format('Y-m-d');
 <?php else: ?>
-        return $this->_<?=$column['normalized']?>->setTimezone(date_default_timezone_get())->toString('yyyy-MM-dd HH:mm:ss');
+        return $this->_<?=$column['normalized']; ?>->format('Y-m-d H:i:s');
 <?php endif; ?>
 
 <?php elseif ($column['phptype'] == 'boolean'): ?>
