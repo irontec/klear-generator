@@ -164,12 +164,12 @@ abstract class ModelAbstract implements \IteratorAggregate
 <?php if (!empty($this->_loggerName)):?>
         $this->_logger = \Zend_Registry::get('<?=$this->_loggerName?>');
 <?php endif; ?>
-        
+
         $this->init();
     }
-    
+
     abstract protected function init();
-    
+
     protected function _getCurrentLanguage($language = null)
     {
         if ($language) {
@@ -178,10 +178,10 @@ abstract class ModelAbstract implements \IteratorAggregate
             }
             return $language;
         }
-        
+
         return $this->getDefaultUserLanguage();
     }
-    
+
     public function initChangeLog()
     {
         $this->_logChanges = true;
@@ -673,13 +673,13 @@ abstract class ModelAbstract implements \IteratorAggregate
         if (is_array($primary_key)) {
             $result = array();
             foreach ($primary_key as $key) {
-                $result[$key] = $this->$key;
+                $result[$key] = $this->{'_' . $key};
             }
 
             return $result;
 
         } else {
-            return $this->$primary_key;
+            return $this->{'_' . $primary_key};
         }
 
     }
