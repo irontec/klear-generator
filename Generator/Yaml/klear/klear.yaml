@@ -1,7 +1,7 @@
 production: 
   main: 
     log: 
-      writerName: Null
+      writerName: "Null"
       writerParams: 
     sitename: MyApp
     logo: images/logo.png

@@ -5,7 +5,7 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
     {
         $data = array();
         $data['log'] = array(
-                'writerName' => 'Null',
+                'writerName' => '"Null"',
                 'writerParams' => array()
         );
 
