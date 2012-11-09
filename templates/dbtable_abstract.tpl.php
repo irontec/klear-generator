@@ -67,14 +67,19 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
     /**
      * Returns the number of rows in the table
      *
+     * @param $estimated bool true if an estimated value is enough (use explain rows value)
      * @return int
      */
-    public function countAllRows()
+    public function countAllRows($estimated = false)
     {
-        $query = $this->select()->from($this->_name, 'count(*) AS all_count');
-        $numRows = $this->fetchRow($query);
-
-        return (int) $numRows['all_count'];
+        $query = $this->_getCountQuery();
+        if ($estimated) {
+            $row = $this->getAdapter()->query('EXPLAIN ' . $query)->fetch();
+            return (int) $row['rows'];
+        } else {
+            $row = $this->getAdapter()->query($query)->fetch();
+            return (int) $row['all_count'];
+        }
     }
 
     /**
@@ -83,7 +88,16 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
      * @param $where string Where clause to use with the query
      * @return int
      */
-    public function countByQuery($where = '')
+    public function countByQuery($where = null)
+    {
+        $count = 0;
+        $query = $this->_getCountQuery($where);
+
+        $row = $this->getAdapter()->query($query)->fetch();
+        return (int) $row['all_count'];
+    }
+
+    public function _getCountQuery($where = null)
     {
         $query = $this->select()->from($this->_name, 'count(*) AS all_count');
 
@@ -98,10 +112,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
 
             $query->where($where);
         }
-
-        $row = $this->getAdapter()->query($query)->fetch();
-
-        return (int) $row['all_count'];
+        return $query;
     }
 
     /**
@@ -134,7 +145,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
 
         return $select;
     }
-    
+
     public function getReferenceMap($key)
     {
         if (isset($this->_referenceMap[$key]['columns'])) {

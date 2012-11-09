@@ -506,7 +506,7 @@ abstract class MapperAbstract
                 return array($obj);
             }
         }
-        
+
         return array();
     }
 
@@ -516,9 +516,9 @@ abstract class MapperAbstract
      * @see <?=$namespace?>Mapper\DbTable\TableAbstract::countAllRows()
      * @return int The total count
      */
-    public function countAllRows()
+    public function countAllRows($estimated = false)
     {
-        return $this->getDbTable()->countAllRows();
+        return $this->getDbTable()->countAllRows($estimated);
     }
 
     /**
@@ -604,9 +604,8 @@ abstract class MapperAbstract
      * @param int $offset Initial offset for query
      * @return array All rows with the given parameters as objects
      */
-    public function fetchList($where = null, $order = null, $count = null,
-        $offset = null
-    ) {
+    public function fetchList($where = null, $order = null, $count = null, $offset = null)
+    {
         $resultSet = $this->getDbTable()
                           ->fetchAll(
                                 $this->getDbTable()
@@ -788,7 +787,7 @@ abstract class MapperAbstract
         $paginator = \Zend_Paginator::factory($result);
         return $paginator;
     }
-    
+
     /**
      * Cleans $data to be able to use it as an url identifier
      * Returns alphanumeric value and replaces spaces with hyphens (-)
@@ -831,7 +830,7 @@ abstract class MapperAbstract
 
         return $data;
     }
-    
+
     /**
      * Fetch array of objects based on asked primary key(s)
      * @param string|array $primaryKey primary keys
@@ -908,11 +907,11 @@ abstract class MapperAbstract
     public function find($primaryKey)
     {
         $models = $this->fetch($primaryKey);
-        
+
         if (!$models) {
             return null;
         }
-        
+
         return array_shift($models);
     }
 
