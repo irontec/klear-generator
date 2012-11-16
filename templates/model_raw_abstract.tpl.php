@@ -62,6 +62,13 @@ abstract class ModelAbstract implements \IteratorAggregate
     protected $_columnsList;
 
     /**
+     * Associative array of columns and their comment
+     *
+     * @var array
+     */
+    protected $_columnsMeta;
+
+    /**
      * Associative array of columns for this model
      *
      * @var array
@@ -259,6 +266,49 @@ abstract class ModelAbstract implements \IteratorAggregate
     public function getColumnsList()
     {
         return $this->_columnsList;
+    }
+
+
+    /**
+     * Associative array of columns and their comment
+     *
+     * @param array $data
+     * @return <?=$namespace?>Model\ModelAbstract
+     */
+    public function setColumnsMeta($data)
+    {
+        $this->_columnsMeta = $data;
+        return $this;
+    }
+
+    /**
+     * Returns columns list array
+     *
+     * @return array
+     */
+    public function getColumnsMeta()
+    {
+        return $this->_columnsMeta;
+    }
+
+    /**
+     * Returns columns list array
+     *
+     * @return array
+     */
+    public function getColumnMeta($key)
+    {
+        if (! isset($this->_columnsList[$key])) {
+
+            Throw new Exception("Field $key was not found in column list");
+        }
+
+        if (isset($this->_columnsMeta[$key])) {
+
+            return $this->_columnsMeta[$key];
+        }
+
+        return array();
     }
 
     /**

@@ -126,6 +126,25 @@ echo "$vars\n\n";
     endforeach;
 ?>        ));
 
+        $this->setColumnsMeta(array(
+<?php
+    foreach ($this->_columns[$this->getTableName()] as $column):
+
+         if (empty($column['comment'])) {
+
+             continue;
+         }
+
+        $meta = str_replace("[", "", $column['comment']);
+        $meta = explode("]", $meta);
+        array_pop($meta);
+        $meta = "'" . implode("','", $meta) . "'";
+?>
+            '<?=$column['field']?>'=> array(<?= $meta ?>),
+<?php
+    endforeach;
+?>        ));
+
         $this->setMultiLangColumnsList(array(
 <?php
     $mlFields = array();

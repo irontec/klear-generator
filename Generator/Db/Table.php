@@ -78,21 +78,8 @@ class Generator_Db_Table
                     $newFieldName = $field->getName() . $fsoFieldName;
 
                     if (!isset($fieldsDescription[$newFieldName])) {
-                        $query = 'ALTER TABLE ' . $this->_db->quoteIdentifier($field->getTableName())
-                        . ' ADD ' . $this->_db->quoteIdentifier($newFieldName)
-                        . ' ' . $fsoFieldData['type'];
 
-                        if (!$field->isNullable()) {
-                            $query .= ' NOT NULL ';
-                        }
-
-                        $query .= ' COMMENT ' . $this->_db->quote(str_ireplace('[file]', '', $field->getComment()) . $fsoFieldData['comment']);
-
-                        $query .= ' AFTER ' . $this->_db->quoteIdentifier($field->getName());
-
-                        $this->_db->query($query);
-
-                        echo  "$newFieldName added to {$this->_table} \n";
+                        $this->_addField($field,$newFieldName, $fsoFieldData, '[file]');
                     }
                 }
 
@@ -102,5 +89,62 @@ class Generator_Db_Table
                 echo  $field->getName() . " deleted in {$this->_table} \n";
             }
         }
+    }
+
+    public function generateVideoFields()
+    {
+        //Borrar el campo que indica el tipo
+        $videoFields = array(
+            'Thumbnail' => array(
+                'type' => "varchar(120) NOT NULL DEFAULT ''",
+                'comment' => ''
+            ),
+            'Source' => array(
+                'type' => "enum('youtube','vimeo')",
+                'comment' => ''
+            ),
+            'Title' => array(
+                'type' => 'varchar(90) NOT NULL DEFAULT ""',
+                'comment' => ''
+            )
+        );
+
+        $fieldsDescription = Generator_Db::describeTable($this->_table);
+        foreach ($fieldsDescription as $field) {
+
+            if ($field->isVideo()) {
+
+                $fieldName = $field->getName();
+
+                foreach ($videoFields as $videoFieldName => $videoFieldData) {
+
+                    $newFieldName = $fieldName . $videoFieldName;
+
+                    if (!isset($fieldsDescription[$newFieldName])) {
+
+                        $this->_addField($field,$newFieldName, $videoFieldData, '[video]');
+                    }
+                }
+            }
+        }
+    }
+
+    protected function _addField($field,$newFieldName, $newFieldData, $commentTag) {
+
+        $query = 'ALTER TABLE ' . $this->_db->quoteIdentifier($field->getTableName())
+        . ' ADD ' . $this->_db->quoteIdentifier($newFieldName)
+        . ' ' . $newFieldData['type'];
+
+        if (!$field->isNullable()) {
+            $query .= ' NOT NULL ';
+        }
+
+        $query .= ' COMMENT ' . $this->_db->quote(str_ireplace($commentTag, '', $field->getComment()) . $newFieldData['comment']);
+
+        $query .= ' AFTER ' . $this->_db->quoteIdentifier($field->getName());
+
+        $this->_db->query($query);
+
+        echo  "$newFieldName added to {$this->_table} \n";
     }
 }

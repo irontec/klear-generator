@@ -79,6 +79,11 @@ class Generator_Db_Field implements \IteratorAggregate
         return $this->hasComment() && stristr($this->getComment(), '[file]');
     }
 
+    public function isVideo()
+    {
+        return $this->hasComment() && stristr($this->getComment(), '[video]');
+    }
+
     public function isRelationship()
     {
         return isset($this->_fieldDesc['RELATED']);
