@@ -9,6 +9,35 @@ class Generator_Yaml_Factory
     protected $_configWriter;
 
     protected $_tables = null;
+    
+    protected $_availableLanguages = array(
+            'Espanol' => array(
+                    'title' => 'Español',
+                    'language' => 'es',
+                    'locale' => 'es_ES'),
+            'Euskera' => array(
+                    'title' => 'Euskera',
+                    'language' => 'eu',
+                    'locale' => 'eu_ES'),
+            'Catala' => array(
+                    'title' => 'Català',
+                    'language' => 'ca',
+                    'locale' => 'ca_ES'),
+            'Galego' => array(
+                    'title' => 'Galego',
+                    'language' => 'gl',
+                    'locale' => 'gl_ES'),
+            'English' => array(
+                    'title' => 'English',
+                    'language' => 'en',
+                    'locale' => 'en_US'),
+            'Français' => array(
+                    'title' => 'français',
+                    'language' => 'fr',
+                    'locale' => 'fr_FR')
+            );
+    
+    protected $_enabledLanguages = array();
 
     public function __construct($basePath, $namespace, $override = false)
     {
@@ -22,9 +51,32 @@ class Generator_Yaml_Factory
 
 
         $this->_klearConfig = new Zend_Config_Ini(APPLICATION_PATH. '/configs/klear.ini', APPLICATION_ENV);
+        
+        $this->_loadLanguages();
+        
         $this->_configWriter = new Zend_Config_Writer_Yaml();
 
         $this->_createDirStructure();
+    }
+    
+    protected function _loadLanguages()
+    {
+        foreach ($this->_klearConfig->klear->languages as $language) {
+            $result = false;
+            foreach ($this->_availableLanguages as $languageIden => $laguageData) {
+                if ($laguageData['language'] == $language) {
+                    $result = true;
+                    $this->_enabledLanguages[$languageIden] = $laguageData;
+                }
+            }
+            if (!$result) {
+                $this->_enabledLanguages[$language] = array(
+                        'title' => $language,
+                        'language' => $language,
+                        'locale' => $language
+                        );
+            }
+        }
     }
 
     protected function _createDirStructure()
@@ -82,7 +134,7 @@ class Generator_Yaml_Factory
             $modelFile = $this->_klearDirs['model'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . '.yaml';
             if (!file_exists($modelFile) || $this->_override) {
                 try {
-                    $modelConfig = new Generator_Yaml_ModelConfig($table, $this->_namespace, $this->_klearConfig);
+                    $modelConfig = new Generator_Yaml_ModelConfig($table, $this->_namespace, $this->_klearConfig, $this->_enabledLanguages);
                     $this->_configWriter->write($modelFile, $modelConfig->getConfig());
                 } catch (Exception $e) {
                     echo 'Error: ' . $e->getMessage() . "\n";
@@ -98,7 +150,7 @@ class Generator_Yaml_Factory
         foreach ($entities as $table) {
             $listFile = $this->_klearDirs['root'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . 'List.yaml';
             if (!file_exists($listFile) || $this->_override) {
-                $listConfig = new Generator_Yaml_ListConfig($table, $this->_klearConfig);
+                $listConfig = new Generator_Yaml_ListConfig($table, $this->_klearConfig, $this->_enabledLanguages);
                 $this->_configWriter->write($listFile, $listConfig->getConfig());
                 $contents = "#include conf.d/mapperList.yaml\n";
                 $contents .= "#include conf.d/actions.yaml\n\n";
@@ -113,7 +165,7 @@ class Generator_Yaml_Factory
     {
         $mainConfigFile = $this->_klearDirs['root'] . '/klear.yaml';
         if (!file_exists($mainConfigFile) || $this->_override) {
-            $mainConfig = new Generator_Yaml_MainConfig($this->_getEntities());
+            $mainConfig = new Generator_Yaml_MainConfig($this->_getEntities(), $this->_enabledLanguages);
             $this->_configWriter->write($mainConfigFile, $mainConfig->getConfig());
         }
     }

@@ -1,0 +1,336 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Klear-Public\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-11-20 16:43+0100\n"
+"PO-Revision-Date: 2012-11-20 16:43+0100\n"
+"Last-Translator: Lander Ontoria <lander@irontec.com>\n"
+"Language-Team: Irontec-Klear <lander+klear@irontec.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;translate;plural:1,2\n"
+"X-Poedit-Basepath: /home/landerog/workspace/generator\n"
+"X-Poedit-Language: Basque\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: generator/common-strings.php:7
+msgid "Login"
+msgstr "Erabiltzaile izena"
+
+#: generator/common-strings.php:8
+msgid "Username"
+msgstr "Erabiltzaile izena"
+
+#: generator/common-strings.php:9
+msgid "Email"
+msgstr "Emaila"
+
+#: generator/common-strings.php:10
+msgid "Pass"
+msgstr "Pasahitza"
+
+#: generator/common-strings.php:11
+msgid "Password"
+msgstr "Pasahitza"
+
+#: generator/common-strings.php:12
+msgid "User"
+msgstr "Erabiltzailea"
+
+#: generator/common-strings.php:13
+msgid "Users"
+msgstr "Erabiltzaileak"
+
+#: generator/common-strings.php:14
+msgid "Name"
+msgstr "Izena"
+
+#: generator/common-strings.php:15
+msgid "Surname"
+msgstr "Abizena"
+
+#: generator/common-strings.php:16
+msgid "FirstName"
+msgstr "Izena"
+
+#: generator/common-strings.php:17
+msgid "LastName"
+msgstr "Abizena"
+
+#: generator/common-strings.php:18
+msgid "PhoneNumber"
+msgstr "Telefono zenbakia"
+
+#: generator/common-strings.php:19
+msgid "Address"
+msgstr "Helbidea"
+
+#: generator/common-strings.php:20
+msgid "Street"
+msgstr "Kalea"
+
+#: generator/common-strings.php:21
+msgid "PostalCode"
+msgstr "Posta kodea"
+
+#: generator/common-strings.php:22
+msgid "ZipCode"
+msgstr "Posta kodea"
+
+#: generator/common-strings.php:23
+msgid "Province"
+msgstr "Probintzia"
+
+#: generator/common-strings.php:24
+msgid "City"
+msgstr "Hiria"
+
+#: generator/common-strings.php:25
+msgid "State"
+msgstr "Estatua"
+
+#: generator/common-strings.php:26
+msgid "Country"
+msgstr "Herrialdea"
+
+#: generator/common-strings.php:31
+msgid "File"
+msgstr "Fitxategia"
+
+#: generator/common-strings.php:32
+msgid "Path"
+msgstr "Helbidea"
+
+#: generator/common-strings.php:33
+msgid "Size"
+msgstr "Tamaina"
+
+#: generator/common-strings.php:34
+msgid "FileSize"
+msgstr "Fitxategi tamaina"
+
+#: generator/common-strings.php:35
+msgid "FilePath"
+msgstr "Fitxategi helbidea"
+
+#: generator/common-strings.php:36
+msgid "MimeType"
+msgstr "Fitxategi mota"
+
+#: generator/common-strings.php:37
+msgid "BaseName"
+msgstr ""
+
+#: generator/common-strings.php:38
+msgid "Image"
+msgstr "Irudia"
+
+#: generator/common-strings.php:39
+msgid "ImageSize"
+msgstr "Irudi tamaina"
+
+#: generator/common-strings.php:40
+msgid "ImagePath"
+msgstr "Irudi helbidea"
+
+#: generator/common-strings.php:41
+msgid "Picture"
+msgstr "Argazkia"
+
+#: generator/common-strings.php:42
+msgid "PictureSize"
+msgstr "Argazki tamaina"
+
+#: generator/common-strings.php:43
+msgid "PicturePath"
+msgstr "Argazki helbidea"
+
+#: generator/common-strings.php:48
+msgid "Active"
+msgstr "Aktiboa"
+
+#: generator/common-strings.php:49
+msgid "Status"
+msgstr "Egoera"
+
+#: generator/common-strings.php:50
+msgid "CreatedOn"
+msgstr "Sortua"
+
+#: generator/common-strings.php:51
+msgid "UpdatedOn"
+msgstr "Aldatua"
+
+#: generator/common-strings.php:52
+msgid "Identifier"
+msgstr "Identifikatzailea"
+
+#: generator/common-strings.php:53
+msgid "Iden"
+msgstr "Identifikatzailea"
+
+#: generator/common-strings.php:54
+msgid "Order"
+msgstr "Ordena"
+
+#: generator/common-strings.php:55
+msgid "Value"
+msgstr "Balioa"
+
+#: generator/common-strings.php:57
+msgid "Title"
+msgstr "Izenburua"
+
+#: generator/common-strings.php:58
+msgid "Subtitle"
+msgstr "Azpi izenburua"
+
+#: generator/common-strings.php:59
+msgid "Intro"
+msgstr "Sarrera"
+
+#: generator/common-strings.php:60
+msgid "Introduction"
+msgstr "Sarrera"
+
+#: generator/common-strings.php:61
+msgid "Description"
+msgstr "Deskribapena"
+
+#: generator/common-strings.php:62
+msgid "Text"
+msgstr "Testua"
+
+#: generator/common-strings.php:64
+msgid "Subject"
+msgstr "Gaia"
+
+#: generator/common-strings.php:65
+msgid "Message"
+msgstr "Mezua"
+
+#: generator/common-strings.php:67
+msgid "Section"
+msgstr "Atala"
+
+#: generator/common-strings.php:68
+msgid "Sections"
+msgstr "Atalak"
+
+#: generator/common-strings.php:69
+msgid "Content"
+msgstr "Edukia"
+
+#: generator/common-strings.php:71
+msgid "Website"
+msgstr "Web tokia"
+
+#: generator/common-strings.php:72
+msgid "Url"
+msgstr ""
+
+#: generator/common-strings.php:73
+msgid "Link"
+msgstr "Esteka"
+
+#: generator/common-strings.php:74
+msgid "Slug"
+msgstr ""
+
+#: generator/common-strings.php:76
+msgid "Type"
+msgstr "Mota"
+
+#: generator/common-strings.php:77
+msgid "Price"
+msgstr "Prezioa"
+
+#: generator/common-strings.php:78
+msgid "Quantity"
+msgstr "Zenbatekoa"
+
+#: generator/common-strings.php:80
+msgid "Category"
+msgstr "Kategoria"
+
+#: generator/Generator/Yaml/ModelConfig.php:283
+msgid "No"
+msgstr "Ez"
+
+#: generator/Generator/Yaml/ModelConfig.php:284
+msgid "Yes"
+msgstr "Bai"
+
+#: generator/Generator/Yaml/ModelConfig.php:394
+msgid "Download file"
+msgstr "Fitxategia jaitsi"
+
+#: generator/Generator/Yaml/ModelConfig.php:395
+msgid "Upload file"
+msgstr "Fitxategia igo"
+
+#: generator/Generator/Yaml/ListConfig.php:38
+#: generator/Generator/Yaml/MainConfig.php:66
+#, php-format
+msgid "List of %s"
+msgstr "%s-(r)en zerrenda"
+
+#: generator/Generator/Yaml/ListConfig.php:39
+#, php-format
+msgid "Edit %s"
+msgstr "%s editatu"
+
+#: generator/Generator/Yaml/ListConfig.php:40
+#, php-format
+msgid "Add %s"
+msgstr "%s gehitu"
+
+#: generator/Generator/Yaml/ListConfig.php:41
+#, php-format
+msgid "Delete %s"
+msgstr "%s ezabatu"
+
+#: generator/Generator/Yaml/ListConfig.php:42
+#, php-format
+msgid "You want to delete this %s?"
+msgstr "%s ezabatu nahi duzu?"
+
+#: generator/Generator/Yaml/ListConfig.php:43
+msgid "Options"
+msgstr "Aukerak"
+
+#: generator/Generator/Yaml/MainConfig.php:49
+msgid "Access denied"
+msgstr "Sarbide ukatua"
+
+#: generator/Generator/Yaml/MainConfig.php:50
+msgid "Insert your username"
+msgstr "Zure erabiltzaile izena sartu"
+
+#: generator/Generator/Yaml/MainConfig.php:76
+#: generator/Generator/Yaml/MainConfig.php:77
+msgid "Main management"
+msgstr "Kudeaketa orokorra"
+
+#: generator/doc/elementindex_default.html:536
+#: generator/doc/elementindex.html:264
+msgid "field"
+msgstr "Eremua"
+
+#: generator/doc/default/_IncludeAbstract.php.html:59
+msgid "notes"
+msgstr ""
+
+#: generator/doc/default/IncludeAbstract.html:29
+msgid "tags"
+msgstr ""
+
+#: generator/doc/__filesource/fsource_default__IncludeAbstract.php.html:18
+msgid "src-line"
+msgstr ""
+

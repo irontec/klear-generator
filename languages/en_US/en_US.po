@@ -1,0 +1,341 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Klear-Public\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-11-20 15:56+0100\n"
+"PO-Revision-Date: 2012-11-20 15:56+0100\n"
+"Last-Translator: Lander Ontoria <lander@irontec.com>\n"
+"Language-Team: Irontec-Klear <lander+klear@irontec.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;translate;plural:1,2\n"
+"X-Poedit-Basepath: /home/landerog/workspace/generator\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: generator/common-strings.php:7
+#: generator/Generator/Yaml/ModelConfig.php:125
+msgid "Login"
+msgstr ""
+
+#: generator/common-strings.php:8
+msgid "Username"
+msgstr ""
+
+#: generator/common-strings.php:9
+msgid "Email"
+msgstr ""
+
+#: generator/common-strings.php:10
+msgid "Pass"
+msgstr ""
+
+#: generator/common-strings.php:11
+msgid "Password"
+msgstr ""
+
+#: generator/common-strings.php:12
+msgid "User"
+msgstr ""
+
+#: generator/common-strings.php:13
+msgid "Users"
+msgstr ""
+
+#: generator/common-strings.php:14
+msgid "Name"
+msgstr ""
+
+#: generator/common-strings.php:15
+msgid "Surname"
+msgstr ""
+
+#: generator/common-strings.php:16
+msgid "FirstName"
+msgstr "Firstname"
+
+#: generator/common-strings.php:17
+msgid "LastName"
+msgstr "Lastaname"
+
+#: generator/common-strings.php:18
+msgid "PhoneNumber"
+msgstr "Phone number"
+
+#: generator/common-strings.php:19
+msgid "Address"
+msgstr ""
+
+#: generator/common-strings.php:20
+msgid "Street"
+msgstr ""
+
+#: generator/common-strings.php:21
+msgid "PostalCode"
+msgstr "Postal code"
+
+#: generator/common-strings.php:22
+msgid "ZipCode"
+msgstr "Zip code"
+
+#: generator/common-strings.php:23
+msgid "Province"
+msgstr ""
+
+#: generator/common-strings.php:24
+msgid "City"
+msgstr ""
+
+#: generator/common-strings.php:25
+msgid "State"
+msgstr ""
+
+#: generator/common-strings.php:26
+msgid "Country"
+msgstr ""
+
+#: generator/common-strings.php:31
+msgid "File"
+msgstr ""
+
+#: generator/common-strings.php:32
+msgid "Path"
+msgstr ""
+
+#: generator/common-strings.php:33
+msgid "Size"
+msgstr ""
+
+#: generator/common-strings.php:34
+msgid "FileSize"
+msgstr "File size"
+
+#: generator/common-strings.php:35
+msgid "FilePath"
+msgstr "File path"
+
+#: generator/common-strings.php:36
+msgid "MimeType"
+msgstr "Mimetype"
+
+#: generator/common-strings.php:37
+msgid "BaseName"
+msgstr "Base name"
+
+#: generator/common-strings.php:38
+msgid "Image"
+msgstr ""
+
+#: generator/common-strings.php:39
+msgid "ImageSize"
+msgstr "Image size"
+
+#: generator/common-strings.php:40
+msgid "ImagePath"
+msgstr "Image path"
+
+#: generator/common-strings.php:41
+msgid "Picture"
+msgstr ""
+
+#: generator/common-strings.php:42
+msgid "PictureSize"
+msgstr "Picture size"
+
+#: generator/common-strings.php:43
+msgid "PicturePath"
+msgstr "Picture path"
+
+#: generator/common-strings.php:48
+msgid "Active"
+msgstr "Active"
+
+#: generator/common-strings.php:49
+msgid "Status"
+msgstr ""
+
+#: generator/common-strings.php:50
+msgid "CreatedOn"
+msgstr "Created on"
+
+#: generator/common-strings.php:51
+msgid "UpdatedOn"
+msgstr "Updated on"
+
+#: generator/common-strings.php:52
+msgid "Identifier"
+msgstr ""
+
+#: generator/common-strings.php:53
+msgid "Iden"
+msgstr ""
+
+#: generator/common-strings.php:54
+msgid "Order"
+msgstr ""
+
+#: generator/common-strings.php:55
+msgid "Value"
+msgstr ""
+
+#: generator/common-strings.php:57
+msgid "Title"
+msgstr ""
+
+#: generator/common-strings.php:58
+msgid "Subtitle"
+msgstr ""
+
+#: generator/common-strings.php:59
+msgid "Intro"
+msgstr ""
+
+#: generator/common-strings.php:60
+msgid "Introduction"
+msgstr ""
+
+#: generator/common-strings.php:61
+msgid "Description"
+msgstr ""
+
+#: generator/common-strings.php:62
+msgid "Text"
+msgstr ""
+
+#: generator/common-strings.php:64
+msgid "Subject"
+msgstr ""
+
+#: generator/common-strings.php:65
+msgid "Message"
+msgstr ""
+
+#: generator/common-strings.php:67
+msgid "Section"
+msgstr ""
+
+#: generator/common-strings.php:68
+msgid "Sections"
+msgstr ""
+
+#: generator/common-strings.php:69
+msgid "Content"
+msgstr ""
+
+#: generator/common-strings.php:71
+msgid "Website"
+msgstr ""
+
+#: generator/common-strings.php:72
+msgid "Url"
+msgstr ""
+
+#: generator/common-strings.php:73
+msgid "Link"
+msgstr ""
+
+#: generator/common-strings.php:74
+msgid "Slug"
+msgstr ""
+
+#: generator/common-strings.php:76
+msgid "Type"
+msgstr ""
+
+#: generator/common-strings.php:77
+msgid "Price"
+msgstr ""
+
+#: generator/common-strings.php:78
+msgid "Quantity"
+msgstr ""
+
+#: generator/common-strings.php:80
+msgid "Category"
+msgstr ""
+
+#: generator/Generator/Yaml/ModelConfig.php:124
+msgid "hola"
+msgstr ""
+
+#: generator/Generator/Yaml/ModelConfig.php:282
+msgid "No"
+msgstr ""
+
+#: generator/Generator/Yaml/ModelConfig.php:283
+msgid "Yes"
+msgstr ""
+
+#: generator/Generator/Yaml/ModelConfig.php:393
+msgid "Download file"
+msgstr ""
+
+#: generator/Generator/Yaml/ModelConfig.php:394
+msgid "Upload file"
+msgstr ""
+
+#: generator/Generator/Yaml/ListConfig.php:36
+#: generator/Generator/Yaml/MainConfig.php:65
+#, php-format
+msgid "List of %s"
+msgstr ""
+
+#: generator/Generator/Yaml/ListConfig.php:37
+#, php-format
+msgid "Edit %s"
+msgstr ""
+
+#: generator/Generator/Yaml/ListConfig.php:38
+#, php-format
+msgid "Add %s"
+msgstr ""
+
+#: generator/Generator/Yaml/ListConfig.php:39
+#, php-format
+msgid "Delete %s"
+msgstr ""
+
+#: generator/Generator/Yaml/ListConfig.php:40
+#, php-format
+msgid "You want to delete this %s?"
+msgstr ""
+
+#: generator/Generator/Yaml/ListConfig.php:41
+msgid "Options"
+msgstr ""
+
+#: generator/Generator/Yaml/MainConfig.php:49
+msgid "Access denied"
+msgstr ""
+
+#: generator/Generator/Yaml/MainConfig.php:50
+msgid "Insert your username"
+msgstr ""
+
+#: generator/Generator/Yaml/MainConfig.php:75
+#: generator/Generator/Yaml/MainConfig.php:76
+msgid "Main management"
+msgstr ""
+
+#: generator/doc/elementindex_default.html:536
+#: generator/doc/elementindex.html:264
+msgid "field"
+msgstr ""
+
+#: generator/doc/default/_IncludeAbstract.php.html:59
+msgid "notes"
+msgstr ""
+
+#: generator/doc/default/IncludeAbstract.html:29
+msgid "tags"
+msgstr ""
+
+#: generator/doc/__filesource/fsource_default__IncludeAbstract.php.html:18
+msgid "src-line"
+msgstr ""
+

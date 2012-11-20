@@ -7,6 +7,7 @@ defined('APPLICATION_ENV')
 define('VERSION', '0.1');
 define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
 
+
 require_once 'Zend/Loader/Autoloader.php';
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('Generator');
@@ -48,11 +49,23 @@ try {
     $klearDir = APPLICATION_PATH . '/configs/klear';
     $yamlFactory = new Generator_Yaml_Factory($klearDir, $namespace);
     $yamlFactory->createAllFiles();
-
+    
+    
+    $svn = file('.svn/entries');
+    $svnrev = trim($svn[3]);
+    $data = '[' . date('r') . ']' . ' revision: ' . $svnrev . "\n";
+    file_put_contents($klearDir . '/generator.log', $data, FILE_APPEND);
+    
+    
     // Sistema base en raw, siempre se sobreescribe
     $klearDirRaw = APPLICATION_PATH . '/configs/klearRaw';
     $rawYamlFactory = new Generator_Yaml_Factory($klearDirRaw, $namespace, true);
     $rawYamlFactory->createAllFiles();
+    
+    $svn = file('.svn/entries');
+    $svnrev = trim($svn[3]);
+    $data = '[' . date('r') . ']' . ' revision: ' . $svnrev . "\n";
+    file_put_contents($klearDirRaw . '/generator.log', $data, FILE_APPEND);
 
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";

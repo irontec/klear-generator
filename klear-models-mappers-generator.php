@@ -137,6 +137,11 @@ try {
     $modelCreator->setTableList($tables);
 
     $modelCreator->doItAll();
+    
+    $svn = file('.svn/entries');
+    $svnrev = trim($svn[3]);
+    $data = '[' . date('r') . ']' . ' revision: ' . $svnrev . "\n";
+    file_put_contents($path . $namespace . '/generator.log', $data, FILE_APPEND);
 
     echo "Done!\n";
 } catch (Zend_Console_Getopt_Exception $e) {

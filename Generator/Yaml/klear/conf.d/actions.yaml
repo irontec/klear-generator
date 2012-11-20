@@ -41,9 +41,7 @@ actions:
     type: command
     external: true
     icon: ui-silk-bullet-disk
-    title:
-      i18n:
-        es: "Descargar fichero"
+    title: _('Download file')
     text: |
       Descargar fichero:
       Nombre del fichero: %name%

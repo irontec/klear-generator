@@ -1,8 +1,12 @@
 <?php
 class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
 {
-    public function __construct($entities = array())
+    public function __construct($entities = array(), $enabledLanguages = array())
     {
+        $this->_enabledLanguages = $enabledLanguages;
+        
+        $this->_loadTranslator();
+        
         $data = array();
         $data['log'] = array(
                 'writerName' => '"Null"',
@@ -14,15 +18,12 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
         $data['logo'] = 'images/logo.png';
         $data['year'] = date('Y');
 
+        
+        
         $data['lang'] = 'Espanol';
-        $data['langs'] = array(
-                'Espanol' => array(
-                        'title' => 'Español',
-                        'language' => 'es',
-                        'locale' => 'es_ES'
-                )
-        );
-
+        
+        $data['langs'] = $this->_enabledLanguages;
+        
         // $data['dynamicConfigClass'] = '';
 
         $data['jqueryUI'] = array(
@@ -40,52 +41,43 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
         );
 
         $data['auth'] = array(
-                'adapter' => 'Klear_Auth_Adapter_Basic',
-                'title' => array(
-                        'i18n' => array(
-                                'es' => 'Acceso restringido'
-                        )
-                ),
-                'description' => array(
-                        'i18n' => array(
-                                'es' => 'Introduce tu usuario'
-                        )
-                )
+                'adapter' => 'Klear_Auth_Adapter_Basic'
         );
-
+        
+        foreach ($this->_enabledLanguages as $languageIden => $languageData) {
+            $this->_translate->setLocale($languageData['locale']);
+            $data['auth']['title']['i18n'][$languageData['language']] = $this->_translate->translate('Access denied');
+            $data['auth']['description']['i18n'][$languageData['language']] = $this->_translate->translate('Insert your username');
+        }
+        
         $data['timezone'] = 'Europe/Madrid';
 
         $entitiesConfig = array();
         foreach ($entities as $entity) {
             $normalizedEntity = ucfirst(Generator_Yaml_StringUtils::toCamelCase($entity));
             $entitiesConfig[$normalizedEntity . 'List'] = array(
-                'title' => array(
-                    'i18n' => array(
-                        'es' => 'Listado de ' . $normalizedEntity
-                    )
-                ),
-                'class' => 'ui-silk-user-suit',
-                'description' => array(
-                    'i18n' => array(
-                        'es' => 'Listado de ' . $normalizedEntity
-                    )
-                )
+                    'title' => array('i18n' => array()),
+                    'class' => 'ui-silk-text-list-bullets',
+                    'description' => array('i18n' => array())
             );
+            foreach ($this->_enabledLanguages as $languageIden => $languageData) {
+                $this->_translate->setLocale($languageData['locale']);
+                $translateString = "ngettext('" . $normalizedEntity . " 1', '" . $normalizedEntity . " n', 0)";
+                $title = sprintf($this->_translate->translate('List of %s'), $translateString);
+                $entitiesConfig[$normalizedEntity . 'List']['title']['i18n'][$languageData['language']] = $title;
+                $entitiesConfig[$normalizedEntity . 'List']['description']['i18n'][$languageData['language']] = $title;
+            }
         }
 
-        $menu['General'] = array(
-                'title' => array(
-                    'i18n' => array(
-                        'es' => 'Gestión general'
-                    )
-                ),
-                'description' => array(
-                    'i18n' => array(
-                        'es' => 'Gestión general'
-                    )
-                ),
-                'submenus' => $entitiesConfig
-        );
+        
+        $menu['General'] = array();
+        foreach ($this->_enabledLanguages as $languageIden => $languageData) {
+            $this->_translate->setLocale($languageData['locale']);
+            $menu['General']['title']['i18n'][$languageData['language']] = $this->_translate->translate('Main management');
+            $menu['General']['description']['i18n'][$languageData['language']] = $this->_translate->translate('Main management');
+        }
+        
+        $menu['General']['submenus'] = $entitiesConfig;
 
         $this->_data = array(
             'production' => array(

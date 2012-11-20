@@ -7,8 +7,12 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
     protected $_tableDescription;
     protected $_normalizedTable;
 
-    public function __construct($table, $klearConfig)
+    public function __construct($table, $klearConfig, $enabledLanguages = array())
     {
+        $this->_enabledLanguages = $enabledLanguages;
+        
+        $this->_loadTranslator();
+        
         $this->_klearConfig = $klearConfig;
         $this->_tableDescription = Generator_Db::describeTable($table);
 
@@ -20,22 +24,23 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $editScreenName = lcfirst($normalizedTable) . 'Edit_screen';
         $delDialogName = lcfirst($normalizedTable) . 'Del_dialog';
 
-        if (isset($this->_klearConfig->klear->languages)) {
-            foreach ($this->_klearConfig->klear->languages as $language) {
-                $listTitles[$language] = 'List of ' . ucfirst($normalizedTable);
-                $options[$language] = 'Options';
-                $editTitles[$language] = 'Edit ' . ucfirst($normalizedTable);
-                $addTitles[$language] = 'Add ' . ucfirst($normalizedTable);
-                $deleteTitles[$language] = 'Delete ' . ucfirst($normalizedTable);
-                $askDeleteTitles[$language] = 'You want to delete this ' . ucfirst($normalizedTable) . '?';
-            }
-        } else {
-            $options = array('es' => 'Opciones');
-            $listTitles = array('es' => 'Listado de ' . ucfirst($normalizedTable));
-            $editTitles = array('es' => 'Editar ' . ucfirst($normalizedTable));
-            $addTitles = array('es' => 'Añadir ' . ucfirst($normalizedTable));
-            $deleteTitles = array('es' => 'Eliminar ' . ucfirst($normalizedTable));
-            $askDeleteTitles = array('es' => '¿Está seguro que desea eliminar este ' . ucfirst($normalizedTable) . '?');
+        
+        $listTitles = $editTitles = $addTitles = $deleteTitles = $askDeleteTitles = array();
+        
+        
+        $titleSingular = "ngettext('" . ucfirst($normalizedTable) . " 1', '" . ucfirst($normalizedTable) . " n', 1)";
+        $titlePlural = "ngettext('" . ucfirst($normalizedTable) . " 1', '" . ucfirst($normalizedTable) . " n', 0)";
+        
+        $options = array();
+        
+        foreach ($this->_enabledLanguages as $languageIden => $languageData) {
+            $this->_translate->setLocale($languageData['locale']);
+            $listTitles[$languageData['language']] = sprintf($this->_translate->translate('List of %s'), $titlePlural);
+            $editTitles[$languageData['language']] = sprintf($this->_translate->translate('Edit %s'), $titleSingular);
+            $addTitles[$languageData['language']] = sprintf($this->_translate->translate('Add %s'), $titleSingular);
+            $deleteTitles[$languageData['language']] = sprintf($this->_translate->translate('Delete %s'), $titleSingular);
+            $askDeleteTitles[$languageData['language']] = sprintf($this->_translate->translate('You want to delete this %s?'), $titleSingular);
+            $options[$languageData['language']] = $this->_translate->translate('Options');
         }
 
         $listScreen = array(
@@ -49,9 +54,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             ),
             'fields' => array(
                 'options' => array(
-                    'title' => array(
-                        'i18n' => $options
-                    ),
+                    'title' => array('i18n' => $options),
                     'screens' => array(
                         $editScreenName => 'true',
                     ),
@@ -62,9 +65,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
                 )
             ),
             'options' => array(
-                'title' => array(
-                    'i18n' => $options
-                ),
+                'title' => array('i18n' => $options),
                 'screens' => array(
                     $newScreenName => 'true'
                 )
