@@ -16,20 +16,29 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $this->_klearConfig = $klearConfig;
         $this->_tableDescription = Generator_Db::describeTable($table);
 
-        $normalizedTable = Generator_Yaml_StringUtils::toCamelCase($table);
+        $normalizedTable = ucfirst(Generator_Yaml_StringUtils::toCamelCase($table));
         $this->_normalizedTable = $normalizedTable;
 
         $listScreenName = lcfirst($normalizedTable) . 'List_screen';
         $newScreenName = lcfirst($normalizedTable) . 'New_screen';
         $editScreenName = lcfirst($normalizedTable) . 'Edit_screen';
         $delDialogName = lcfirst($normalizedTable) . 'Del_dialog';
-
         
         $listTitles = $editTitles = $addTitles = $deleteTitles = $askDeleteTitles = array();
         
+        $normalizedEntity = $normalizedTable;
         
-        $titleSingular = "ngettext('" . ucfirst($normalizedTable) . " 1', '" . ucfirst($normalizedTable) . " n', 1)";
-        $titlePlural = "ngettext('" . ucfirst($normalizedTable) . " 1', '" . ucfirst($normalizedTable) . " n', 0)";
+        $pluralEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($normalizedEntity));
+        
+        $singularEntity = Generator_Yaml_StringUtils::getSingular($normalizedEntity);
+        $singularEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($singularEntity));
+        
+        if ($singularEntity == $pluralEntity) {
+            $pluralEntity = $pluralEntity . '(s)';
+        }
+        
+        $titleSingular = "ngettext('" . $singularEntity . "', '" . $pluralEntity . "', 1)";
+        $titlePlural = "ngettext('" . $singularEntity . "', '" . $pluralEntity . "', 0)";
         
         $options = array();
         
@@ -48,7 +57,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'pagination' => array(
                     'items' => '25'
                             ),
-            '<<' => '*' . ucfirst($normalizedTable),
+            '<<' => '*' . $normalizedTable,
             'title' => array(
                 'i18n' => $listTitles
             ),
@@ -87,7 +96,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         }
 
         $editScreen = array(
-            '<<' => '*' . ucfirst($normalizedTable),
+            '<<' => '*' . $normalizedTable,
             'controller' => 'edit',
             'class' =>  'ui-silk-pencil',
             'label' => 'false',
@@ -98,7 +107,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 
 
         $newScreen = array(
-            '<<' => '*' . ucfirst($normalizedTable),
+            '<<' => '*' . $normalizedTable,
             'controller' => 'new',
             'class' =>  'ui-silk-add',
             'label' => 'true',
@@ -109,7 +118,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         );
 
         $delDialog = array(
-            '<<' => '*' . ucfirst($normalizedTable),
+            '<<' => '*' . $normalizedTable,
             'controller' => 'delete',
             'class' => 'ui-silk-bin',
             'labelOption' => 'false',
@@ -196,13 +205,13 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $data = array();
         foreach ($fsoFields as $fieldName) {
             $data[ucfirst($fieldName) . 'Download_command'] = array(
-                '<<' => '*' . ucfirst($this->_normalizedTable),
+                '<<' => '*' . $this->_normalizedTable,
                 'controller' => 'File',
                 'action' => 'force-download',
                 'mainColumn' =>  $fieldName
             );
             $data[ucfirst($fieldName) . 'Upload_command'] = array(
-                '<<' => '*' . ucfirst($this->_normalizedTable),
+                '<<' => '*' . $this->_normalizedTable,
                 'controller' => 'File',
                 'action' => 'upload',
                 'mainColumn' =>  $fieldName

@@ -32,4 +32,56 @@ class Generator_Yaml_StringUtils
 
         return '\\' . implode('\\', $class);
     }
+    
+/*
+1) Look at the last 2 letters in word, if last letter is "S" and 2nd to last letter is NOT "S", trim off "S"
+2) Look at end of word for "VES", if found, replace with "F"
+3) Look at end of word for "OES", if found, replace with "O"
+5) Look at end of word for "IES", if found, replace with "Y"
+6) Look at end of word for "XES", if found, replace with "X"
+ */    
+    
+    public static function getSingular($string)
+    {
+        $lastLetters = substr($string, -2);
+        
+        if ($lastLetters == 'ss') {
+            return $string;
+        }
+        
+        $lastLetters = substr($string, -3);
+        $substitute = null;
+        
+        switch ($lastLetters) {
+            case 'ves':
+                $substitute = 'f';
+                break;
+            case 'oes':
+                $substitute = 'o';
+                break;
+            case 'ies':
+                $substitute = 'y';
+                break;
+            case 'xes':
+                $substitute = 'x';
+                break;
+        }
+        
+        if ($substitute) {
+            return substr($string, 0, -3) . $substitute;
+        }
+
+        $lastLetters = substr($string, -1);
+        
+        if ($lastLetters == 's') {
+            return substr($string, 0, -1);
+        }
+        
+        return $string;
+    }
+    
+    public static function getSentenceFromCamelCase($string)
+    {
+        return trim(preg_replace("/([A-Z])/e", "strtolower(' \\1')", $string));
+    }
 }

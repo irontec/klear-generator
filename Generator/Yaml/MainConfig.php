@@ -9,8 +9,8 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
         
         $data = array();
         $data['log'] = array(
-                'writerName' => '"Null"',
-                'writerParams' => array()
+            'writerName' => '"Null"',
+            'writerParams' => array()
         );
 
 
@@ -54,15 +54,26 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
 
         $entitiesConfig = array();
         foreach ($entities as $entity) {
+            
             $normalizedEntity = ucfirst(Generator_Yaml_StringUtils::toCamelCase($entity));
+            
+            $pluralEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($normalizedEntity));
+            
+            $singularEntity = Generator_Yaml_StringUtils::getSingular($normalizedEntity);
+            $singularEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($singularEntity));
+                        
+            if ($singularEntity == $pluralEntity) {
+                $pluralEntity = $pluralEntity . '(s)';
+            }
+            
             $entitiesConfig[$normalizedEntity . 'List'] = array(
-                    'title' => array('i18n' => array()),
-                    'class' => 'ui-silk-text-list-bullets',
-                    'description' => array('i18n' => array())
+                'title' => array('i18n' => array()),
+                'class' => 'ui-silk-text-list-bullets',
+                'description' => array('i18n' => array())
             );
             foreach ($this->_enabledLanguages as $languageIden => $languageData) {
                 $this->_translate->setLocale($languageData['locale']);
-                $translateString = "ngettext('" . $normalizedEntity . " 1', '" . $normalizedEntity . " n', 0)";
+                $translateString = "ngettext('" . $singularEntity . "', '" . $pluralEntity . "', 0)";
                 $title = sprintf($this->_translate->translate('List of %s'), $translateString);
                 $entitiesConfig[$normalizedEntity . 'List']['title']['i18n'][$languageData['language']] = $title;
                 $entitiesConfig[$normalizedEntity . 'List']['description']['i18n'][$languageData['language']] = $title;

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Klear-Public\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-20 16:23+0100\n"
-"PO-Revision-Date: 2012-11-20 16:24+0100\n"
+"PO-Revision-Date: 2012-11-21 12:07+0100\n"
 "Last-Translator: Lander Ontoria <lander@irontec.com>\n"
 "Language-Team: Irontec-Klear <lander+klear@irontec.com>\n"
 "Language: \n"
@@ -176,7 +176,7 @@ msgstr "Identificador"
 
 #: generator/common-strings.php:54
 msgid "Order"
-msgstr "Órden"
+msgstr "Orden"
 
 #: generator/common-strings.php:55
 msgid "Value"
