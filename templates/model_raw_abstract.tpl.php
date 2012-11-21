@@ -723,12 +723,16 @@ abstract class ModelAbstract implements \IteratorAggregate
         if (is_array($primary_key)) {
             $result = array();
             foreach ($primary_key as $key) {
+
+                $key = $this->columnNameToVar($key);
                 $result[$key] = $this->{'_' . $key};
             }
 
             return $result;
 
         } else {
+
+            $primary_key = $this->columnNameToVar($primary_key);
             return $this->{'_' . $primary_key};
         }
 
