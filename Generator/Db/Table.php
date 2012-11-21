@@ -6,16 +6,45 @@ class Generator_Db_Table
     protected $_table;
     protected $_db;
 
-    public function __construct($table, $config)
-    {
+    public function __construct($table, $config) {
+
         $this->_table = $table;
         $this->_config = $config;
         $this->_db = Zend_Db_Table::getDefaultAdapter();
     }
 
-    public function generateMultilangFields()
-    {
-        $fieldsDescription = Generator_Db::describeTable($this->_table);
+    public function generateAllFields() {
+
+        $this->generateMultilangFields();
+        $this->generateFileFields();
+        $this->generateVideoFields();
+        $this->generateMapFields();
+    }
+
+    protected function _describeTable() {
+
+        try {
+
+            return Generator_Db::describeTable($this->_table);
+
+        } catch (Exception $exception) {
+
+            if ($exception->getCode() == Generator_Db::ISVIEW) {
+
+                echo  "Skipping {$this->_table} \n";
+                return null;
+            }
+
+            Throw $exception;
+        }
+    }
+
+    public function generateMultilangFields() {
+
+        $fieldsDescription = $this->_describeTable();
+        if (is_null($fieldsDescription)) {
+            return null;
+        }
         foreach ($fieldsDescription as $field) {
 
             if ($field->isMultilang()) {
@@ -49,8 +78,8 @@ class Generator_Db_Table
         }
     }
 
-    public function generateFileFields()
-    {
+    public function generateFileFields() {
+
         $fsoFields = array(
             'BaseName' => array(
                 'type' => 'VARCHAR(255)',
@@ -69,7 +98,12 @@ class Generator_Db_Table
                 'comment' => '[FSO]'
             ),
         );
-        $fieldsDescription = Generator_Db::describeTable($this->_table);
+
+        $fieldsDescription = $this->_describeTable();
+        if (is_null($fieldsDescription)) {
+            return null;
+        }
+
         foreach ($fieldsDescription as $field) {
 
             if ($field->isFile()) {
@@ -91,9 +125,8 @@ class Generator_Db_Table
         }
     }
 
-    public function generateVideoFields()
-    {
-        //Borrar el campo que indica el tipo
+    public function generateVideoFields() {
+
         $videoFields = array(
             'Thumbnail' => array(
                 'type' => "varchar(120) NOT NULL DEFAULT ''",
@@ -109,7 +142,11 @@ class Generator_Db_Table
             )
         );
 
-        $fieldsDescription = Generator_Db::describeTable($this->_table);
+        $fieldsDescription = $this->_describeTable();
+        if (is_null($fieldsDescription)) {
+            return null;
+        }
+
         foreach ($fieldsDescription as $field) {
 
             if ($field->isVideo()) {
@@ -123,6 +160,43 @@ class Generator_Db_Table
                     if (!isset($fieldsDescription[$newFieldName])) {
 
                         $this->_addField($field,$newFieldName, $videoFieldData, '[video]');
+                    }
+                }
+            }
+        }
+    }
+
+    public function generateMapFields() {
+
+        $mapFields = array(
+            'Lng' => array(
+                'type' => "decimal(10,7)",
+                'comment' => ''
+            ),
+            'Lat' => array(
+                'type' => "decimal(10,7)",
+                'comment' => ''
+            ),
+        );
+
+        $fieldsDescription = $this->_describeTable();
+        if (is_null($fieldsDescription)) {
+            return null;
+        }
+
+        foreach ($fieldsDescription as $field) {
+
+            if ($field->isMap()) {
+
+                $fieldName = $field->getName();
+
+                foreach ($mapFields as $mapFieldName => $mapFieldData) {
+
+                    $newFieldName = $fieldName . $mapFieldName;
+
+                    if (!isset($fieldsDescription[$newFieldName])) {
+
+                        $this->_addField($field,$newFieldName, $mapFieldData, '[map]');
                     }
                 }
             }

@@ -1,6 +1,8 @@
 <?php
 class Generator_Db
 {
+    const ISVIEW = 3001;
+
     /**
      * Añade foreign keys y comments a la descripción de la tabla
      * @param unknown_type $tablename
@@ -67,7 +69,7 @@ class Generator_Db
         $sql = 'show create table ' . $db->quoteIdentifier($tablename);
         $createTable = $db->fetchRow($sql);
         if (isset($createTable['Create View'])) {
-            throw new Exception($db->quoteIdentifier($tablename) . " is a view. Skipping.");
+            throw new Exception($db->quoteIdentifier($tablename) . " is a view. Skipping.", self::ISVIEW);
         }
 
         $data = explode("\n", $createTable['Create Table']);
