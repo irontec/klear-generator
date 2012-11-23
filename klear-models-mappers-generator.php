@@ -7,8 +7,12 @@
 
 // Define application environment
 defined('APPLICATION_ENV')
-|| define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+|| define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
 
+$currentPath = getcwd();
+$svnRevision = `svnversion $currentPath`;
+
+define('REVISION', $svnRevision);
 define('VERSION', '0.1');
 define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
 
@@ -44,7 +48,7 @@ try {
         'docs' => array(
             'author' => 'Irontec',
             'license' => 'http://framework.zend.com/license/new-bsd     New BSD License',
-            'copyright' => 'ZF model generator'
+            'copyright' => 'ZF model generator Rev. ' . REVISION
         ),
         'include' => array(
             'addrequire' => false,
@@ -135,18 +139,11 @@ try {
     $tables = $dbAdapter->listTables();
 
     $modelCreator->setTableList($tables);
-
     $modelCreator->doItAll();
-    
-    $svn = file('.svn/entries');
-    $svnrev = trim($svn[3]);
-    $data = '[' . date('r') . ']' . ' revision: ' . $svnrev . "\n";
-    file_put_contents($path . $namespace . '/generator.log', $data, FILE_APPEND);
 
     echo "Done!\n";
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";
-    echo $e->getMessage() . "\n";
     exit(1);
 } catch (Exception $e) {
     echo "Error: ";
