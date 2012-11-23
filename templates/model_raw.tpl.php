@@ -547,7 +547,7 @@ else : ?>
     public function get<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>($where = null, $orderBy = null)
     {
         if ($this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> === null) {
-            $related = $this->getMapper()->loadRelated('<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+            $related = $this->getMapper()->loadRelated('parent', '<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> = array_shift($related);
         }
 
@@ -578,7 +578,7 @@ else : ?>
     public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null)
     {
         if ($this->_<?=$this->_getRelationName($key, 'dependent')?> === null) {
-            $related = $this->getMapper()->loadRelated('<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+            $related = $this->getMapper()->loadRelated('dependent', '<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'dependent')?> = $related;
         }
 
@@ -654,7 +654,7 @@ else : ?>
     public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null)
     {
         if ($this->_<?=$this->_getRelationName($key, 'dependent')?> === null) {
-            $related = $this->getMapper()->loadRelated('<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+            $related = $this->getMapper()->loadRelated('dependent', '<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'dependent')?> = $related;
         }
 

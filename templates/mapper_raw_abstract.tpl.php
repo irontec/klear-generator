@@ -195,6 +195,7 @@ abstract class MapperAbstract
     /**
      * Fetches related object and sets it for the instance.
      *
+     * @param string $type the relation type to load: parent or dependent
      * @param string $name Key or table name of the relation (key or table) to load
      * @param <?=$namespace?>Model\ModelAbstract $model
      * @param $conditions string|array of condition(s)
@@ -202,7 +203,7 @@ abstract class MapperAbstract
      * @throws \Exception If the relation could not be found
      * @return $model
      */
-    public function loadRelated($name, $model, $conditions = null, $orderBy = null)
+    public function loadRelated($type, $name, $model, $conditions = null, $orderBy = null)
     {
         // Create a Zend_Db_Table_Row from the data in $model
         $row = $this->getDbTable()->createRow($this->toArray($model));
@@ -211,32 +212,28 @@ abstract class MapperAbstract
         $dependents = $model->getDependentList();
 
         $method = 'find';
-        $type = 'dependent';
-
         $name = ucfirst($name);
 
         // Determine what $name is: key name or table name. Try keys first
-        if (array_key_exists($name, $parents)) {
+        if ('parent' == $type && array_key_exists($name, $parents)) {
 
             $property = $parents[$name]['property'];
             $object_table_name = $parents[$name]['table_name'];
             $table_class = '<?=$namespace?>\Mapper\\Sql\\DbTable\\' . $object_table_name;
             $rule = $name;
-            $type = 'parent';
 
-        } elseif (array_key_exists($name, $dependents)) {
+        } elseif ('dependent' == $type && array_key_exists($name, $dependents)) {
 
             $property = $dependents[$name]['property'];
             $object_table_name = $dependents[$name]['table_name'];
             $ref_table_name = '<?=$namespace?>\Mapper\\Sql\\DbTable\\' . $object_table_name;
             $rule = $name;
-
         } else {
 <?php if (!empty($this->_loggerName)):?>
             $this->_logger->log("$name is not a defined relationship in loadRelated for " . get_class($this), \Zend_Log::ERR);
 
 <?php endif; ?>
-            throw new \Exception("Relationship $name not found", 1006);
+            throw new \Exception(ucfirst($type) . " relationship $name not found", 1006);
         }
 
         $this->setRelationObjectName($object_table_name);
@@ -323,7 +320,6 @@ abstract class MapperAbstract
                 $table_name = get_class($this->getDbTable());
             }
 
-
             $reference = $ref_table->getReference($table_name, $rule);
             if (empty($reference)) {
     <?php if (!empty($this->_loggerName)):?>
@@ -354,26 +350,27 @@ abstract class MapperAbstract
                 }
             }
 
-            //parent ¿?
             $where = array();
             $pos = 0;
-            foreach ($reference["refColumns"] as $key => $val) {
 
-                if (isset($reference["columns"][$pos])) {
+            if ($type == 'parent') {
 
-                    $fieldName = $reference["columns"][$pos];
+                foreach ($reference["refColumns"] as $key => $val) {
 
-                    if (isset($row->$fieldName)) {
+                    if (isset($reference["columns"][$pos])) {
 
-                        $where[$val] =  $row->$fieldName;
+                        $fieldName = $reference["columns"][$pos];
+
+                        if (isset($row->$fieldName)) {
+
+                            $where[$val] =  $row->$fieldName;
+                        }
                     }
+
+                    $pos++;
                 }
 
-                $pos++;
-            }
-
-            //dependant ¿?
-            if (count($where) < 1) {
+            } else if ($type == 'dependent') {
 
                 $pos = 0;
                 foreach ($reference["columns"] as $key => $val) {
@@ -390,7 +387,6 @@ abstract class MapperAbstract
 
                     $pos++;
                 }
-
             }
 
             if (count($where) < 1) {

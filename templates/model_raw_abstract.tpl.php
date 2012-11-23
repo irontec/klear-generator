@@ -564,50 +564,12 @@ abstract class ModelAbstract implements \IteratorAggregate
     }
 
     /**
-     * Recognize methods for Belongs-To cases:
-     * <code>findBy&lt;field&gt;()</code>
-     * <code>findOneBy&lt;field&gt;()</code>
-     * <code>load&lt;relationship&gt;()</code>
-     *
      * @param string $method
      * @throws Exception if method does not exist
      * @param array $args
      */
     public function __call($method, array $args)
     {
-        $matches = array();
-        $result = null;
-
-        if (preg_match('/^find(One)?By(\w+)?$/', $method, $matches)) {
-            $methods = get_class_methods($this);
-            $check = 'set' . $matches[2];
-
-            $fieldName = $this->varNameToColumn($matches[2]);
-
-            if (!in_array($check, $methods)) {
-<?php if (!empty($this->_loggerName)):?>
-                $this->_logger->log("Invalid field '{$matches[2]}' requested in call for $method in " . get_class($this), \Zend_Log::ERR);
-<?php endif; ?>
-                throw new \Exception(
-                    "Invalid field {$matches[2]} requested for table"
-                );
-            }
-
-            if ($matches[1] != '') {
-                $result = $this->getMapper()->findOneByField($fieldName, $args[0],
-                                                           $this);
-            } else {
-                $result = $this->getMapper()->findByField($fieldName, $args[0],
-                                                        $this);
-            }
-
-            return $result;
-        } elseif (preg_match('/load(\w+)/', $method, $matches)) {
-            $result = $this->getMapper()->loadRelated($matches[1], $this);
-
-            return $result;
-        }
-
 <?php if (!empty($this->_loggerName)):?>
         $this->_logger->log("Unrecoginized method requested in call for '$method' in " . get_class($this), \Zend_Log::ERR);
 <?php endif; ?>

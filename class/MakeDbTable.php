@@ -636,7 +636,7 @@ abstract class MakeDbTable {
 
             $references[]="
         '$key' => array(
-              'columns' => {$columns},
+            'columns' => {$columns},
             'refTableClass' => '{$refTableClass}',
             'refColumns' => {$refColumns}
         )";
