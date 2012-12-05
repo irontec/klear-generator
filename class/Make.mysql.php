@@ -244,6 +244,19 @@ class Make_mysql extends MakeDbTable {
 
         $query=$res_create[0]['Create Table'];
         $lines=explode("\n",$query);
+
+        $tableComment = '';
+        foreach ($lines as $row) {
+            if (preg_match("/.*ENGINE.*COMMENT='(?P<comment>.*)'/", $row, $matches)) {
+                $tableComment = $matches['comment'];
+            }
+        }
+
+        if (stristr($tableComment, '[ignore]')) {
+
+            throw new Exception("Has [ignore] tag");
+        }
+
         $comments=array();
         foreach ($lines as $line) {
             if (preg_match('/`(\w+)`.+COMMENT\s\'(.+)\'/',$line,$comment)) {

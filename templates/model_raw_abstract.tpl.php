@@ -16,7 +16,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 /**
  * Abstract class that is extended by all base models
  *
- * @package <?=$namespace?>Model\Raw  - <?=$this->getTableName();?>
+ * @package <?=$namespace?>Model\Raw
  * @subpackage Model
  * @author <?=$this->_author."\n"?>
  */
