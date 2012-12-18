@@ -43,8 +43,7 @@ try {
         $tables = Zend_Db_Table::getDefaultAdapter()->listTables();
         foreach ($tables as $table) {
             $table = new Generator_Db_Table($table, $klearConfig);
-            $table->generateMultilangFields();
-            $table->generateFileFields();
+            $table->generateAllFields();
         }
     }
 
