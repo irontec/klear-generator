@@ -476,7 +476,7 @@ if($md5Column === true) {
         $this->_<?=$column['normalized']; ?>->setTimezone($defaultTimezone);
 
         if ($returnZendDate) {
-            return new \Zend_Date($this->_<?=$column['normalized']; ?>->format('Y-m-d H:i:s'));
+            return new \Zend_Date($this->_<?=$column['normalized']; ?>->getTimestamp(), Zend_Date::TIMESTAMP);
         }
 
 <?php if ($column['type'] =='date'): ?>

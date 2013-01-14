@@ -64,6 +64,11 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
         return $this->_name;
     }
 
+    public function addReferenceMapEntry($key, $value) {
+
+        $this->_referenceMap[$key] = $value;
+    }
+
     /**
      * Returns the number of rows in the table
      *

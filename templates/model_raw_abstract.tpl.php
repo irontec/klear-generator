@@ -130,7 +130,8 @@ abstract class ModelAbstract implements \IteratorAggregate
 
             if (in_array($fld, $this->_columnsList) and is_null($this->{'_' . $fld})) {
 
-                $this->{'_' . $fld} = $val;
+                $setter = 'set' . ucfirst($fld);
+                $this->$setter($val);
             }
         }
 
