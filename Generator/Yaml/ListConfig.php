@@ -10,9 +10,9 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
     public function __construct($table, $klearConfig, $enabledLanguages = array())
     {
         $this->_enabledLanguages = $enabledLanguages;
-        
+
         $this->_loadTranslator();
-        
+
         $this->_klearConfig = $klearConfig;
         $this->_tableDescription = Generator_Db::describeTable($table);
 
@@ -23,25 +23,25 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $newScreenName = lcfirst($normalizedTable) . 'New_screen';
         $editScreenName = lcfirst($normalizedTable) . 'Edit_screen';
         $delDialogName = lcfirst($normalizedTable) . 'Del_dialog';
-        
+
         $listTitles = $editTitles = $addTitles = $deleteTitles = $askDeleteTitles = array();
-        
+
         $normalizedEntity = $normalizedTable;
-        
+
         $pluralEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($normalizedEntity));
-        
+
         $singularEntity = Generator_Yaml_StringUtils::getSingular($normalizedEntity);
         $singularEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($singularEntity));
-        
+
         if ($singularEntity == $pluralEntity) {
             $pluralEntity = $pluralEntity . '(s)';
         }
-        
+
         $titleSingular = "ngettext('" . $singularEntity . "', '" . $pluralEntity . "', 1)";
         $titlePlural = "ngettext('" . $singularEntity . "', '" . $pluralEntity . "', 0)";
-        
+
         $options = array();
-        
+
         foreach ($this->_enabledLanguages as $languageIden => $languageData) {
             $this->_translate->setLocale($languageData['locale']);
             $listTitles[$languageData['language']] = sprintf($this->_translate->translate('List of %s'), $titlePlural);
@@ -169,10 +169,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
     {
         $blacklist = array();
         foreach ($this->_tableDescription as $field) {
-            if (
-                $field->getType() == 'timestamp' && $field->getDefaultValue() == 'CURRENT_TIMESTAMP'
-                || $field->isUrlIdentifier() || $field->mustBeIgnored()
-            ) {
+            if ($field->isCurrentTimeStamp() || $field->isUrlIdentifier() || $field->mustBeIgnored()) {
                 $blacklist[$field->getName()] = 'true';
             }
         }
@@ -183,7 +180,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
     {
         $blacklist = array();
         foreach ($this->_tableDescription as $field) {
-            if ($field->getType() == 'timestamp' && $field->getDefaultValue() == 'CURRENT_TIMESTAMP') {
+            if ($field->isCurrentTimeStamp()) {
                 $blacklist[$field->getName()] = 'true';
             }
         }

@@ -73,7 +73,12 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function isBoolean()
     {
-        return $this->_description['DATA_TYPE'] == 'tinyint' && $this->getLength() == 1;
+        return $this->getType() == 'tinyint' && $this->getLength() == 1;
+    }
+
+    public function isCurrentTimeStamp()
+    {
+        return $this->getType() == 'timestamp' && $this->getDefaultValue() == 'CURRENT_TIMESTAMP';
     }
 
     public function isEnum()
