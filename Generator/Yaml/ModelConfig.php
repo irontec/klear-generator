@@ -8,11 +8,11 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     public function __construct($table, $namespace, $klearConfig, $enabledLanguages = array())
     {
-        
+
         $this->_enabledLanguages = $enabledLanguages;
-        
+
         $this->_loadTranslator();
-        
+
         $this->_table = $table;
         $this->_namespace = $namespace;
         $this->_klearConfig = $klearConfig;
@@ -105,14 +105,6 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFieldConf(Generator_Db_Field $fieldDesc)
     {
-        /*if (isset($this->_klearConfig->klear->languages)) {
-            foreach ($this->_klearConfig->klear->languages as $language) {
-                $titles[$language] = ucfirst($this->_getFieldName($fieldDesc));
-            }
-        } else {
-            $titles = array('es' => ucfirst($this->_getFieldName($fieldDesc)));
-        }*/
-        
         $translated = false;
         $titles = array('i18n' => array());
         foreach ($this->_enabledLanguages as $languageIden => $languageData) {
@@ -121,13 +113,13 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                 $translated = true;
             }
             $titles['i18n'][$languageData['language']] = $this->_translate->{'translate'}(ucfirst($this->_getFieldName($fieldDesc)));
-        }        
-        
+        }
+
         if ($translated == false) {
             unset($titles['i18n']);
             $titles = "_('" . ucfirst($this->_getFieldName($fieldDesc)) . "')";
-        } 
-        
+        }
+
         $data = array(
             'title' => $titles,
             'required' => $fieldDesc->isNullable()? 'false' : 'true',
@@ -267,17 +259,6 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getBooleanSelector()
     {
-        /*if (isset($this->_klearConfig->klear->languages)) {
-            foreach ($this->_klearConfig->klear->languages as $language) {
-                $yes[$language] = '"Yes"';
-                $no[$language] = '"No"';
-            }
-        } else {
-            $yes['es'] = '"Sí"';
-            $no['es'] = '"No"';
-        }*/
-        
-        
         foreach ($this->_enabledLanguages as $languageIden => $languageData) {
             $this->_translate->setLocale($languageData['locale']);
             $no[$languageData['language']] = '"'.$this->_translate->translate('No').'"';
@@ -379,16 +360,6 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFileSource($fieldDesc)
     {
-        /*if (isset($this->_klearConfig->klear->languages)) {
-            foreach ($this->_klearConfig->klear->languages as $language) {
-                $download[$language] = '"Download file"';
-                $upload[$language] = '"Upload file"';
-            }
-        } else {
-            $download['es'] = '"Descargar fichero"';
-            $upload['en'] = '"Subir fichero"';
-        }*/
-        
         foreach ($this->_enabledLanguages as $languageIden => $languageData) {
             $this->_translate->setLocale($languageData['locale']);
             $download[$languageData['language']] = '"'.$this->_translate->translate('Download file').'"';
