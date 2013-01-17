@@ -1,40 +1,41 @@
 <?php
 class Generator_Db_Field implements \IteratorAggregate
 {
-    protected $_fieldDesc;
-    public function __construct($description)
-    {
-        $this->_fieldDesc = $description;
-    }
+    protected $_description;
 
-    public function getName()
+    public function __construct(array $description)
     {
-        return $this->_fieldDesc['COLUMN_NAME'];
-    }
-
-    public function isPrimaryKey()
-    {
-        return (bool)$this->_fieldDesc['PRIMARY'];
-    }
-
-    public function getTableName()
-    {
-        return $this->_fieldDesc['TABLE_NAME'];
+        $this->_description = $description;
     }
 
     public function getIterator()
     {
-        return $this->_fieldDesc;
+        return new \ArrayIterator($this->_description);
+    }
+
+    public function getName()
+    {
+        return $this->_description['COLUMN_NAME'];
+    }
+
+    public function isPrimaryKey()
+    {
+        return (bool)$this->_description['PRIMARY'];
+    }
+
+    public function getTableName()
+    {
+        return $this->_description['TABLE_NAME'];
     }
 
     public function getType()
     {
-        return $this->_fieldDesc['DATA_TYPE'];
+        return $this->_description['DATA_TYPE'];
     }
 
     public function getLength()
     {
-        return $this->_fieldDesc['LENGTH'];
+        return $this->_description['LENGTH'];
     }
 
     public function getLengthDefinition()
@@ -42,103 +43,113 @@ class Generator_Db_Field implements \IteratorAggregate
         if ($this->getLength()) {
             return '(' . $this->getLength() . ')';
         }
+        return '';
     }
 
     public function isNullable()
     {
-        return $this->_fieldDesc['NULLABLE'];
+        return $this->_description['NULLABLE'];
     }
 
     public function hasDefaultValue()
     {
-        return isset($this->_fieldDesc['DEFAULT']) && !empty($this->_fieldDesc['DEFAULT']);
+        return isset($this->_description['DEFAULT']) && !empty($this->_description['DEFAULT']);
     }
 
     public function getDefaultValue()
     {
-        return $this->_fieldDesc['DEFAULT'];
+        return $this->_description['DEFAULT'];
     }
 
     public function hasComment()
     {
-        return isset($this->_fieldDesc['COMMENT']) && !empty($this->_fieldDesc['COMMENT']);
+        return isset($this->_description['COMMENT']) && !empty($this->_description['COMMENT']);
     }
 
     public function getComment()
     {
-        return $this->hasComment()? $this->_fieldDesc['COMMENT'] : '';
-    }
-
-    public function isMultilang()
-    {
-        return $this->hasComment() && stristr($this->getComment(), '[ml]');
-    }
-
-    public function isFile()
-    {
-        return $this->hasComment() && stristr($this->getComment(), '[file]');
-    }
-
-    public function isVideo()
-    {
-        return $this->hasComment() && stristr($this->getComment(), '[video]');
-    }
-
-    public function isMap()
-    {
-        return $this->hasComment() && stristr($this->getComment(), '[map]');
-    }
-
-    public function isRelationship()
-    {
-        return isset($this->_fieldDesc['RELATED']);
-    }
-
-    public function isPassword()
-    {
-        return
-            $this->_fieldDesc['DATA_TYPE'] == 'varchar' && stristr($this->getName(), 'passw')
-            || stristr($this->getComment(), '[password]');
+        return $this->hasComment()? $this->_description['COMMENT'] : '';
     }
 
     public function isBoolean()
     {
-        return $this->_fieldDesc['DATA_TYPE'] == 'tinyint' && $this->getLength() == 1;
+        return $this->_description['DATA_TYPE'] == 'tinyint' && $this->getLength() == 1;
     }
 
     public function isEnum()
     {
-        return preg_match('/enum\(.*\)$/', $this->_fieldDesc['DATA_TYPE']);
+        return preg_match('/enum\(.*\)$/', $this->_description['DATA_TYPE']);
+    }
+
+    public function isFile()
+    {
+        return $this->_checkTag('file');
     }
 
     public function isFso()
     {
-        return (bool)stristr($this->getComment(), '[fso]');
-    }
-
-    public function getRelatedTable()
-    {
-        return $this->_fieldDesc['RELATED']['TABLE'];
-    }
-
-    public function getRelatedField()
-    {
-        return $this->_fieldDesc['RELATED']['FIELD'];
+        return $this->_checkTag('fso');
     }
 
     public function isHtml()
     {
-        return (bool)stristr($this->getComment(), '[html]');
+        return $this->_checkTag('html');
+    }
+
+    public function isMap()
+    {
+        return $this->_checkTag('map');
+    }
+
+    public function isMultilang()
+    {
+        return $this->_checkTag('ml');
+    }
+
+    /**
+     * Returns true if field has "[password]" or field type is varchar and name has 'passwd' substring on it.
+     * @return boolean
+     */
+    public function isPassword()
+    {
+        return
+            $this->_description['DATA_TYPE'] == 'varchar' && stristr($this->getName(), 'passw')
+            || $this->_checkTag('password');
+    }
+
+    public function isRelationship()
+    {
+        return isset($this->_description['RELATED']);
     }
 
     public function isUrlIdentifier()
     {
-        return (bool)stristr($this->getComment(), '[urlIdentifier]') || (bool)stristr($this->getComment(), '[urlIdentifier:');
+        return $this->_checkTag('urlIdentifier') || (bool)stristr($this->getComment(), '[urlIdentifier:');
+    }
+
+    public function isVideo()
+    {
+        return $this->_checkTag('video');
     }
 
     public function mustBeIgnored()
     {
-        return (bool)stristr($this->getComment(), '[ignore]');
+        return $this->_checkTag('ignore');
+    }
+
+    protected function _checkTag($tag)
+    {
+        return $this->hasComment() && stristr($this->getComment(), '[' . $tag . ']');
+    }
+
+    public function getRelatedTable()
+    {
+        return $this->_description['RELATED']['TABLE'];
+    }
+
+    public function getRelatedField()
+    {
+        return $this->_description['RELATED']['FIELD'];
     }
 
 }
