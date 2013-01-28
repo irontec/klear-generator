@@ -9,7 +9,7 @@ class Generator_Yaml_Factory
     protected $_configWriter;
 
     protected $_tables = null;
-    
+
     protected $_availableLanguages = array(
             'Espanol' => array(
                     'title' => 'Español',
@@ -36,7 +36,7 @@ class Generator_Yaml_Factory
                     'language' => 'fr',
                     'locale' => 'fr_FR')
             );
-    
+
     protected $_enabledLanguages = array();
 
     public function __construct($basePath, $namespace, $override = false)
@@ -51,14 +51,14 @@ class Generator_Yaml_Factory
 
 
         $this->_klearConfig = new Zend_Config_Ini(APPLICATION_PATH. '/configs/klear.ini', APPLICATION_ENV);
-        
+
         $this->_loadLanguages();
-        
+
         $this->_configWriter = new Zend_Config_Writer_Yaml();
 
         $this->_createDirStructure();
     }
-    
+
     protected function _loadLanguages()
     {
         foreach ($this->_klearConfig->klear->languages as $language) {
@@ -144,7 +144,7 @@ class Generator_Yaml_Factory
         return $this;
     }
 
-    public function createModelListFiles()
+    public function createModelListFiles($generateLinks = false)
     {
         $entities = $this->_getEntities();
         foreach ($entities as $table) {
@@ -155,10 +155,20 @@ class Generator_Yaml_Factory
                 $contents = "#include conf.d/mapperList.yaml\n";
                 $contents .= "#include conf.d/actions.yaml\n\n";
                 $contents .= file_get_contents($listFile);
+
+                if ($generateLinks) {
+                    $contents = $this->_insertLinks($contents);
+                }
+
                 file_put_contents($listFile, $contents);
             }
         }
         return $this;
+    }
+
+    protected function _insertLinks($contents)
+    {
+        return preg_replace('/\n\s{4}(\S+_(screen)|(dialog)):/', '$0 &$1Link', $contents);
     }
 
     public function createMainConfigFile()
@@ -207,13 +217,13 @@ class Generator_Yaml_Factory
         return $this->_tables;
     }
 
-    public function createAllFiles()
+    public function createAllFiles($generateLinks = false)
     {
         $this->createErrorsFile();
         $this->createMappersListFile();
         $this->createActionsFile();
         $this->createModelFiles();
-        $this->createModelListFiles();
+        $this->createModelListFiles($generateLinks);
         $this->createMainConfigFile();
     }
 }

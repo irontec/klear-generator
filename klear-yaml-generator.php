@@ -15,13 +15,19 @@ $loader->registerNamespace('Generator');
 try {
     $opts = new Zend_Console_Getopt(
             array(
-                    'application|a=s' => 'Zend Framework APPLICATION_PATH'
+                    'application|a=s' => 'Zend Framework APPLICATION_PATH',
+                    'generate-links|l' => 'Generate links for each screen/dialog'
             )
     );
     $opts->parse();
 
     if (!$opts->getOption('application')) {
         throw new Zend_Console_Getopt_Exception('Parse error', $opts->getUsageMessage());
+    }
+
+    $generateLinks = false;
+    if ($opts->getOption('generate-links')) {
+        $generateLinks = true;
     }
 
     define('APPLICATION_PATH', realpath($opts->getOption('application')));
@@ -49,19 +55,19 @@ try {
     $klearDir = APPLICATION_PATH . '/configs/klear';
     $yamlFactory = new Generator_Yaml_Factory($klearDir, $namespace);
     $yamlFactory->createAllFiles();
-    
-    
+
+
     $svn = file('.svn/entries');
     $svnrev = trim($svn[3]);
     $data = '[' . date('r') . ']' . ' revision: ' . $svnrev . "\n";
     file_put_contents($klearDir . '/generator.log', $data, FILE_APPEND);
-    
-    
+
+
     // Sistema base en raw, siempre se sobreescribe
     $klearDirRaw = APPLICATION_PATH . '/configs/klearRaw';
     $rawYamlFactory = new Generator_Yaml_Factory($klearDirRaw, $namespace, true);
-    $rawYamlFactory->createAllFiles();
-    
+    $rawYamlFactory->createAllFiles($generateLinks);
+
     $svn = file('.svn/entries');
     $svnrev = trim($svn[3]);
     $data = '[' . date('r') . ']' . ' revision: ' . $svnrev . "\n";
