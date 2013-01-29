@@ -56,11 +56,19 @@ try {
     $yamlFactory = new Generator_Yaml_Factory($klearDir, $namespace);
     $yamlFactory->createAllFiles();
 
-
-    $svn = file('.svn/entries');
-    $svnrev = trim($svn[3]);
-    $data = '[' . date('r') . ']' . ' revision: ' . $svnrev . "\n";
-    file_put_contents($klearDir . '/generator.log', $data, FILE_APPEND);
+    //Guardamos la revisión del svn actual
+    $output = array();
+    exec('svn info', $output);
+    $revision = 'undefined';
+    foreach ($output as $outLine) {
+        $lineData = explode(':', $outLine, 2);
+        if (isset($lineData[1]) && stristr($lineData[0], 'rev')) {
+            $revision = trim($lineData[1]);
+            break;
+        }
+    }
+    $svnData = '[' . date('r') . ']' . ' revision: ' . $revision . "\n";
+    file_put_contents($klearDir . '/generator.log', $svnData, FILE_APPEND);
 
 
     // Sistema base en raw, siempre se sobreescribe
@@ -68,10 +76,8 @@ try {
     $rawYamlFactory = new Generator_Yaml_Factory($klearDirRaw, $namespace, true);
     $rawYamlFactory->createAllFiles($generateLinks);
 
-    $svn = file('.svn/entries');
-    $svnrev = trim($svn[3]);
-    $data = '[' . date('r') . ']' . ' revision: ' . $svnrev . "\n";
-    file_put_contents($klearDirRaw . '/generator.log', $data, FILE_APPEND);
+    file_put_contents($klearDirRaw . '/generator.log', $svnData, FILE_APPEND);
+
 
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";
