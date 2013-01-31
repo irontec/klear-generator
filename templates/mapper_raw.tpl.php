@@ -14,7 +14,7 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
  */
 
 /**
- * Data Mapper implementation for <?=$namespace?>Model\<?=$this->_className."\n"?>
+ * Data Mapper implementation for <?=$namespace?>Model\<?=$this->_className . "\n"?>
  *
  * @package <?=$namespace?>Mapper\Sql
  * @subpackage Raw
@@ -25,7 +25,7 @@ namespace <?=$namespace?>Mapper\Sql\Raw;
 class <?=$this->_className?> extends <?=$this->_includeMapper->getParentClass() . "\n"?>
 {
     protected $_modelName = '<?=$namespace?>\Model\\<?=$this->_className?>';
-    
+
 <?php $vars = $this->_includeMapper->getVars();
 if (!empty($vars)) {
 echo "\n$vars\n";
@@ -70,7 +70,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
     /**
      * Returns the DbTable class associated with this mapper
      *
-     * @return <?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className. "\n";?>
+     * @return <?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className . "\n";?>
      */
     public function getDbTable()
     {
@@ -225,9 +225,9 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 <?php if ($this->_softDeleteColumn != null):
         foreach ($this->_columns[$this->getTableName()] as $column):
             if ($column['field'] == $this->_softDeleteColumn) :
-            
+
                 $param = 1;
-                
+
                 if ($column['phptype'] == 'boolean') {
                     $param = 'true';
                 } elseif (preg_match('/date/', $column['type'])) {
@@ -240,7 +240,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             endif;
         endforeach;
 ?>
-        
+
         } catch (\Exception $e) {
 <?php if (! empty($this->_loggerName)):?>
             $message = 'Exception encountered while attempting to delete ' . get_class($this);
@@ -270,9 +270,9 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             $result = false;
         }
-        
+
          $result = $model->save();
-            
+
 <?php else: ?>
 <?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
             $where = array();
@@ -296,7 +296,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             if ($this->_cache) {
 
-                $this->_cache->remove(get_class($model)."_".$model->getPrimarykey());
+                $this->_cache->remove(get_class($model) . "_" . $model->getPrimarykey());
             }
 
             $fileObjects = array();
@@ -350,7 +350,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
      * Saves current row
      * @return boolean If the save action was successful
      */
-     public function save(\<?=$namespace?>Model\<?=$this->_className?> $model)
+    public function save(\<?=$namespace?>Model\<?=$this->_className?> $model)
     {
         return $this->_save($model, false, false);
     }
@@ -384,7 +384,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             if (!is_null($fso) && $fso->mustFlush()) {
 
                 $fileObjects[$item] = $fso;
-                $specMethod = 'get'.$item.'Specs';
+                $specMethod = 'get' . $item . 'Specs';
                 $fileSpects[$item] = $model->$specMethod();
 
                 $fileSizeSetter = 'set' . $fileSpects[$item]['sizeName'];
@@ -496,7 +496,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                         $ref = $refTable->getReference('<?=$namespace?>\Mapper\\Sql\\DbTable\\' . $values["table_name"], $constraint);
                         $column = array_shift($ref["columns"]);
 
-                        $cacheHash = '<?=$namespace?>\Model\\' . $values["table_name"]. '_'. $data[$column] .'_' . $constraint;
+                        $cacheHash = '<?=$namespace?>\Model\\' . $values["table_name"] . '_' . $data[$column] .'_' . $constraint;
 
                         if ($this->_cache->test($cacheHash)) {
 
@@ -517,8 +517,9 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 <?php endif;?>
             } else {
                 $this->getDbTable()
-                     ->update($data,
-                              array(<?php echo "\n                                 ";
+                     ->update(
+                         $data,
+                         array(<?php echo "\n                                 ";
             if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') {
                 $fields = count($this->_primaryKey[$this->getTablename()]['fields']);
                 $i = 0;
@@ -533,8 +534,8 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 echo '\'' . $this->_primaryKey[$this->getTablename()]['field'] . ' = ?\' => $primaryKey';
             }
             echo "\n";?>
-                              )
-                );
+                         )
+                     );
             }
 
             if (is_numeric($primaryKey) && !empty($fileObjects)) {
@@ -562,14 +563,17 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 <?php endif;?>
                           ->saveRecursive(false, $transactionTag);
 <?php else: ?>
-                    $<?=$this->_getClassName($key['foreign_tbl_name'])?> = $model->get<?=$this->_getRelationName($key, 'dependent')?>();
+<?php
+        $relatedModelVarName = lcfirst($this->_getClassName($key['foreign_tbl_name']));
+?>
+                    $<?=$relatedModelVarName?> = $model->get<?=$this->_getRelationName($key, 'dependent')?>();
 
-                    if (!is_array($<?=$this->_getClassName($key['foreign_tbl_name'])?>)) {
+                    if (!is_array($<?=$relatedModelVarName?>)) {
 
-                        $<?=$this->_getClassName($key['foreign_tbl_name'])?> = array($<?=$this->_getClassName($key['foreign_tbl_name'])?>);
+                        $<?=$relatedModelVarName?> = array($<?=$relatedModelVarName?>);
                     }
 
-                    foreach ($<?=$this->_getClassName($key['foreign_tbl_name'])?> as $value) {
+                    foreach ($<?=$relatedModelVarName?> as $value) {
                         $value<?php if ($this->_primaryKey[$this->getTablename()]['phptype'] !== 'array') : ?>
 ->set<?=$this->_getCapital($key['column_name'])?>($primaryKey)
 <?php elseif (is_array($key['column_name'])) :
@@ -654,11 +658,11 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             if ($useTransaction) {
 
-                $this->_cache->save($model->toArray(), get_class($model)."_".$model->getPrimaryKey(), array($transactionTag));
+                $this->_cache->save($model->toArray(), get_class($model) . "_" . $model->getPrimaryKey(), array($transactionTag));
 
             } else {
 
-                $this->_cache->save($model->toArray(), get_class($model)."_".$model->getPrimaryKey());
+                $this->_cache->save($model->toArray(), get_class($model) . "_" . $model->getPrimaryKey());
             }
         }
 
@@ -709,7 +713,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
               ?>->set<?=$column['capital']?>($data->{'<?=$column['field']?>'})<?if ($count> 0) echo "\n                  ";
               endforeach; ?>;
-              
+
         } else if ($data instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
             $entry<?php
                 $count = count($this->_columns[$this->getTableName()]);
@@ -723,7 +727,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
               ?>->set<?=$column['capital']?>($data->get<?=$column['capital']?>())<?if ($count> 0) echo "\n                  ";
               endforeach; ?>;
-              
+
         }
 
         $entry->resetChangeLog()->initChangeLog()->setMapper($this);
