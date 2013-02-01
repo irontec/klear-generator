@@ -146,7 +146,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         }
 
         $data['main']['module'] = 'klearMatrix';
-        $data['defaultScreen'] = $listScreenName;
+        $data['main']['defaultScreen'] = $listScreenName;
 
         $data['screens'] = array(
             $listScreenName => $listScreen,
