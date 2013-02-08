@@ -44,11 +44,14 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
                 'adapter' => 'Klear_Auth_Adapter_Basic'
         );
         
-        foreach ($this->_enabledLanguages as $languageIden => $languageData) {
+        /*foreach ($this->_enabledLanguages as $languageIden => $languageData) {
             $this->_translate->setLocale($languageData['locale']);
             $data['auth']['title']['i18n'][$languageData['language']] = $this->_translate->translate('Access denied');
             $data['auth']['description']['i18n'][$languageData['language']] = $this->_translate->translate('Insert your username');
-        }
+        }*/
+        
+        $data['auth']['title'] = '_("Access denied")';
+        $data['auth']['description'] = '_("Insert your username")';
         
         $data['timezone'] = 'Europe/Madrid';
 
@@ -66,7 +69,7 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
                 $pluralEntity = $pluralEntity . '(s)';
             }
             
-            $entitiesConfig[$normalizedEntity . 'List'] = array(
+            /*$entitiesConfig[$normalizedEntity . 'List'] = array(
                 'title' => array('i18n' => array()),
                 'class' => 'ui-silk-text-list-bullets',
                 'description' => array('i18n' => array())
@@ -77,16 +80,27 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
                 $title = sprintf($this->_translate->translate('List of %s'), $translateString);
                 $entitiesConfig[$normalizedEntity . 'List']['title']['i18n'][$languageData['language']] = $title;
                 $entitiesConfig[$normalizedEntity . 'List']['description']['i18n'][$languageData['language']] = $title;
-            }
+            }*/
+            
+            $translateString = "ngettext('" . $singularEntity . "', '" . $pluralEntity . "', 0)";
+            $entitiesConfig[$normalizedEntity . 'List'] = array(
+                    'title' => $translateString,
+                    'class' => 'ui-silk-text-list-bullets',
+                    'description' => '_("List of %s", ' . $translateString . ')'
+            );
         }
 
         
         $menu['General'] = array();
-        foreach ($this->_enabledLanguages as $languageIden => $languageData) {
+        /*foreach ($this->_enabledLanguages as $languageIden => $languageData) {
             $this->_translate->setLocale($languageData['locale']);
             $menu['General']['title']['i18n'][$languageData['language']] = $this->_translate->translate('Main management');
             $menu['General']['description']['i18n'][$languageData['language']] = $this->_translate->translate('Main management');
-        }
+        }*/
+        
+        $menu['General']['title'] = '_("Main management")';
+        
+        $menu['General']['description'] = '_("Main management")';
         
         $menu['General']['submenus'] = $entitiesConfig;
 

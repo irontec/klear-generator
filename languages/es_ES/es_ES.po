@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Klear-Public\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-20 16:23+0100\n"
-"PO-Revision-Date: 2012-11-21 12:07+0100\n"
+"POT-Creation-Date: 2013-02-08 11:32+0100\n"
+"PO-Revision-Date: 2013-02-08 11:35+0100\n"
 "Last-Translator: Lander Ontoria <lander@irontec.com>\n"
 "Language-Team: Irontec-Klear <lander+klear@irontec.com>\n"
 "Language: \n"
@@ -167,159 +167,199 @@ msgid "UpdatedOn"
 msgstr "Modificado"
 
 #: generator/common-strings.php:52
+msgid "StartTime"
+msgstr "Tiempo de inicio"
+
+#: generator/common-strings.php:53
+msgid "EndTime"
+msgstr "Tiempo de fin"
+
+#: generator/common-strings.php:54
 msgid "Identifier"
 msgstr "Identificador"
 
-#: generator/common-strings.php:53
+#: generator/common-strings.php:55
 msgid "Iden"
 msgstr "Identificador"
 
-#: generator/common-strings.php:54
+#: generator/common-strings.php:56
 msgid "Order"
 msgstr "Orden"
 
-#: generator/common-strings.php:55
+#: generator/common-strings.php:57
 msgid "Value"
 msgstr "Valor"
 
-#: generator/common-strings.php:57
+#: generator/common-strings.php:59
 msgid "Title"
 msgstr "Título"
 
-#: generator/common-strings.php:58
+#: generator/common-strings.php:60
 msgid "Subtitle"
 msgstr "Subtítulo"
 
-#: generator/common-strings.php:59
+#: generator/common-strings.php:61
 msgid "Intro"
 msgstr "Introducción"
 
-#: generator/common-strings.php:60
+#: generator/common-strings.php:62
 msgid "Introduction"
 msgstr "Introducción"
 
-#: generator/common-strings.php:61
+#: generator/common-strings.php:63
 msgid "Description"
 msgstr "Descripción"
 
-#: generator/common-strings.php:62
+#: generator/common-strings.php:64
 msgid "Text"
 msgstr "Texto"
 
-#: generator/common-strings.php:64
+#: generator/common-strings.php:66
 msgid "Subject"
 msgstr "Asunto"
 
-#: generator/common-strings.php:65
+#: generator/common-strings.php:67
 msgid "Message"
 msgstr "Mensaje"
 
-#: generator/common-strings.php:67
+#: generator/common-strings.php:69
 msgid "Section"
 msgstr "Sección"
 
-#: generator/common-strings.php:68
+#: generator/common-strings.php:70
 msgid "Sections"
 msgstr "Secciones"
 
-#: generator/common-strings.php:69
+#: generator/common-strings.php:71
 msgid "Content"
 msgstr "Contenido"
 
-#: generator/common-strings.php:71
+#: generator/common-strings.php:72
+msgid "Html"
+msgstr ""
+
+#: generator/common-strings.php:74
 msgid "Website"
 msgstr "Sitio web"
 
-#: generator/common-strings.php:72
+#: generator/common-strings.php:75
 msgid "Url"
 msgstr "Url"
 
-#: generator/common-strings.php:73
+#: generator/common-strings.php:76
 msgid "Link"
 msgstr "Enlace"
 
-#: generator/common-strings.php:74
+#: generator/common-strings.php:77
 msgid "Slug"
 msgstr ""
 
-#: generator/common-strings.php:76
+#: generator/common-strings.php:79
 msgid "Type"
 msgstr "Tipo"
 
-#: generator/common-strings.php:77
+#: generator/common-strings.php:80
+msgid "Other"
+msgstr "Otro"
+
+#: generator/common-strings.php:81
 msgid "Price"
 msgstr "Precio"
 
-#: generator/common-strings.php:78
+#: generator/common-strings.php:82
 msgid "Quantity"
 msgstr "Cantidad"
 
-#: generator/common-strings.php:80
+#: generator/common-strings.php:84
 msgid "Category"
 msgstr "Categoría"
 
-#: generator/Generator/Yaml/ModelConfig.php:283
+#: generator/common-strings.php:86
 msgid "No"
 msgstr "No"
 
-#: generator/Generator/Yaml/ModelConfig.php:284
+#: generator/common-strings.php:87
 msgid "Yes"
 msgstr "Si"
 
-#: generator/Generator/Yaml/ModelConfig.php:394
-msgid "Download file"
-msgstr "Descargar fichero"
+#: generator/common-strings.php:88
+msgid "Off"
+msgstr "Apagado"
 
-#: generator/Generator/Yaml/ModelConfig.php:395
+#: generator/common-strings.php:89
+msgid "On"
+msgstr "Encendido"
+
+#: generator/common-strings.php:90
+msgid "Unasigned"
+msgstr "Sin asignar"
+
+#: generator/common-strings.php:91
+msgid "Error"
+msgstr ""
+
+#: generator/common-strings.php:92
+msgid "Success"
+msgstr "Éxitoso"
+
+#: generator/common-strings.php:93
+msgid "OK"
+msgstr ""
+
+#: generator/common-strings.php:94
+msgid "Public"
+msgstr "Público"
+
+#: generator/common-strings.php:95
+msgid "Private"
+msgstr "Privado"
+
+#: generator/common-strings.php:96
+msgid "Visibility"
+msgstr "Visibilidad"
+
+#: generator/common-strings.php:102
 msgid "Upload file"
 msgstr "Subir fichero"
 
-#: generator/Generator/Yaml/ListConfig.php:36
-#: generator/Generator/Yaml/MainConfig.php:70
+#: generator/common-strings.php:103
+msgid "Download"
+msgstr "Descargar fichero"
+
+#: generator/common-strings.php:104
+msgid "Download file"
+msgstr "Descargar fichero"
+
+#: generator/common-strings.php:105
 #, php-format
 msgid "List of %s"
 msgstr "Listado de %s"
 
-#: generator/Generator/Yaml/ListConfig.php:37
+#: generator/common-strings.php:106
 #, php-format
 msgid "Edit %s"
 msgstr "Editar %s"
 
-#: generator/Generator/Yaml/ListConfig.php:38
+#: generator/common-strings.php:107
 #, php-format
 msgid "Add %s"
 msgstr "Añadir %s"
 
-#: generator/Generator/Yaml/ListConfig.php:39
+#: generator/common-strings.php:108
 #, php-format
 msgid "Delete %s"
 msgstr "Borrar %s"
 
-#: generator/Generator/Yaml/ListConfig.php:40
+#: generator/common-strings.php:109
 #, php-format
 msgid "You want to delete this %s?"
 msgstr "¿Quieres eliminar %s?"
 
-#: generator/Generator/Yaml/ListConfig.php:41
+#: generator/common-strings.php:110
 msgid "Options"
 msgstr "Opciones"
 
-#: generator/Generator/Yaml/MainConfig.php:10
-msgid "coche"
-msgid_plural "coches"
-msgstr[0] "xCoche"
-msgstr[1] "xCoches"
-
-#: generator/Generator/Yaml/MainConfig.php:54
-msgid "Access denied"
-msgstr "Acceso denegado"
-
-#: generator/Generator/Yaml/MainConfig.php:55
-msgid "Insert your username"
-msgstr "Introduce tu nombre de usuario"
-
-#: generator/Generator/Yaml/MainConfig.php:80
-#: generator/Generator/Yaml/MainConfig.php:81
+#: generator/common-strings.php:111
 msgid "Main management"
 msgstr "Gestión general"
 
@@ -334,11 +374,25 @@ msgstr "Notas"
 
 #: generator/doc/default/IncludeAbstract.html:29
 msgid "tags"
-msgstr ""
+msgstr "etiquetas"
 
 #: generator/doc/__filesource/fsource_default__IncludeAbstract.php.html:18
 msgid "src-line"
 msgstr ""
+
+#: generator/Generator/Yaml/klear/klear.yaml:22
+msgid "Access denied"
+msgstr "Acceso denegado"
+
+#: generator/Generator/Yaml/klear/klear.yaml:23
+msgid "Insert your username"
+msgstr "Introduce tu nombre de usuario"
+
+#~ msgid "coche"
+
+#~ msgid_plural "coches"
+#~ msgstr[0] "xCoche"
+#~ msgstr[1] "xCoches"
 
 #~ msgid "Listado de "
 #~ msgstr "Listado Castellano de"

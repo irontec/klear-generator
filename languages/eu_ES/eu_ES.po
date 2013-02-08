@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Klear-Public\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-20 16:43+0100\n"
-"PO-Revision-Date: 2012-11-20 16:43+0100\n"
+"POT-Creation-Date: 2013-02-08 11:54+0100\n"
+"PO-Revision-Date: 2013-02-08 11:58+0100\n"
 "Last-Translator: Lander Ontoria <lander@irontec.com>\n"
 "Language-Team: Irontec-Klear <lander+klear@irontec.com>\n"
 "Language: \n"
@@ -124,7 +124,7 @@ msgstr "Fitxategi mota"
 
 #: generator/common-strings.php:37
 msgid "BaseName"
-msgstr ""
+msgstr "Oinarrizko izena"
 
 #: generator/common-strings.php:38
 msgid "Image"
@@ -167,153 +167,199 @@ msgid "UpdatedOn"
 msgstr "Aldatua"
 
 #: generator/common-strings.php:52
+msgid "StartTime"
+msgstr "Hasiera"
+
+#: generator/common-strings.php:53
+msgid "EndTime"
+msgstr "Amaiera"
+
+#: generator/common-strings.php:54
 msgid "Identifier"
 msgstr "Identifikatzailea"
 
-#: generator/common-strings.php:53
+#: generator/common-strings.php:55
 msgid "Iden"
 msgstr "Identifikatzailea"
 
-#: generator/common-strings.php:54
+#: generator/common-strings.php:56
 msgid "Order"
 msgstr "Ordena"
 
-#: generator/common-strings.php:55
+#: generator/common-strings.php:57
 msgid "Value"
 msgstr "Balioa"
 
-#: generator/common-strings.php:57
+#: generator/common-strings.php:59
 msgid "Title"
 msgstr "Izenburua"
 
-#: generator/common-strings.php:58
+#: generator/common-strings.php:60
 msgid "Subtitle"
 msgstr "Azpi izenburua"
 
-#: generator/common-strings.php:59
+#: generator/common-strings.php:61
 msgid "Intro"
 msgstr "Sarrera"
 
-#: generator/common-strings.php:60
+#: generator/common-strings.php:62
 msgid "Introduction"
 msgstr "Sarrera"
 
-#: generator/common-strings.php:61
+#: generator/common-strings.php:63
 msgid "Description"
 msgstr "Deskribapena"
 
-#: generator/common-strings.php:62
+#: generator/common-strings.php:64
 msgid "Text"
 msgstr "Testua"
 
-#: generator/common-strings.php:64
+#: generator/common-strings.php:66
 msgid "Subject"
 msgstr "Gaia"
 
-#: generator/common-strings.php:65
+#: generator/common-strings.php:67
 msgid "Message"
 msgstr "Mezua"
 
-#: generator/common-strings.php:67
+#: generator/common-strings.php:69
 msgid "Section"
 msgstr "Atala"
 
-#: generator/common-strings.php:68
+#: generator/common-strings.php:70
 msgid "Sections"
 msgstr "Atalak"
 
-#: generator/common-strings.php:69
+#: generator/common-strings.php:71
 msgid "Content"
 msgstr "Edukia"
 
-#: generator/common-strings.php:71
+#: generator/common-strings.php:72
+msgid "Html"
+msgstr ""
+
+#: generator/common-strings.php:74
 msgid "Website"
 msgstr "Web tokia"
 
-#: generator/common-strings.php:72
+#: generator/common-strings.php:75
 msgid "Url"
 msgstr ""
 
-#: generator/common-strings.php:73
+#: generator/common-strings.php:76
 msgid "Link"
 msgstr "Esteka"
 
-#: generator/common-strings.php:74
+#: generator/common-strings.php:77
 msgid "Slug"
 msgstr ""
 
-#: generator/common-strings.php:76
+#: generator/common-strings.php:79
 msgid "Type"
 msgstr "Mota"
 
-#: generator/common-strings.php:77
+#: generator/common-strings.php:80
+msgid "Other"
+msgstr "Bestelakoa"
+
+#: generator/common-strings.php:81
 msgid "Price"
 msgstr "Prezioa"
 
-#: generator/common-strings.php:78
+#: generator/common-strings.php:82
 msgid "Quantity"
 msgstr "Zenbatekoa"
 
-#: generator/common-strings.php:80
+#: generator/common-strings.php:84
 msgid "Category"
 msgstr "Kategoria"
 
-#: generator/Generator/Yaml/ModelConfig.php:283
+#: generator/common-strings.php:86
 msgid "No"
 msgstr "Ez"
 
-#: generator/Generator/Yaml/ModelConfig.php:284
+#: generator/common-strings.php:87
 msgid "Yes"
 msgstr "Bai"
 
-#: generator/Generator/Yaml/ModelConfig.php:394
-msgid "Download file"
-msgstr "Fitxategia jaitsi"
+#: generator/common-strings.php:88
+msgid "Off"
+msgstr "Desaktibatua"
 
-#: generator/Generator/Yaml/ModelConfig.php:395
+#: generator/common-strings.php:89
+msgid "On"
+msgstr "Piztuta"
+
+#: generator/common-strings.php:90
+msgid "Unasigned"
+msgstr "Esleigabea"
+
+#: generator/common-strings.php:91
+msgid "Error"
+msgstr "Akatsa"
+
+#: generator/common-strings.php:92
+msgid "Success"
+msgstr "Arrakastatsua"
+
+#: generator/common-strings.php:93
+msgid "OK"
+msgstr "OK"
+
+#: generator/common-strings.php:94
+msgid "Public"
+msgstr "Publikoa"
+
+#: generator/common-strings.php:95
+msgid "Private"
+msgstr "Pribatua"
+
+#: generator/common-strings.php:96
+msgid "Visibility"
+msgstr "Ikuspena"
+
+#: generator/common-strings.php:102
 msgid "Upload file"
 msgstr "Fitxategia igo"
 
-#: generator/Generator/Yaml/ListConfig.php:38
-#: generator/Generator/Yaml/MainConfig.php:66
+#: generator/common-strings.php:103
+msgid "Download"
+msgstr "Fitxategia jaitsi"
+
+#: generator/common-strings.php:104
+msgid "Download file"
+msgstr "Fitxategia jaitsi"
+
+#: generator/common-strings.php:105
 #, php-format
 msgid "List of %s"
 msgstr "%s-(r)en zerrenda"
 
-#: generator/Generator/Yaml/ListConfig.php:39
+#: generator/common-strings.php:106
 #, php-format
 msgid "Edit %s"
 msgstr "%s editatu"
 
-#: generator/Generator/Yaml/ListConfig.php:40
+#: generator/common-strings.php:107
 #, php-format
 msgid "Add %s"
 msgstr "%s gehitu"
 
-#: generator/Generator/Yaml/ListConfig.php:41
+#: generator/common-strings.php:108
 #, php-format
 msgid "Delete %s"
 msgstr "%s ezabatu"
 
-#: generator/Generator/Yaml/ListConfig.php:42
+#: generator/common-strings.php:109
 #, php-format
 msgid "You want to delete this %s?"
 msgstr "%s ezabatu nahi duzu?"
 
-#: generator/Generator/Yaml/ListConfig.php:43
+#: generator/common-strings.php:110
 msgid "Options"
 msgstr "Aukerak"
 
-#: generator/Generator/Yaml/MainConfig.php:49
-msgid "Access denied"
-msgstr "Sarbide ukatua"
-
-#: generator/Generator/Yaml/MainConfig.php:50
-msgid "Insert your username"
-msgstr "Zure erabiltzaile izena sartu"
-
-#: generator/Generator/Yaml/MainConfig.php:76
-#: generator/Generator/Yaml/MainConfig.php:77
+#: generator/common-strings.php:111
 msgid "Main management"
 msgstr "Kudeaketa orokorra"
 
@@ -324,13 +370,21 @@ msgstr "Eremua"
 
 #: generator/doc/default/_IncludeAbstract.php.html:59
 msgid "notes"
-msgstr ""
+msgstr "Oharrak"
 
 #: generator/doc/default/IncludeAbstract.html:29
 msgid "tags"
-msgstr ""
+msgstr "etiketa"
 
 #: generator/doc/__filesource/fsource_default__IncludeAbstract.php.html:18
 msgid "src-line"
 msgstr ""
+
+#: generator/Generator/Yaml/klear/klear.yaml:22
+msgid "Access denied"
+msgstr "Sarbide ukatua"
+
+#: generator/Generator/Yaml/klear/klear.yaml:23
+msgid "Insert your username"
+msgstr "Zure erabiltzaile izena sartu"
 

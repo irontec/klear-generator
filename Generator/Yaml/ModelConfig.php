@@ -105,7 +105,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFieldConf(Generator_Db_Field $fieldDesc)
     {
-        $translated = false;
+        /*$translated = false;
         $titles = array('i18n' => array());
         foreach ($this->_enabledLanguages as $languageIden => $languageData) {
             $this->_translate->setLocale($languageData['locale']);
@@ -119,7 +119,10 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             unset($titles['i18n']);
             $titles = "_('" . ucfirst($this->_getFieldName($fieldDesc)) . "')";
         }
+        */
 
+        $titles = "_('" . ucfirst($this->_getFieldName($fieldDesc)) . "')";
+        
         $data = array(
             'title' => $titles,
             'required' => $fieldDesc->isNullable()? 'false' : 'true',
@@ -211,18 +214,16 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             'data' => 'mapper'
         );
 
-        if (isset($this->_klearConfig->klear->languages)) {
+        /*if (isset($this->_klearConfig->klear->languages)) {
             foreach ($this->_klearConfig->klear->languages as $language) {
                 $unasigned[$language] = 'unasigned';
             }
         } else {
             $unasigned = array('es' => 'Sin asignar');
         }
-
+        */
         if ($fieldDesc->isNullable()) {
-            $data["'null'"] = array(
-                'i18n' => $unasigned
-            );
+            $data["'null'"] = '_("Unasigned")';
         }
 
         $relatedTableFields = Generator_Db::describeTable($fieldDesc->getRelatedTable());
@@ -259,13 +260,17 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getBooleanSelector()
     {
-        foreach ($this->_enabledLanguages as $languageIden => $languageData) {
+        /*foreach ($this->_enabledLanguages as $languageIden => $languageData) {
             $this->_translate->setLocale($languageData['locale']);
             $no[$languageData['language']] = '"'.$this->_translate->translate('No').'"';
             $yes[$languageData['language']] = '"'.$this->_translate->translate('Yes').'"';
-        }
+        }*/
 
-        return array(
+        $no = '_("No")';
+        $yes = '_("Yes")';
+        
+        
+        /*return array(
             'data' => 'inline',
             'values' => array(
                 "'0'" => array(
@@ -279,6 +284,17 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     )
                 )
             )
+        );*/
+        return array(
+                'data' => 'inline',
+                'values' => array(
+                        "'0'" => array(
+                                'title' => $no
+                        ),
+                        "'1'" => array(
+                                'title' => $yes
+                        )
+                )
         );
     }
 
@@ -360,12 +376,16 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFileSource($fieldDesc)
     {
-        foreach ($this->_enabledLanguages as $languageIden => $languageData) {
+        /*foreach ($this->_enabledLanguages as $languageIden => $languageData) {
             $this->_translate->setLocale($languageData['locale']);
             $download[$languageData['language']] = '"'.$this->_translate->translate('Download file').'"';
             $upload[$languageData['language']] = '"'.$this->_translate->translate('Upload file').'"';
-        }
+        }*/
 
+        
+        $download = '_("Download file")';
+        $upload = '_("Upload file")';
+        
         return array(
             'data' => 'fso',
             'size_limit' => '20M',
@@ -376,17 +396,13 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     'type' => 'command',
                     'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Download_command',
                     'icon' => 'ui-silk-bullet-disk',
-                    'title' => array(
-                        'i18n' => $download
-                    ),
+                    'title' => $download,
                     'onNull' => 'hide'
                 ),
                 'upload' => array(
                     'type' => 'command',
                     'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Upload_command',
-                    'title' => array(
-                        'i18n' => $upload
-                    ),
+                    'title' => $upload,
                     'class' => 'qq-uploader',
                     'onNull' => 'show'
                 ),

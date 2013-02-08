@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Klear-Public\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-20 15:56+0100\n"
-"PO-Revision-Date: 2012-11-20 15:56+0100\n"
+"POT-Creation-Date: 2013-02-08 11:30+0100\n"
+"PO-Revision-Date: 2013-02-08 11:32+0100\n"
 "Last-Translator: Lander Ontoria <lander@irontec.com>\n"
 "Language-Team: Irontec-Klear <lander+klear@irontec.com>\n"
 "Language: \n"
@@ -19,7 +19,6 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: generator/common-strings.php:7
-#: generator/Generator/Yaml/ModelConfig.php:125
 msgid "Login"
 msgstr ""
 
@@ -61,7 +60,7 @@ msgstr "Firstname"
 
 #: generator/common-strings.php:17
 msgid "LastName"
-msgstr "Lastaname"
+msgstr "Lastname"
 
 #: generator/common-strings.php:18
 msgid "PhoneNumber"
@@ -168,157 +167,199 @@ msgid "UpdatedOn"
 msgstr "Updated on"
 
 #: generator/common-strings.php:52
+msgid "StartTime"
+msgstr "Start time"
+
+#: generator/common-strings.php:53
+msgid "EndTime"
+msgstr "End time"
+
+#: generator/common-strings.php:54
 msgid "Identifier"
 msgstr ""
 
-#: generator/common-strings.php:53
+#: generator/common-strings.php:55
 msgid "Iden"
 msgstr ""
 
-#: generator/common-strings.php:54
+#: generator/common-strings.php:56
 msgid "Order"
 msgstr ""
 
-#: generator/common-strings.php:55
+#: generator/common-strings.php:57
 msgid "Value"
 msgstr ""
 
-#: generator/common-strings.php:57
+#: generator/common-strings.php:59
 msgid "Title"
 msgstr ""
 
-#: generator/common-strings.php:58
+#: generator/common-strings.php:60
 msgid "Subtitle"
 msgstr ""
 
-#: generator/common-strings.php:59
+#: generator/common-strings.php:61
 msgid "Intro"
 msgstr ""
 
-#: generator/common-strings.php:60
+#: generator/common-strings.php:62
 msgid "Introduction"
 msgstr ""
 
-#: generator/common-strings.php:61
+#: generator/common-strings.php:63
 msgid "Description"
 msgstr ""
 
-#: generator/common-strings.php:62
+#: generator/common-strings.php:64
 msgid "Text"
 msgstr ""
 
-#: generator/common-strings.php:64
+#: generator/common-strings.php:66
 msgid "Subject"
 msgstr ""
 
-#: generator/common-strings.php:65
+#: generator/common-strings.php:67
 msgid "Message"
 msgstr ""
 
-#: generator/common-strings.php:67
+#: generator/common-strings.php:69
 msgid "Section"
 msgstr ""
 
-#: generator/common-strings.php:68
+#: generator/common-strings.php:70
 msgid "Sections"
 msgstr ""
 
-#: generator/common-strings.php:69
+#: generator/common-strings.php:71
 msgid "Content"
 msgstr ""
 
-#: generator/common-strings.php:71
-msgid "Website"
-msgstr ""
-
 #: generator/common-strings.php:72
-msgid "Url"
-msgstr ""
-
-#: generator/common-strings.php:73
-msgid "Link"
+msgid "Html"
 msgstr ""
 
 #: generator/common-strings.php:74
-msgid "Slug"
+msgid "Website"
+msgstr ""
+
+#: generator/common-strings.php:75
+msgid "Url"
 msgstr ""
 
 #: generator/common-strings.php:76
-msgid "Type"
+msgid "Link"
 msgstr ""
 
 #: generator/common-strings.php:77
-msgid "Price"
+msgid "Slug"
 msgstr ""
 
-#: generator/common-strings.php:78
-msgid "Quantity"
+#: generator/common-strings.php:79
+msgid "Type"
 msgstr ""
 
 #: generator/common-strings.php:80
+msgid "Other"
+msgstr ""
+
+#: generator/common-strings.php:81
+msgid "Price"
+msgstr ""
+
+#: generator/common-strings.php:82
+msgid "Quantity"
+msgstr ""
+
+#: generator/common-strings.php:84
 msgid "Category"
 msgstr ""
 
-#: generator/Generator/Yaml/ModelConfig.php:124
-msgid "hola"
-msgstr ""
-
-#: generator/Generator/Yaml/ModelConfig.php:282
+#: generator/common-strings.php:86
 msgid "No"
 msgstr ""
 
-#: generator/Generator/Yaml/ModelConfig.php:283
+#: generator/common-strings.php:87
 msgid "Yes"
 msgstr ""
 
-#: generator/Generator/Yaml/ModelConfig.php:393
-msgid "Download file"
+#: generator/common-strings.php:88
+msgid "Off"
 msgstr ""
 
-#: generator/Generator/Yaml/ModelConfig.php:394
+#: generator/common-strings.php:89
+msgid "On"
+msgstr ""
+
+#: generator/common-strings.php:90
+msgid "Unasigned"
+msgstr ""
+
+#: generator/common-strings.php:91
+msgid "Error"
+msgstr ""
+
+#: generator/common-strings.php:92
+msgid "Success"
+msgstr ""
+
+#: generator/common-strings.php:93
+msgid "OK"
+msgstr ""
+
+#: generator/common-strings.php:94
+msgid "Public"
+msgstr ""
+
+#: generator/common-strings.php:95
+msgid "Private"
+msgstr ""
+
+#: generator/common-strings.php:96
+msgid "Visibility"
+msgstr ""
+
+#: generator/common-strings.php:102
 msgid "Upload file"
 msgstr ""
 
-#: generator/Generator/Yaml/ListConfig.php:36
-#: generator/Generator/Yaml/MainConfig.php:65
+#: generator/common-strings.php:103
+msgid "Download"
+msgstr ""
+
+#: generator/common-strings.php:104
+msgid "Download file"
+msgstr ""
+
+#: generator/common-strings.php:105
 #, php-format
 msgid "List of %s"
 msgstr ""
 
-#: generator/Generator/Yaml/ListConfig.php:37
+#: generator/common-strings.php:106
 #, php-format
 msgid "Edit %s"
 msgstr ""
 
-#: generator/Generator/Yaml/ListConfig.php:38
+#: generator/common-strings.php:107
 #, php-format
 msgid "Add %s"
 msgstr ""
 
-#: generator/Generator/Yaml/ListConfig.php:39
+#: generator/common-strings.php:108
 #, php-format
 msgid "Delete %s"
 msgstr ""
 
-#: generator/Generator/Yaml/ListConfig.php:40
+#: generator/common-strings.php:109
 #, php-format
 msgid "You want to delete this %s?"
 msgstr ""
 
-#: generator/Generator/Yaml/ListConfig.php:41
+#: generator/common-strings.php:110
 msgid "Options"
 msgstr ""
 
-#: generator/Generator/Yaml/MainConfig.php:49
-msgid "Access denied"
-msgstr ""
-
-#: generator/Generator/Yaml/MainConfig.php:50
-msgid "Insert your username"
-msgstr ""
-
-#: generator/Generator/Yaml/MainConfig.php:75
-#: generator/Generator/Yaml/MainConfig.php:76
+#: generator/common-strings.php:111
 msgid "Main management"
 msgstr ""
 
@@ -337,5 +378,13 @@ msgstr ""
 
 #: generator/doc/__filesource/fsource_default__IncludeAbstract.php.html:18
 msgid "src-line"
+msgstr ""
+
+#: generator/Generator/Yaml/klear/klear.yaml:22
+msgid "Access denied"
+msgstr ""
+
+#: generator/Generator/Yaml/klear/klear.yaml:23
+msgid "Insert your username"
 msgstr ""
 
