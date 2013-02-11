@@ -52,11 +52,11 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             $options[$languageData['language']] = $this->_translate->translate('Options');
         }*/
 
-        $listTitles = '_("List of %s", ' . $titlePlural . '")';
-        $editTitles = '_("Edit %s", ' . $titleSingular . '")';
-        $addTitles = '_("Add %s", ' . $titleSingular . '")';
-        $deleteTitles = '_("Delete %s", ' . $titleSingular . '")';
-        $askDeleteTitles = '_("You want to delete this %s?", ' . $titleSingular . '")';
+        $listTitles = '_("List of %s", ' . $titlePlural . ')';
+        $editTitles = '_("Edit %s", ' . $titleSingular . ')';
+        $addTitles = '_("Add %s", ' . $titleSingular . ')';
+        $deleteTitles = '_("Delete %s", ' . $titleSingular . ')';
+        $askDeleteTitles = '_("You want to delete this %s?", ' . $titleSingular . ')';
         $options = '_("Options")';
         
         
