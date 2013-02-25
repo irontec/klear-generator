@@ -124,14 +124,46 @@ abstract class ModelAbstract implements \IteratorAggregate
      */
     protected $_defaultUserLanguage = '';
 
+    
+    protected function _isMultiLang($column)
+    {
+        $columnsMeta = $this->getColumnsMeta();
+        if (!isset($columnsMeta[$column])) {
+            return false;
+        }
+        if (!in_array("ml", $columnsMeta[$column])) {
+            return false;
+        }
+        return true;
+    }
+
+    
     public function sanitize ()
     {
+        $languages = $this->getAvailableLangs();
+    
         foreach ($this->_defaultValues as $fld => $val) {
 
-            if (in_array($fld, $this->_columnsList) and is_null($this->{'_' . $fld})) {
-
-                $setter = 'set' . ucfirst($fld);
-                $this->$setter($val);
+            if (!in_array($fld, $this->_columnsList)) {
+                //Existe un campo definido como defaultValue, que no existe...
+                continue;
+            }
+    
+            if ($this->_isMultiLang($fld)) {
+                //ml field!
+                foreach ($languages as $lang) {
+                    if  (is_null($this->{'_' . $fld . ucfirst($lang)} )) {
+                        $setter = 'set' . ucfirst($fld);
+                        $this->$setter($val, $lang);
+                    }   
+                }
+                
+            } else {
+            
+                if (is_null($this->{'_' . $fld})) {
+                    $setter = 'set' . ucfirst($fld);
+                    $this->$setter($val);
+                }
             }
         }
 
