@@ -121,7 +121,59 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
         */
 
-        $titles = "_('" . ucfirst($this->_getFieldName($fieldDesc)) . "')";
+        
+        $this->_translate->setLocale('es_ES');
+        
+        $title = ucfirst($this->_getFieldName($fieldDesc));
+        
+        $normalizedEntity = ucfirst(Generator_Yaml_StringUtils::toCamelCase($title));
+        
+        $pluralEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($normalizedEntity));
+        
+        $pluralEntity = Generator_Yaml_StringUtils::getPlural($pluralEntity);
+        
+        $singularEntity = Generator_Yaml_StringUtils::getSingular($normalizedEntity);
+        $singularEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($singularEntity));
+        
+        
+        
+        $titles = "_('" . $normalizedEntity . "')";
+        
+        if ($this->_translate->isTranslated($singularEntity)) {
+        
+            $trans = $this->_translate->translate($singularEntity);
+        
+            if (is_array($trans)) {
+        
+                $titles = "ngettext('" . $singularEntity . "', '" . $pluralEntity . "', 1)";
+            }
+        
+        }
+        
+        if ($singularEntity == $pluralEntity) {
+            $pluralEntity = $pluralEntity . '(s)';
+        }
+        /*
+        
+        $titles = "_('" . $title . "')";
+        
+            
+        $singularEntity = Generator_Yaml_StringUtils::getSingular($title);
+        
+        if ($this->_translate->isTranslated($singularEntity)) {
+            
+            $trans = $this->_translate->translate($singularEntity);
+            
+            if (is_array($trans)) {
+                
+                $titles = "ngettext('" . $singularEntity . "', '" . $title . "', 1)";
+            }
+            
+        }
+        
+        */
+        
+       
         
         $data = array(
             'title' => $titles,

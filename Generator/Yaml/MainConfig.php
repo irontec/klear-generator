@@ -65,9 +65,9 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
             $singularEntity = Generator_Yaml_StringUtils::getSingular($normalizedEntity);
             $singularEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($singularEntity));
                         
-            if ($singularEntity == $pluralEntity) {
+            /*if ($singularEntity == $pluralEntity) {
                 $pluralEntity = $pluralEntity . '(s)';
-            }
+            }*/
             
             /*$entitiesConfig[$normalizedEntity . 'List'] = array(
                 'title' => array('i18n' => array()),

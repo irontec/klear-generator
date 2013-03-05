@@ -77,7 +77,39 @@ try {
     $rawYamlFactory->createAllFiles($generateLinks);
 
     file_put_contents($klearDirRaw . '/generator.log', $svnData, FILE_APPEND);
-
+    
+    
+    $dirFiles=array(
+    'languages/',
+    'languages/common-strings.php',
+    'languages/en_US',
+    'languages/en_US/en_US.mo',
+    'languages/en_US/en_US.po',
+    'languages/es_ES',
+    'languages/es_ES/es_ES.mo',
+    'languages/es_ES/es_ES.po',
+    'languages/eu_ES',
+    'languages/eu_ES/eu_ES.mo',
+    'languages/eu_ES/eu_ES.po'
+            );
+    
+    foreach ($dirFiles as $file) {
+        
+        $orig = __DIR__ . '/' . $file;
+        
+        $dest = APPLICATION_PATH . '/' . $file;
+        
+        if (!file_exists($dest)) {
+            
+            if (is_dir($orig)) {
+                mkdir($dest);
+            } else {
+                copy($orig , $dest);
+            }
+            
+        } 
+    }
+    
 
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";

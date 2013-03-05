@@ -57,7 +57,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $addTitles = '_("Add %s", ' . $titleSingular . ')';
         $deleteTitles = '_("Delete %s", ' . $titleSingular . ')';
         $askDeleteTitles = '_("You want to delete this %s?", ' . $titleSingular . ')';
-        $options = '_("Options")';
+        $options = 'ngettext("Option", "Options", 0)';
         
         
         $listScreen = array(

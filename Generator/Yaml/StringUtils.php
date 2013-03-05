@@ -41,11 +41,39 @@ class Generator_Yaml_StringUtils
 6) Look at end of word for "XES", if found, replace with "X"
  */    
     
+    public static function getPlural($string)
+    {
+        $lastLetters = substr($string, -1);
+        
+        $substitute = null;
+        
+        switch ($lastLetters) {
+            case 'f':
+                $substitute = 'ves';
+                break;
+            case 'o':
+                $substitute = 'oes';
+                break;
+            case 'y':
+                $substitute = 'ies';
+                break;
+        }
+        
+        if ($substitute) {
+            return substr($string, 0, -1) . $substitute;
+        }
+        
+        return $string . 's';
+        
+        
+    }
+    
+    
     public static function getSingular($string)
     {
         $lastLetters = substr($string, -2);
         
-        if ($lastLetters == 'ss') {
+        if ($lastLetters == 'ss'||$lastLetters == 'ws') {
             return $string;
         }
         
