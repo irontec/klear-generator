@@ -686,6 +686,10 @@ abstract class MapperAbstract
                     $select->where("{$column} = ?", $value);
                 }
             }
+        } else if (is_array($value)) {
+
+            $select->where("{$field} in (?)", $value);
+
         } else {
             $select->where("{$field} = ?", $value);
         }
