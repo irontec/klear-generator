@@ -20,7 +20,7 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
 
         
         
-        $data['lang'] = 'Espanol';
+        $data['lang'] = 'es';
         
         $data['langs'] = $this->_enabledLanguages;
         

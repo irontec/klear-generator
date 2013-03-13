@@ -6,9 +6,9 @@ production:
     sitename: MyApp
     logo: images/logo.png
     year: 2012
-    lang: Espanol
+    lang: es
     langs: 
-      Espanol: 
+      es: 
         title: Español
         language: es
         locale: es_ES
