@@ -665,7 +665,7 @@ else : ?>
         $fkName = '<?=$this->_getCapital($key['key_name'])?>';
 
         if (!$avoidLoading && !$this->_isLoaded($fkName)) {
-            $related = $this->getMapper()->loadRelated('dependent', '<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+            $related = $this->getMapper()->loadRelated('dependent', $fkName, $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'dependent')?> = $related;
             $this->_setLoaded($fkName);
         }
