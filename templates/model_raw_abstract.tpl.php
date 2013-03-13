@@ -124,51 +124,10 @@ abstract class ModelAbstract implements \IteratorAggregate
      */
     protected $_defaultUserLanguage = '';
 
-    
-    protected function _isMultiLang($column)
-    {
-        $columnsMeta = $this->getColumnsMeta();
-        if (!isset($columnsMeta[$column])) {
-            return false;
-        }
-        if (!in_array("ml", $columnsMeta[$column])) {
-            return false;
-        }
-        return true;
-    }
-
-    
-    public function sanitize ()
-    {
-        $languages = $this->getAvailableLangs();
-    
-        foreach ($this->_defaultValues as $fld => $val) {
-
-            if (!in_array($fld, $this->_columnsList)) {
-                //Existe un campo definido como defaultValue, que no existe...
-                continue;
-            }
-    
-            if ($this->_isMultiLang($fld)) {
-                //ml field!
-                foreach ($languages as $lang) {
-                    if  (is_null($this->{'_' . $fld . ucfirst($lang)} )) {
-                        $setter = 'set' . ucfirst($fld);
-                        $this->$setter($val, $lang);
-                    }   
-                }
-                
-            } else {
-            
-                if (is_null($this->{'_' . $fld})) {
-                    $setter = 'set' . ucfirst($fld);
-                    $this->$setter($val);
-                }
-            }
-        }
-
-        return $this;
-    }
+    /**
+     * Loaded relation log
+     */
+    protected $_loadedForeignKeyNames = array();
 
     public function __construct()
     {
@@ -209,6 +168,50 @@ abstract class ModelAbstract implements \IteratorAggregate
     }
 
     abstract protected function init();
+
+    protected function _isMultiLang($column)
+    {
+        $columnsMeta = $this->getColumnsMeta();
+        if (!isset($columnsMeta[$column])) {
+            return false;
+        }
+        if (!in_array("ml", $columnsMeta[$column])) {
+            return false;
+        }
+        return true;
+    }
+
+    public function sanitize ()
+    {
+        $languages = $this->getAvailableLangs();
+
+        foreach ($this->_defaultValues as $fld => $val) {
+
+            if (!in_array($fld, $this->_columnsList)) {
+                //Existe un campo definido como defaultValue, que no existe...
+                continue;
+            }
+
+            if ($this->_isMultiLang($fld)) {
+                //ml field!
+                foreach ($languages as $lang) {
+                    if  (is_null($this->{'_' . $fld . ucfirst($lang)} )) {
+                        $setter = 'set' . ucfirst($fld);
+                        $this->$setter($val, $lang);
+                    }
+                }
+
+            } else {
+
+                if (is_null($this->{'_' . $fld})) {
+                    $setter = 'set' . ucfirst($fld);
+                    $this->$setter($val);
+                }
+            }
+        }
+
+        return $this;
+    }
 
     protected function _getCurrentLanguage($language = null)
     {
@@ -272,6 +275,23 @@ abstract class ModelAbstract implements \IteratorAggregate
     protected final function _logChange($field)
     {
         $this->_changeLog[] = $field;
+    }
+
+    protected function _setLoaded($foreignKeyName)
+    {
+        $this->_loadedForeignKeyNames[$foreignKeyName] = true;
+    }
+
+    public function setNotLoaded($foreignKeyName)
+    {
+        $this->_loadedForeignKeyNames[$foreignKeyName] = false;
+        return $this;
+    }
+
+    protected function _isLoaded($foreignKeyName)
+    {
+        return isset($this->_loadedForeignKeyNames[$foreignKeyName])
+               && $this->_loadedForeignKeyNames[$foreignKeyName];
     }
 
     protected function getDefaultUserLanguage()

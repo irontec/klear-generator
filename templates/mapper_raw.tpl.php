@@ -555,7 +555,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             if ($recursive) {
 <?php foreach ($this->getDependentTables() as $key) : ?>
-                if ($model->get<?=$this->_getRelationName($key, 'dependent')?>(false) !== null) {
+                if ($model->get<?=$this->_getRelationName($key, 'dependent')?>(null, null, true) !== null) {
 <?php if ($key['type'] !== 'many') : ?>
                     $model->get<?=$this->_getRelationName($key, 'dependent')?>()
 <?php if ($this->_primaryKey[$this->getTablename()]['phptype'] !== 'array') : ?>

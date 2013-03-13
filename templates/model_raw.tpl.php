@@ -536,6 +536,7 @@ else : ?>
         $this->set<?=$this->_getCapital($key['column_name'])?>($primaryKey);
 <?php endif; ?>
 
+        $this->_setLoaded('<?=$this->_getCapital($key['key_name'])?>');
         return $this;
     }
 
@@ -544,11 +545,14 @@ else : ?>
      * TODO: Mejorar esto para los casos en que la relación no exista. Ahora mismo siempre se pediría el padre
      * @return \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
-    public function get<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>($where = null, $orderBy = null)
+    public function get<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>($where = null, $orderBy = null, $avoidLoading = false)
     {
-        if ($this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> === null) {
-            $related = $this->getMapper()->loadRelated('parent', '<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+        $fkName = '<?=$this->_getCapital($key['key_name'])?>';
+
+        if (!$avoidLoading && !$this->_isLoaded($fkName)) {
+            $related = $this->getMapper()->loadRelated('parent', $fkName, $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> = array_shift($related);
+            $this->_setLoaded($fkName);
         }
 
         return $this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>;
@@ -566,6 +570,7 @@ else : ?>
     public function set<?=$this->_getRelationName($key, 'dependent')?>(\<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data)
     {
         $this->_<?=$this->_getRelationName($key, 'dependent')?> = $data;
+        $this->_setLoaded('<?=$this->_getCapital($key['key_name'])?>');
         return $this;
     }
 
@@ -575,11 +580,14 @@ else : ?>
      * @param boolean $load Load the object if it is not already
      * @return \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
-    public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null)
+    public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null, $avoidLoading = false)
     {
-        if ($this->_<?=$this->_getRelationName($key, 'dependent')?> === null) {
-            $related = $this->getMapper()->loadRelated('dependent', '<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
+        $fkName = '<?=$this->_getCapital($key['key_name'])?>';
+
+        if (!$avoidLoading && !$this->_isLoaded($fkName)) {
+            $related = $this->getMapper()->loadRelated('dependent', $fkName, $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'dependent')?> = $related;
+            $this->_setLoaded($fkName);
         }
 
         return $this->_<?=$this->_getRelationName($key, 'dependent')?>;
@@ -642,6 +650,7 @@ else : ?>
     public function add<?=$this->_getRelationName($key, 'dependent')?>(\<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data)
     {
         $this->_<?=$this->_getRelationName($key, 'dependent')?>[] = $data;
+        $this->_setLoaded('<?=$this->_getCapital($key['key_name'])?>');
         return $this;
     }
 
@@ -651,11 +660,14 @@ else : ?>
      * @param boolean $load Load the object if it is not already
      * @return array The array of \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
-    public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null)
+    public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null, $avoidLoading = false)
     {
-        if ($this->_<?=$this->_getRelationName($key, 'dependent')?> === null) {
+        $fkName = '<?=$this->_getCapital($key['key_name'])?>';
+
+        if (!$avoidLoading && !$this->_isLoaded($fkName)) {
             $related = $this->getMapper()->loadRelated('dependent', '<?=$this->_getCapital($key['key_name'])?>', $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'dependent')?> = $related;
+            $this->_setLoaded($fkName);
         }
 
         return $this->_<?=$this->_getRelationName($key, 'dependent')?>;
