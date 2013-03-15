@@ -6,11 +6,17 @@ class Generator_Db_Table
     protected $_table;
     protected $_db;
 
-    public function __construct($table, $config) {
+    public function __construct($table, $config, $dbWriter = null) {
 
         $this->_table = $table;
         $this->_config = $config;
         $this->_db = Zend_Db_Table::getDefaultAdapter();
+
+        if (is_null($dbWriter)) {
+            $this->_dbWriter = $this->_db;
+        } else {
+            $this->_dbWriter = $dbWriter;
+        }
     }
 
     public function generateAllFields() {
@@ -69,7 +75,7 @@ class Generator_Db_Table
 
                         $query .= ' AFTER ' . $this->_db->quoteIdentifier($field->getName());
 
-                        $this->_db->query($query);
+                        $this->_dbWriter->query($query);
 
                         echo  "$newFieldName added to {$this->_table} \n";
                     }
@@ -119,7 +125,7 @@ class Generator_Db_Table
 
                 $query = 'ALTER TABLE ' . $this->_db->quoteIdentifier($field->getTableName())
                      . ' DROP ' .  $field->getName();
-                $this->_db->query($query);
+                $this->_dbWriter->query($query);
                 echo  $field->getName() . " deleted in {$this->_table} \n";
             }
         }
@@ -217,7 +223,7 @@ class Generator_Db_Table
 
         $query .= ' AFTER ' . $this->_db->quoteIdentifier($field->getName());
 
-        $this->_db->query($query);
+        $this->_dbWriter->query($query);
 
         echo  "$newFieldName added to {$this->_table} \n";
     }

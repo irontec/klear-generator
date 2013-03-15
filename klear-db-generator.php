@@ -14,13 +14,20 @@ $loader->registerNamespace('Generator');
 try {
     $opts = new Zend_Console_Getopt(
         array(
-            'application|a=s' => 'Zend Framework APPLICATION_PATH'
+            'application|a=s' => 'Zend Framework APPLICATION_PATH',
+            'generate-delta|d=s' => 'Generate Delta instead of modifying database'
         )
     );
     $opts->parse();
 
     if (!$opts->getOption('application')) {
         throw new Zend_Console_Getopt_Exception('Parse error', $opts->getUsageMessage());
+    }
+
+    $deltaWriter = null;
+    if ($opts->getOption('generate-delta')) {
+        $deltaPath = realpath($opts->getOption('generate-delta'));
+        $deltaWriter = new Generator_Db_FakeAdapter($deltaPath);
     }
 
     define('APPLICATION_PATH', realpath($opts->getOption('application')));
@@ -42,7 +49,7 @@ try {
         /** Generate Model Configuration Files **/
         $tables = Zend_Db_Table::getDefaultAdapter()->listTables();
         foreach ($tables as $table) {
-            $table = new Generator_Db_Table($table, $klearConfig);
+            $table = new Generator_Db_Table($table, $klearConfig, $deltaWriter);
             $table->generateAllFields();
         }
     }
