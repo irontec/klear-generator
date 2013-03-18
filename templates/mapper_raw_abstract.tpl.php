@@ -621,6 +621,18 @@ abstract class MapperAbstract
     }
 
     /**
+     * Fetches one rows optionally filtered by where, order, limit, and offset
+     *
+     * @param string $where Where clause
+     * @param string $order Fields to order by
+     * @return <?=$namespace?>Model\ModelAbstract|null
+     */
+    public function fetchOne($where = null, $order = null)
+    {
+        return $this->fetchList($where, $order, 1);
+    }
+
+    /**
      * Fetches all rows
      * optionally filtered by where, order, limit and offset
      * returns a 3d-array of the result
