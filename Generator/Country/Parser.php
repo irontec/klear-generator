@@ -102,6 +102,8 @@ class Generator_Country_Parser
         $mapper = new $mapperName;
         $conts = array();
         
+        $countryListTmp = array();
+        
         foreach ($this->_languages as $lang) {
             $url = str_replace("%lang%", $lang, self::INDEX_URL);
             
@@ -120,6 +122,11 @@ class Generator_Country_Parser
                 
                 $codeSetter = $this->_countryCodeSetter; 
                 $nameSetter = $this->_countryNameSetter;
+                
+                if (!$countryName || empty($countryName)) {
+                    $countryName = 'undefined';
+                }
+                
                 $country->$codeSetter($code);
                 $country->$nameSetter($countryName, $lang);
                 

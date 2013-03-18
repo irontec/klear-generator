@@ -177,10 +177,43 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         
         $data = array(
             'title' => $titles,
-            'required' => $fieldDesc->isNullable()? 'false' : 'true',
             'type' => $this->_getFieldDataType($fieldDesc),
 //             'readonly' => '${auth.readOnly}'
         );
+        
+
+        $isRequired = $fieldDesc->isNullable()? false : true;
+        
+        if ($fieldDesc->hasDefaultValue()) {
+            $data['defaultValue'] = $fieldDesc->getDefaultValue();
+        }
+        
+        if ($isRequired && !$fieldDesc->hasDefaultValue()) {
+            $data['required'] = 'true';
+        }
+        
+        
+        
+//         if ($title == 'Smatc') {
+//             $o = "0";
+//             var_dump($o, empty($o));
+//             $o = 1;
+//             var_dump($o, empty($o));
+//             var_dump($fieldDesc->getDefaultValue(), $fieldDesc->hasDefaultValue());
+        
+//             exit;
+//         }
+        
+//        'required' => $fieldDesc->isNullable()? 'false' : 'true',
+        
+       /* if (($fieldDesc->hasDefaultValue())) {
+            defaultValue
+        
+            //    var_dump($fieldDesc->hasDefaultValue(), $fieldDesc->getDefaultValue()); exit;
+        
+        
+        }*/        
+        
 
 //         if ($fieldDesc['DEFAULT']) {
 //             $data['defaultValue'] = $fieldDesc['DEFAULT'];
@@ -209,6 +242,14 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                 $data['adapter'] = 'Blowfish';
                 break;
         }
+        
+        
+       
+        
+        
+        
+        
+                
 
         return $data;
     }
