@@ -95,7 +95,6 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
      */
     public function countByQuery($where = null)
     {
-        $count = 0;
         $query = $this->_getCountQuery($where);
 
         $row = $this->getAdapter()->query($query)->fetch();
@@ -125,16 +124,16 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
      *
      * @param $where string Where clause to use with the query
      * @param $order string Order clause to use with the query
-     * @param $count int Maximum number of results
+     * @param $limit int Maximum number of results
      * @param $offset int Offset for the limited number of results
      * @return Zend_Db_Select
      */
-    public function fetchList($where = null, $order = null, $count = null,
+    public function fetchList($where = null, $order = null, $limit = null,
         $offset = null
     ) {
         $select = $this->select()
                             ->order($order)
-                            ->limit($count, $offset);
+                            ->limit($limit, $offset);
 
         if (is_array($where)) {
 

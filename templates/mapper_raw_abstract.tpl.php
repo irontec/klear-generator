@@ -592,27 +592,27 @@ abstract class MapperAbstract
     }
 
     /**
-     * Fetches all rows optionally filtered by where, order, count, and offset
+     * Fetches all rows optionally filtered by where, order, limit, and offset
      *
      * @param string $where Where clause
      * @param string $order Fields to order by
-     * @param int $count Number to limit
+     * @param int $limit Number to limit
      * @param int $offset Initial offset for query
      * @return array All rows with the given parameters as objects
      */
-    public function fetchList($where = null, $order = null, $count = null, $offset = null)
+    public function fetchList($where = null, $order = null, $limit = null, $offset = null)
     {
         $resultSet = $this->getDbTable()
                           ->fetchAll(
                                 $this->getDbTable()
-                                     ->fetchList($where, $order, $count, $offset));
+                                     ->fetchList($where, $order, $limit, $offset));
         $entries   = array();
         foreach ($resultSet as $row) {
             $entry = $this->loadModel($row, null);
             $entries[] = $entry;
         }
 
-        if ($count == 1) {
+        if ($limit == 1) {
 
             return array_shift($entries);
         }
@@ -622,32 +622,32 @@ abstract class MapperAbstract
 
     /**
      * Fetches all rows
-     * optionally filtered by where, order, count and offset
+     * optionally filtered by where, order, limit and offset
      * returns a 3d-array of the result
      *
      * @return array
      */
     public function fetchListToArray($where = null, $order = null,
-        $count = null, $offset = null
+        $limit = null, $offset = null
     ) {
         return $this->getDbTable()
                     ->fetchAll($this->getDbTable()
-                                    ->fetchList($where, $order, $count, $offset))
+                                    ->fetchList($where, $order, $limit, $offset))
                     ->toArray();
     }
 
     /**
      * Fetches all rows
-     * Optionally filtered by where, order, count and offset
+     * Optionally filtered by where, order, limit and offset
      *
      * @return Zend_Paginator Paginator with the given parameters
      */
     public function fetchListToPaginator($where = null, $order = null,
-        $count = null, $offset = null
+        $limit = null, $offset = null
     ) {
         return $this->selectToPaginator(
             $this->getDbTable()
-                 ->fetchList($where, $order, $count, $offset)
+                 ->fetchList($where, $order, $limit, $offset)
         );
     }
 
