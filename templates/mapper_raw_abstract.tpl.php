@@ -621,7 +621,7 @@ abstract class MapperAbstract
     }
 
     /**
-     * Fetches one rows optionally filtered by where, order, limit, and offset
+     * Fetches one row optionally filtered by where and order
      *
      * @param string $where Where clause
      * @param string $order Fields to order by
