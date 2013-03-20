@@ -561,7 +561,7 @@ abstract class MapperAbstract
         $resultSet = $this->getDbTable()->fetchAll();
         $entries   = array();
         foreach ($resultSet as $row) {
-            $entry = $this->loadModel($row, null);
+            $entry = $this->loadModel($row);
             $entries[] = $entry;
         }
 
@@ -608,7 +608,7 @@ abstract class MapperAbstract
                                      ->fetchList($where, $order, $limit, $offset));
         $entries   = array();
         foreach ($resultSet as $row) {
-            $entry = $this->loadModel($row, null);
+            $entry = $this->loadModel($row);
             $entries[] = $entry;
         }
 
@@ -678,9 +678,45 @@ abstract class MapperAbstract
     public function findByField($field, $value = null)
     {
         $table = $this->getDbTable();
-        $select = $table->select();
-        $result = array();
+        $select = $this->_getFindByFieldSelect($field, $value);
 
+        $result = array();
+        $rows = $table->fetchAll($select);
+        foreach ($rows as $row) {
+            $model = $this->loadModel($row);
+            $result[] = $model;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Finds a row where $field equals $value. If $field is an array, then the
+     * value should also be an array.
+     *
+     * @param string|array $field The field or fields to search by
+     * @param mixed|array $value
+     * @param <?=$namespace?>Model\ModelAbstract|null $model
+     * @return <?=$namespace?>Model\ModelAbstract|null The matching models found or null if not found
+     */
+    public function findOneByField($field, $value = null, $model = null)
+    {
+        $table = $this->getDbTable();
+        $select = $this->_getFindByFieldSelect($field, $value);
+
+        $row = $table->fetchRow($select);
+        if (!$row) {
+            return null;
+        }
+
+        $model = $this->loadModel($row, $model);
+        return $model;
+    }
+
+    protected function _getFindByFieldSelect($field, $value = null)
+    {
+        $table = $this->getDbTable();
+        $select = $table->select();
         if (is_array($field)) {
             // Check if $field is an associative array
             if (isset($field[0]) && is_array($value)) {
@@ -705,61 +741,8 @@ abstract class MapperAbstract
         } else {
             $select->where("{$field} = ?", $value);
         }
-
-        $rows = $table->fetchAll($select);
-        foreach ($rows as $row) {
-            $model = $this->loadModel($row, null);
-            $result[] = $model;
-        }
-
-        return $result;
+        return $select;
     }
-
-    /**
-     * Finds a row where $field equals $value. If $field is an array, then the
-     * value should also be an array.
-     *
-     * @param string|array $field The field or fields to search by
-     * @param mixed|array $value
-     * @param <?=$namespace?>Model\ModelAbstract|null $model
-     * @return <?=$namespace?>Model\ModelAbstract|null The matching models found or null if not found
-     */
-    public function findOneByField($field, $value = null, $model = null)
-    {
-        $table = $this->getDbTable();
-        $select = $table->select();
-
-        if (is_array($field)) {
-            // Check if $field is an associative array
-            if (isset($field[0]) && is_array($value)) {
-                // If field and value are arrays, match them up
-                foreach ($field as $column) {
-                    if (isset($value[$column])) {
-                        $select->where("{$column} = ?", $value[$column]);
-                    } else {
-                        $select->where("{$column} = ?", array_shift($value));
-                    }
-                }
-            } else {
-                // field is an associative array, use the values from the field
-                foreach ($field as $column => $value) {
-                    $select->where("{$column} = ?", $value);
-                }
-            }
-        } else {
-            $select->where("{$field} = ?", $value);
-        }
-
-        $row = $table->fetchRow($select);
-        if (count($row) === 0) {
-            return null;
-        }
-
-        $model = $this->loadModel($row, $model);
-
-        return $model;
-    }
-
 
     /**
      * Return the Zend_Db_Table_Select class
