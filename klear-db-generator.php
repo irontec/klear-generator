@@ -1,15 +1,9 @@
 #!/usr/bin/php
 <?php
-// Define application environment
-defined('APPLICATION_ENV')
-    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+include_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
 define('VERSION', '0.1');
 define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
-
-require_once 'Zend/Loader/Autoloader.php';
-$loader = Zend_Loader_Autoloader::getInstance();
-$loader->registerNamespace('Generator');
 
 try {
     $opts = new Zend_Console_Getopt(

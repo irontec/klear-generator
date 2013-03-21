@@ -1,13 +1,9 @@
 #!/usr/bin/php
 <?php
-
 /**
  * TODO: select tables to (re)generate (now all tables are generated)
  */
-
-// Define application environment
-defined('APPLICATION_ENV')
-|| define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
+include_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
 $currentPath = getcwd();
 $svnRevision = `svnversion $currentPath`;
@@ -15,10 +11,6 @@ $svnRevision = `svnversion $currentPath`;
 define('REVISION', $svnRevision);
 define('VERSION', '0.1');
 define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
-
-require_once 'Zend/Loader/Autoloader.php';
-$loader = Zend_Loader_Autoloader::getInstance();
-$loader->registerNamespace('Generator');
 
 try {
     $opts = new Zend_Console_Getopt(

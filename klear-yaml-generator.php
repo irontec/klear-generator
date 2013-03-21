@@ -1,16 +1,9 @@
 #!/usr/bin/php
 <?php
-// Define application environment
-defined('APPLICATION_ENV')
-    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+include_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
 define('VERSION', '0.1');
 define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
-
-
-require_once 'Zend/Loader/Autoloader.php';
-$loader = Zend_Loader_Autoloader::getInstance();
-$loader->registerNamespace('Generator');
 
 try {
     $opts = new Zend_Console_Getopt(
@@ -77,8 +70,8 @@ try {
     $rawYamlFactory->createAllFiles($generateLinks);
 
     file_put_contents($klearDirRaw . '/generator.log', $svnData, FILE_APPEND);
-    
-    
+
+
     $dirFiles=array(
     'languages/',
     'languages/common-strings.php',
@@ -92,24 +85,24 @@ try {
     'languages/eu_ES/eu_ES.mo',
     'languages/eu_ES/eu_ES.po'
             );
-    
+
     foreach ($dirFiles as $file) {
-        
+
         $orig = __DIR__ . '/' . $file;
-        
+
         $dest = APPLICATION_PATH . '/' . $file;
-        
+
         if (!file_exists($dest)) {
-            
+
             if (is_dir($orig)) {
                 mkdir($dest);
             } else {
                 copy($orig , $dest);
             }
-            
-        } 
+
+        }
     }
-    
+
 
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";
