@@ -257,7 +257,7 @@ abstract class MapperAbstract
                     $newObj = new $className();
                     $data = $this->_cache->load($className . "_" . $pk);
 
-                    $newObj->setOptions($data);
+                    $newObj->populateFromArray($data);
 
                     $obj[$pk] = $newObj;
 

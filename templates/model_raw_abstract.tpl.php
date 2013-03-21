@@ -689,6 +689,7 @@ abstract class ModelAbstract implements \IteratorAggregate
     }
 
     /**
+     * @deprecated
      * Array of options/values to be set for this model. Options without a
      * matching method are ignored.
      *
@@ -696,6 +697,19 @@ abstract class ModelAbstract implements \IteratorAggregate
      * @return <?=$namespace?>Model\ModelAbstract
      */
     public function setOptions(array $options)
+    {
+        trigger_error("Deprecated method called. populateFromArray should be used", E_USER_NOTICE);
+        $this->populateFromArray($options);
+    }
+
+    /**
+     * Array of options/values to be set for this model. Options without a
+     * matching method are ignored.
+     *
+     * @param array $options
+     * @return <?=$namespace?>Model\ModelAbstract
+     */
+    public function populateFromArray(array $options)
     {
         $methods = get_class_methods($this);
         foreach ($options as $key => $value) {
