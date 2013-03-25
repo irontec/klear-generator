@@ -4,7 +4,7 @@ production:
       writerName: "Null"
       writerParams: 
     sitename: MyApp
-    logo: images/logo.png
+    logo: klear/images/klear.png
     year: 2012
     lang: es
     langs: 
