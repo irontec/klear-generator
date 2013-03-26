@@ -58,6 +58,8 @@ abstract class MapperAbstract
 
     protected $_relationObjectName = null;
 
+    protected $_urlIdentifiers = array();
+
     /**
      * Setup the default configuration for the Mapper
      */
@@ -932,5 +934,33 @@ abstract class MapperAbstract
      * @param <?=$namespace?>Model\ModelAbstract|null $entry The object to load the data into, or null to have one created
      */
     protected abstract function loadModel($data, $entry);
+
+
+    /**
+     * Cleans urlIdentifier fields, so they can be used as url slugs
+     * @param <?=$namespace?>Model\ModelAbstract $model The model to clean
+     *
+     */
+    protected function _setCleanUrlIdentifiers(\Inguma\Model\Productions $model)
+    {
+        foreach ($this->_urlIdentifiers as $cleanFieldName => $dirtyFieldName)
+        {
+            $cleanValueGetter = 'get' . ucfirst($cleanFieldName);
+            if ($model->$cleanValueGetter()) {
+                // Clean value allready exists
+                continue;
+            }
+
+            $dirtyValueGetter = 'get' . ucfirst($dirtyFieldName);
+            $cleanValueSetter = 'set' . ucfirst($cleanFieldName);
+
+            $dirtyValue = $model->$dirtyValueGetter();
+            $cleanValue = $this->_getUrlValue($dirtyValue);
+            $uniqueValue = $this->_getUniqueValue($cleanValue, $cleanFieldName);
+
+            $model->$cleanValueSetter($uniqueValue);
+        }
+    }
+
 
 }

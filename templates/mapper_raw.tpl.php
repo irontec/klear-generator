@@ -371,6 +371,8 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         $recursive = false, $useTransaction = true, $transactionTag = null
     )
     {
+        $this->_setCleanUrlIdentifiers($model);
+
         $fileObjects = array();
 
         $availableObjects = $model->getFileObjects();
