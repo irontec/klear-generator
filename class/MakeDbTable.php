@@ -155,6 +155,13 @@ abstract class MakeDbTable {
     protected $_loggerName = '';
 
     /**
+     * Associative array with identifier field names as keys and identified field names as values
+     * array('slugNameField' => 'nameField') ;
+     * @var unknown_type
+     */
+    protected $_urlIdentifiers = array();
+
+    /**
      *
      * @param array $info
      */
@@ -343,7 +350,7 @@ abstract class MakeDbTable {
      */
     protected function _getRelationName(array $relation_info, $type = 'parent', $allRelations = array()) {
 
-        $md5 = $relation_info['key_name'] .$type;
+        $md5 = $relation_info['key_name'] . $type;
 
         if (! isset($this->_existingAttributes[$this->getTableName()])) {
 
@@ -549,7 +556,7 @@ abstract class MakeDbTable {
 
         } else {
 
-            $this->_tplPrefix = $tplPrefix.'_';
+            $this->_tplPrefix = $tplPrefix . '_';
         }
 
         //docs section
@@ -573,7 +580,7 @@ abstract class MakeDbTable {
         if (file_exists($this->getIncludePath() . 'IncludeDefault.php')) {
             require_once $this->getIncludePath() . 'IncludeDefault.php';
         } else {
-            require_once __DIR__.DIRECTORY_SEPARATOR.'IncludeDefault.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'IncludeDefault.php';
         }
     }
 
@@ -584,18 +591,24 @@ abstract class MakeDbTable {
      * @param String $tplFile
      * @return String
      */
-    public function getParsedTplContents($tplFile, $vars = array()) {
-        extract($vars);
+    public function getParsedTplContents($tplFile, $vars = array())
+    {
+        $tplPath = array(
+            __DIR__,
+            '..',
+            'templates',
+            $tplFile
+        );
+        $tplPath = implode(DIRECTORY_SEPARATOR, $tplPath);
 
-        ob_start();
-
-        if (file_exists(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.$tplFile)) { //$this->_tplPrefix.$tplFile
-
-          require(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.$tplFile);  //$this->_tplPrefix.$tplFile
-
+        if (!file_exists($tplPath)) {
+            return '';
         }
 
-        $data=ob_get_contents();
+        ob_start();
+        extract($vars);
+        require($tplPath);
+        $data = ob_get_contents();
         ob_end_clean();
         return $data;
     }
@@ -867,7 +880,7 @@ abstract class MakeDbTable {
         if (!file_put_contents($mapperFile, $rawMapperData))
             die("Error: could not write mapper file $mapperFile.");
 
-        $tableFile = $this->getLocation().DIRECTORY_SEPARATOR.'Mapper/Sql/DbTable'.DIRECTORY_SEPARATOR.'TableAbstract.php';
+        $tableFile = $this->getLocation() . DIRECTORY_SEPARATOR . 'Mapper/Sql/DbTable' . DIRECTORY_SEPARATOR . 'TableAbstract.php';
 
         /****************************
          ********** DBTable *********

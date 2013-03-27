@@ -26,6 +26,28 @@ class <?=$this->_className?> extends <?=$this->_includeMapper->getParentClass() 
 {
     protected $_modelName = '<?=$namespace?>\Model\\<?=$this->_className?>';
 
+<?php
+    if ($this->_urlIdentifiers) :
+?>
+
+    protected $urlIdentifiers = array(
+<?php
+        foreach ($this->_urlIdentifiers as $key => $value) :
+?>
+        '<?php echo $key?>' => '<?php echo $value?>',
+<?php
+        endforeach;
+?>
+    );
+<?php
+    else:
+?>
+
+    protected $_urlIdentifiers = array();
+<?php
+    endif;
+?>
+
 <?php $vars = $this->_includeMapper->getVars();
 if (!empty($vars)) {
 echo "\n$vars\n";

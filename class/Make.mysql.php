@@ -292,6 +292,11 @@ class Make_mysql extends MakeDbTable {
                 continue;
             }
 
+            if (preg_match('/\[urlIdentifier\:(?P<field>[^\]]+)\]/i', $comment, $matches)) {
+                $urlIdentifierData = explode(':', $comment);
+                $this->_urlIdentifiers[$row['Field']] = $matches['field'];
+            }
+
             if ($row['Key'] == 'PRI') {
                 $primaryKey[] = array(
                     'field'       => $row['Field'],

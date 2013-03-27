@@ -791,11 +791,10 @@ abstract class MapperAbstract
      * @param string $data
      * @return string
      */
-    protected function _getUrlValue($data)
+    protected function _getSlug($data)
     {
-        $alnumFilter = new \Zend_Filter_Alnum(true);
-        $iden = strtolower($alnumFilter->filter($data));
-        return str_replace(' ', '-', $iden);
+        $slugFilter = new \Iron_Filter_Slug();
+        return $slugFilter->filter($data);
     }
 
     /**
@@ -955,7 +954,7 @@ abstract class MapperAbstract
             $cleanValueSetter = 'set' . ucfirst($cleanFieldName);
 
             $dirtyValue = $model->$dirtyValueGetter();
-            $cleanValue = $this->_getUrlValue($dirtyValue);
+            $cleanValue = $this->_getSlug($dirtyValue);
             $uniqueValue = $this->_getUniqueValue($cleanValue, $cleanFieldName);
 
             $model->$cleanValueSetter($uniqueValue);
