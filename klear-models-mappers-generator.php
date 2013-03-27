@@ -13,27 +13,13 @@ define('VERSION', '0.1');
 define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
 
 try {
-    $opts = new Zend_Console_Getopt(
+    $opts = new \Generator_Getopt(
         array(
-            'application|a=s' => 'Zend Framework APPLICATION_PATH',
             'namespace|n-s' => 'Application namespace if none set the appnamespace is used'
         )
     );
     $opts->parse();
-
-    if (!$opts->getOption('application')) {
-        throw new Zend_Console_Getopt_Exception('Parse error', $opts->getUsageMessage());
-    }
-
-    define('APPLICATION_PATH', realpath($opts->getOption('application')));
-
-    if (!file_exists(APPLICATION_PATH . '/configs/application.ini')) {
-        throw new Exception('application.ini not found');
-    }
-
-    if (!file_exists(APPLICATION_PATH . '/configs/klear.ini')) {
-        throw new Exception('klear.ini not found, should exist on application (config) dir');
-    }
+    $opts->checkRequired();
 
     $defaultValues = array(
         'dbtype' => 'mysql',

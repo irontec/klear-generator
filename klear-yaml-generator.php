@@ -6,31 +6,18 @@ define('VERSION', '0.1');
 define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
 
 try {
-    $opts = new Zend_Console_Getopt(
+
+    $opts = new Generator_Getopt(
             array(
-                    'application|a=s' => 'Zend Framework APPLICATION_PATH',
                     'generate-links|l' => 'Generate links for each screen/dialog'
             )
     );
     $opts->parse();
-
-    if (!$opts->getOption('application')) {
-        throw new Zend_Console_Getopt_Exception('Parse error', $opts->getUsageMessage());
-    }
+    $opts->checkRequired();
 
     $generateLinks = false;
     if ($opts->getOption('generate-links')) {
         $generateLinks = true;
-    }
-
-    define('APPLICATION_PATH', realpath($opts->getOption('application')));
-
-    if (!file_exists(APPLICATION_PATH . '/configs/application.ini')) {
-        throw new Exception('Zend Application is not configured');
-    }
-
-    if (!file_exists(APPLICATION_PATH . '/configs/klear.ini')) {
-        throw new Exception('klear.ini not found, should exist on application (config) dir');
     }
 
     //Init Db

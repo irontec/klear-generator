@@ -7,31 +7,16 @@ define('VERSION', '0.1');
 define('AUTHOR',  'Javier Infante <jabi@irontec.com>');
 
 try {
-    $opts = new Zend_Console_Getopt(
+    $opts = new Generator_Getopt(
         array(
-            'application|a=s' => 'Zend Framework APPLICATION_PATH',
             'poblate-countries|c' => 'Poblate Country Tables',
             'verbose|v' => 'Verbose Mode On'
         )
     );
     $opts->parse();
-
-    if (!$opts->getOption('application')) {
-        throw new Zend_Console_Getopt_Exception('Parse error', $opts->getUsageMessage());
-    }
+    $opts->checkRequired();
 
     $verbose = $opts->getOption('verbose');
-
-
-    define('APPLICATION_PATH', realpath($opts->getOption('application')));
-
-    if (!file_exists(APPLICATION_PATH . '/configs/application.ini')) {
-        throw new Exception('application.ini not found');
-    }
-
-    if (!file_exists(APPLICATION_PATH . '/configs/klear.ini')) {
-        throw new Exception('klear.ini not found, should exist on application (config)  dir');
-    }
 
     $klearConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/klear.ini', APPLICATION_ENV);
 
@@ -42,7 +27,6 @@ try {
     //Init Application && Db Connection
     $application = new Zend_Application(APPLICATION_ENV, APPLICATION_PATH . '/configs/application.ini');
     $application->bootstrap('db');
-
 
     // Get Application Namespace
     $zendConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/application.ini', APPLICATION_ENV);
