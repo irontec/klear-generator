@@ -30,7 +30,7 @@ class <?=$this->_className?> extends <?=$this->_includeMapper->getParentClass() 
     if ($this->_urlIdentifiers) :
 ?>
 
-    protected $urlIdentifiers = array(
+    protected $_urlIdentifiers = array(
 <?php
         foreach ($this->_urlIdentifiers as $key => $value) :
 ?>
