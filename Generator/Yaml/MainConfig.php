@@ -15,7 +15,7 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
 
 
         $data['sitename'] = 'MyApp';
-        $data['logo'] = 'images/logo.png';
+        $data['logo'] = 'klear/images/klear.png';
         $data['year'] = date('Y');
 
 
