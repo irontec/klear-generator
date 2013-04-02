@@ -223,6 +223,7 @@ class Make_mysql extends MakeDbTable {
 
     public function parseDescribeTable() {
 
+        $this->_urlIdentifiers = array();
         $tbname=$this->getTableName();
         $this->_dbAdapter->query("SET NAMES UTF8");
 

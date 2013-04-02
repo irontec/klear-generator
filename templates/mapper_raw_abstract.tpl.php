@@ -199,7 +199,7 @@ abstract class MapperAbstract
      *
      * @param string $type the relation type to load: parent or dependent
      * @param string $name Key or table name of the relation (key or table) to load
-     * @param <?=$namespace?>Model\ModelAbstract $model
+     * @param <?=$namespace?>Model\Raw\ModelAbstract $model
      * @param $conditions string|array of condition(s)
      * @param $orderBy string|array of order conditions
      * @throws \Exception If the relation could not be found
@@ -534,7 +534,7 @@ abstract class MapperAbstract
     /**
      * Deletes the current model
      *
-     * @param <?=$namespace?>Model\ModelAbstract $model The model to delete
+     * @param <?=$namespace?>Model\Raw\ModelAbstract $model The model to delete
      * @return int
      */
     public abstract function delete(\<?=$namespace?>Model\Raw\ModelAbstract $model);
@@ -627,7 +627,7 @@ abstract class MapperAbstract
      *
      * @param string $where Where clause
      * @param string $order Fields to order by
-     * @return <?=$namespace?>Model\ModelAbstract|null
+     * @return <?=$namespace?>Model\Raw\ModelAbstract|null
      */
     public function fetchOne($where = null, $order = null)
     {
@@ -675,7 +675,7 @@ abstract class MapperAbstract
      *
      * @param string|array $field The field or fields to search by
      * @param mixed|array $value Value(s) to search for
-     * @return array All <?=$namespace?>Model\ModelAbstract meeting the criteria
+     * @return array All <?=$namespace?>Model\Raw\ModelAbstract meeting the criteria
      */
     public function findByField($field, $value = null)
     {
@@ -698,8 +698,8 @@ abstract class MapperAbstract
      *
      * @param string|array $field The field or fields to search by
      * @param mixed|array $value
-     * @param <?=$namespace?>Model\ModelAbstract|null $model
-     * @return <?=$namespace?>Model\ModelAbstract|null The matching models found or null if not found
+     * @param <?=$namespace?>Model\Raw\ModelAbstract|null $model
+     * @return <?=$namespace?>Model\Raw\ModelAbstract|null The matching models found or null if not found
      */
     public function findOneByField($field, $value = null, $model = null)
     {
@@ -921,7 +921,7 @@ abstract class MapperAbstract
     /**
      * Returns an array, keys are the field names.
      *
-     * @param new <?=$namespace?>Model\ModelAbstract $model
+     * @param new <?=$namespace?>Model\Raw\ModelAbstract $model
      * @return array
      */
     public abstract function toArray($model);
@@ -930,17 +930,17 @@ abstract class MapperAbstract
      * Loads the model specific data into the model object
      *
      * @param Zend_Db_Table_Row_Abstract|array $data The data as returned from a Zend_Db query
-     * @param <?=$namespace?>Model\ModelAbstract|null $entry The object to load the data into, or null to have one created
+     * @param <?=$namespace?>Model\Raw\ModelAbstract|null $entry The object to load the data into, or null to have one created
      */
     protected abstract function loadModel($data, $entry);
 
 
     /**
      * Cleans urlIdentifier fields, so they can be used as url slugs
-     * @param <?=$namespace?>Model\ModelAbstract $model The model to clean
+     * @param <?=$namespace?>Model\Raw\ModelAbstract $model The model to clean
      *
      */
-    protected function _setCleanUrlIdentifiers(\<?=$namespace?>Model\ModelAbstract $model)
+    protected function _setCleanUrlIdentifiers(\<?=$namespace?>Model\Raw\ModelAbstract $model)
     {
         foreach ($this->_urlIdentifiers as $cleanFieldName => $dirtyFieldName)
         {

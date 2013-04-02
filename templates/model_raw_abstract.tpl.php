@@ -28,7 +28,7 @@ abstract class ModelAbstract implements \IteratorAggregate
     /**
      * Mapper associated with this model instance
      *
-     * @var <?=$namespace?>Model\ModelAbstract
+     * @var <?=$namespace?>Model\Raw\ModelAbstract
      */
     protected $_mapper;
 
@@ -303,7 +303,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Set the list of columns associated with this model
      *
      * @param array $data
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setColumnsList($data)
     {
@@ -326,7 +326,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Associative array of columns and their comment
      *
      * @param array $data
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setColumnsMeta($data)
     {
@@ -368,7 +368,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Set the list of columns associated with this model
      *
      * @param array $data
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setMultiLangColumnsList($data)
     {
@@ -390,7 +390,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Returns language list array
      *
      * @param array
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setAvailableLangs($langs)
     {
@@ -412,7 +412,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Set the list of relationships associated with this model
      *
      * @param array $data
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setParentList($data)
     {
@@ -434,7 +434,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Set the list of relationships associated with this model
      *
      * @param array $data
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setDependentList($data)
     {
@@ -470,7 +470,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Set the list of relationships to delete when this object is erased
      *
      * @param array $data
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setOnDeleteCascadeRelationships($data)
     {
@@ -482,7 +482,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Return relationships to delete when this object is erased
      *
      * @param array $data
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function getOnDeleteCascadeRelationships()
     {
@@ -493,7 +493,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Set the list of relationships to delete when this object is erased
      *
      * @param array $data
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setOnDeleteSetNullRelationships($data)
     {
@@ -505,7 +505,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Return relationships to delete when this object is erased
      *
      * @param array $data
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function getOnDeleteSetNullRelationships()
     {
@@ -523,7 +523,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * Sets the mapper class
      *
      * @param <?=$namespace?>Model\Mapper\MapperAbstract $mapper
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setMapper($mapper)
     {
@@ -694,7 +694,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * matching method are ignored.
      *
      * @param array $options
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function setOptions(array $options)
     {
@@ -707,7 +707,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      * matching method are ignored.
      *
      * @param array $options
-     * @return <?=$namespace?>Model\ModelAbstract
+     * @return <?=$namespace?>Model\Raw\ModelAbstract
      */
     public function populateFromArray(array $options)
     {
