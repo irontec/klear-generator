@@ -940,7 +940,7 @@ abstract class MapperAbstract
      * @param <?=$namespace?>Model\ModelAbstract $model The model to clean
      *
      */
-    protected function _setCleanUrlIdentifiers(<?=$namespace?>Model\ModelAbstract $model)
+    protected function _setCleanUrlIdentifiers(\<?=$namespace?>Model\ModelAbstract $model)
     {
         foreach ($this->_urlIdentifiers as $cleanFieldName => $dirtyFieldName)
         {
