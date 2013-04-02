@@ -8,9 +8,9 @@ define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
 try {
 
     $opts = new Generator_Getopt(
-            array(
-                    'generate-links|l' => 'Generate links for each screen/dialog'
-            )
+        array(
+            'generate-links|l' => 'Generate links for each screen/dialog'
+        )
     );
     $opts->parse();
     $opts->checkRequired();

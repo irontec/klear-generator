@@ -11,31 +11,31 @@ class Generator_Yaml_Factory
     protected $_tables = null;
 
     protected $_availableLanguages = array(
-            'es' => array(
-                    'title' => 'Español',
-                    'language' => 'es',
-                    'locale' => 'es_ES'),
-            'eu' => array(
-                    'title' => 'Euskera',
-                    'language' => 'eu',
-                    'locale' => 'eu_ES'),
-            'ca' => array(
-                    'title' => 'Català',
-                    'language' => 'ca',
-                    'locale' => 'ca_ES'),
-            'ga' => array(
-                    'title' => 'Galego',
-                    'language' => 'gl',
-                    'locale' => 'gl_ES'),
-            'en' => array(
-                    'title' => 'English',
-                    'language' => 'en',
-                    'locale' => 'en_US'),
-            'fr' => array(
-                    'title' => 'français',
-                    'language' => 'fr',
-                    'locale' => 'fr_FR')
-            );
+        'es' => array(
+            'title' => 'Español',
+            'language' => 'es',
+            'locale' => 'es_ES'),
+        'eu' => array(
+                'title' => 'Euskera',
+                'language' => 'eu',
+                'locale' => 'eu_ES'),
+        'ca' => array(
+                'title' => 'Català',
+                'language' => 'ca',
+                'locale' => 'ca_ES'),
+        'ga' => array(
+                'title' => 'Galego',
+                'language' => 'gl',
+                'locale' => 'gl_ES'),
+        'en' => array(
+                'title' => 'English',
+                'language' => 'en',
+                'locale' => 'en_US'),
+        'fr' => array(
+                'title' => 'français',
+                'language' => 'fr',
+                'locale' => 'fr_FR')
+    );
 
     protected $_enabledLanguages = array();
 
@@ -63,10 +63,10 @@ class Generator_Yaml_Factory
     {
         foreach ($this->_klearConfig->klear->languages as $language) {
             $result = false;
-            foreach ($this->_availableLanguages as $languageIden => $laguageData) {
-                if ($laguageData['language'] == $language) {
+            foreach ($this->_availableLanguages as $languageIden => $languageData) {
+                if ($languageData['language'] == $language) {
                     $result = true;
-                    $this->_enabledLanguages[$languageIden] = $laguageData;
+                    $this->_enabledLanguages[$languageIden] = $languageData;
                 }
             }
             if (!$result) {
