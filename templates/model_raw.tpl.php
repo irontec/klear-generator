@@ -577,7 +577,9 @@ else : ?>
     /**
      * Gets dependent <?=$key['key_name'] . "\n"?>
      *
-     * @param boolean $load Load the object if it is not already
+     * @param string or array $where
+     * @param string or array $orderBy
+     * @param boolean $avoidLoading skip data loading if it is not already
      * @return \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
     public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null, $avoidLoading = false)
@@ -657,7 +659,9 @@ else : ?>
     /**
      * Gets dependent <?=$key['key_name'] . "\n"?>
      *
-     * @param boolean $load Load the object if it is not already
+     * @param string or array $where
+     * @param string or array $orderBy
+     * @param boolean $avoidLoading skip data loading if it is not already
      * @return array The array of \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
     public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null, $avoidLoading = false)
