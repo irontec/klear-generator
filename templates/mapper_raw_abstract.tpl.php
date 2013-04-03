@@ -545,7 +545,7 @@ abstract class MapperAbstract
      * @param Zend_Db_Select $query
      * @return Zend_Paginator
      */
-    protected function selectToPaginator(Zend_Db_Select $select)
+    protected function selectToPaginator(\Zend_Db_Select $select)
     {
         $adapter = new \<?=$namespace?>Model\Paginator($select, $this);
         $paginator = new \Zend_Paginator($adapter);
