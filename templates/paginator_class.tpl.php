@@ -36,7 +36,7 @@ class Paginator extends \Zend_Paginator_Adapter_DbSelect
      * @param Zend_Db_Select $select The select query
      * @param <?=$namespace?>Mapper\Sql\Raw\MapperAbstract $mapper The mapper associated with the object type
      */
-    public function __construct(\Zend_Db_Select $select, <?=$namespace?>Mapper\Sql\Raw\MapperAbstract $mapper)
+    public function __construct(\Zend_Db_Select $select, \<?=$namespace?>Mapper\Sql\Raw\MapperAbstract $mapper)
     {
         $this->_mapper = $mapper;
         parent::__construct($select);
