@@ -545,10 +545,13 @@ abstract class MapperAbstract
      * @param Zend_Db_Select $query
      * @return Zend_Paginator
      */
-    protected function selectToPaginator(\Zend_Db_Select $select)
+    protected function selectToPaginator(\Zend_Db_Select $select, $pageNumber = 1, $itemCountPerPage = 10)
     {
         $adapter = new \<?=$namespace?>Model\Paginator($select, $this);
         $paginator = new \Zend_Paginator($adapter);
+
+        $paginator->setItemCountPerPage($itemCountPerPage);
+        $paginator->setCurrentPageNumber($pageNumber);
 
         return $paginator;
     }
@@ -575,11 +578,11 @@ abstract class MapperAbstract
      *
      * @return Zend_Paginator
      */
-    public function fetchAllToPaginator()
+    public function fetchAllToPaginator($pageNumber = 1, $itemCountPerPage = 10)
     {
         return $this->selectToPaginator($this->getDbTable()
                     ->select()
-                    ->from($this->getDbTable()->getTableName()));
+                    ->from($this->getDbTable()->getTableName()), $pageNumber, $itemCountPerPage);
     }
 
     /**
@@ -778,10 +781,14 @@ abstract class MapperAbstract
      * @param string $sql
      * @return Zend_Paginator
      */
-    public function queryToPaginator($sql)
+    public function queryToPaginator($sql, $pageNumber = 1, $itemCountPerPage = 10)
     {
         $result = $this->getDbTable()->getAdapter()->fetchAll($sql);
         $paginator = \Zend_Paginator::factory($result);
+
+        $paginator->setItemCountPerPage($itemCountPerPage);
+        $paginator->setCurrentPageNumber($pageNumber);
+
         return $paginator;
     }
 
