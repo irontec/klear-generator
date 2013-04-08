@@ -16,8 +16,10 @@ class Generator_Country_Parser
     
     
     protected $_countryCode;
+    protected $_countryName;
     
     protected $_countryNameSetter;
+    protected $_countryNameGetter;
     protected $_countryCodeSetter;
     
     protected $_languages;
@@ -51,6 +53,11 @@ class Generator_Country_Parser
         return 'set' . ucfirst($model->varNameToColumn($field));
     }
     
+    protected function _getGetterName($model, $field)
+    {
+    	return 'get' . ucfirst($model->varNameToColumn($field));
+    }
+    
     public function setConfig(Zend_Config $config)
     {
         if (!isset($config->table)) {
@@ -77,7 +84,8 @@ class Generator_Country_Parser
         $this->_countryCode = $config->code;
         
         $this->_countryNameSetter = $this->_getSetterName($model, $config->name);
-            
+        $this->_countryNameGetter = $this->_getGetterName($model, $config->name);
+        $this->_countryName = $config->name;
         
     }
     
@@ -92,6 +100,37 @@ class Generator_Country_Parser
         
     }
     
+    /**
+     * Existen idiomas no traducidos en el repositorio, por lo que quedan a NULL (ó default), en el idioma no presente.
+     * Iteraremos en cada uno de los idiomas, buscando el nombre = NULL, y lo sustituiremos por el primero no NULL (en orden de self::_languages) 
+     */
+    protected function _populateNull()
+    {
+    	$mapperName = $this->_mapperClassName;
+    	$mapper = new $mapperName;
+    	
+    	
+    	$nameSetter = $this->_countryNameSetter;
+    	$nameGetter = $this->_countryNameGetter;
+    	
+    	foreach ($this->_languages as $lang) {
+    		$countryList = $mapper->fetchList($this->_countryName .'_'.$lang.' is NULL');
+
+			foreach($countryList as $country) {
+				foreach ($this->_languages as $AuxLang) {
+					$_tempCountryName = $country->$nameGetter($AuxLang);
+					if (!is_null($_tempCountryName)) {
+						
+						$country->$nameSetter($_tempCountryName, $lang);
+						$country->save();
+						break;
+					}
+				}
+			}
+    	}
+    	
+    	
+    }
     
     public function parseAll()
     {
@@ -138,7 +177,9 @@ class Generator_Country_Parser
             
         }
         
-        // Ordeno los contadores (en bas al idioma), en modo reverso.
+        $this->_populateNull();
+        
+        // Ordeno los contadores (en base al idioma), en modo reverso.
         arsort($conts);        
         $max = array_shift($conts);
         return $max;       
