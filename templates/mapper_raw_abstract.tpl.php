@@ -951,14 +951,14 @@ abstract class MapperAbstract
     {
         foreach ($this->_urlIdentifiers as $cleanFieldName => $dirtyFieldName)
         {
-            $cleanValueGetter = 'get' . ucfirst($cleanFieldName);
+            $cleanValueGetter = 'get' . $model->columnNameToVar($cleanFieldName);
             if ($model->$cleanValueGetter()) {
                 // Clean value allready exists
                 continue;
             }
 
-            $dirtyValueGetter = 'get' . ucfirst($dirtyFieldName);
-            $cleanValueSetter = 'set' . ucfirst($cleanFieldName);
+            $dirtyValueGetter = 'get' . $model->columnNameToVar($dirtyFieldName);
+            $cleanValueSetter = 'set' . $model->columnNameToVar($cleanFieldName);
 
             $dirtyValue = $model->$dirtyValueGetter();
             $cleanValue = $this->_getSlug($dirtyValue);
