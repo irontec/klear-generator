@@ -132,6 +132,15 @@ class Generator_Db_Field implements \IteratorAggregate
         return $this->_checkTag('urlIdentifier') || (bool)stristr($this->getComment(), '[urlIdentifier:');
     }
 
+    public function getIdentifiedFieldName()
+    {
+        $identifiedFieldName = '';
+        if (preg_match('/\[urlIdentifier:(?P<fieldName>.*)\]/', $this->getComment(), $matches)) {
+            $identifiedFieldName = $matches['fieldName'];
+        }
+        return $identifiedFieldName;
+    }
+
     public function isVideo()
     {
         return $this->_checkTag('video');

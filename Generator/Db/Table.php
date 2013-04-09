@@ -71,7 +71,17 @@ class Generator_Db_Table
                             $query .= ' DEFAULT ' . $this->_db->quote($field->getDefaultValue());
                         }
 
-                        $query .= ' COMMENT ' . $this->_db->quote(str_ireplace('[ml]', '', $field->getComment()));
+                        $comment = str_ireplace('[ml]', '', $field->getComment());
+
+                        if ($field->isUrlIdentifier()){
+                            $identifiedField = $field->getIdentifiedFieldName();
+                            if ($identifiedField) {
+                                $langIdentifiedField = $identifiedField . '_' . $language;
+                                $comment = str_ireplace('[urlIdentifier:' . $identifiedField . ']', '[urlIdentifier:' . $langIdentifiedField . ']', $comment);
+                            }
+                        }
+
+                        $query .= ' COMMENT ' . $this->_db->quote($comment);
 
                         $query .= ' AFTER ' . $this->_db->quoteIdentifier($field->getName());
 

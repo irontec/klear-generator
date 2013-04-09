@@ -16,10 +16,8 @@ class Generator_Db_FakeAdapter
 
     protected function _getNextFileNumber($deltaPath)
     {
-        var_dump($deltaPath);
         $files = glob($deltaPath . DIRECTORY_SEPARATOR . '*.sql');
         $max = 0;
-        var_dump($files);
         foreach ($files as $file) {
             $filename = basename($file);
             if (preg_match('/(\d+)\-*/', $filename, $matches)) {
