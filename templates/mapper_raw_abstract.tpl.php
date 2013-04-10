@@ -743,6 +743,8 @@ abstract class MapperAbstract
 
             $select->where("{$field} in (?)", $value);
 
+        } else if ($value == 'NULL'){
+            $select->where("{$field} IS NULL");
         } else {
             $select->where("{$field} = ?", $value);
         }
