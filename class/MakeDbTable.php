@@ -668,7 +668,9 @@ abstract class MakeDbTable {
 
             if (! in_array($table, $dependents)) {
 
-                $dependents[] = $this->_getClassName($info['foreign_tbl_name']);
+                $dependents[] = $this->_namespace
+                                . '\\\\Mapper\\\\Sql\\\\DbTable\\\\'
+                                . $this->_getClassName($info['foreign_tbl_name']);
             }
         }
 
