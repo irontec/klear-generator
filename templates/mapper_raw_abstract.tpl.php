@@ -419,7 +419,7 @@ abstract class MapperAbstract
                     if (is_array($conditions)) {
 
                         if (
-                            count($conditions) == 2 and is_string($conditions[0])
+                            count($conditions) == 2 and @is_string($conditions[0])
                             and is_array($conditions[1]) and count($conditions[1]) > 0
                         ) {
 
@@ -442,7 +442,7 @@ abstract class MapperAbstract
                                 $tmp[] = $key . " = '" . $value . "'";
                             }
 
-                            $conditions = implode(", ", $tmp);
+                            $conditions = implode(" AND ", $tmp);
                         }
                     }
 
