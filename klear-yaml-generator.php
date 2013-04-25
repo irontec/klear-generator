@@ -14,18 +14,19 @@ try {
     );
     $opts->parse();
     $opts->checkRequired();
-
+    $env = $opts->getEnviroment();
+    
     $generateLinks = false;
     if ($opts->getOption('generate-links')) {
         $generateLinks = true;
     }
 
     //Init Db
-    $application = new Zend_Application(APPLICATION_ENV, APPLICATION_PATH . '/configs/application.ini');
+    $application = new Zend_Application($env, APPLICATION_PATH . '/configs/application.ini');
     $application->bootstrap('db');
 
     //Get namespace
-    $zendConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/application.ini', APPLICATION_ENV);
+    $zendConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/application.ini', $env);
     $namespace = $zendConfig->appnamespace;
     if (substr($namespace, -1) == '_') {
         $namespace = substr($namespace, 0, -1);

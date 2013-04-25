@@ -20,7 +20,8 @@ try {
     );
     $opts->parse();
     $opts->checkRequired();
-
+    $env = $opts->getEnviroment();
+    
     $defaultValues = array(
         'dbtype' => 'mysql',
         'docs' => array(
@@ -41,20 +42,22 @@ try {
         )
     );
 
+    
+    
     $applicationIni = APPLICATION_PATH . '/configs/application.ini';
     $klearIni = APPLICATION_PATH . '/configs/klear.ini';
 
     $klearConfig = new Zend_Config($defaultValues, true);
-    $klearConfig->merge(new Zend_Config_Ini($klearIni, APPLICATION_ENV));
+    $klearConfig->merge(new Zend_Config_Ini($klearIni, $env));
 
     $namespace = $opts->getOption('namespace');
     if (!$namespace) {
-        $zendConfig = new Zend_Config_Ini($applicationIni, APPLICATION_ENV);
+        $zendConfig = new Zend_Config_Ini($applicationIni, $env);
         $namespace = $zendConfig->appnamespace;
     }
     $klearConfig->namespace = $namespace;
 
-    $application = new Zend_Application(APPLICATION_ENV, $applicationIni);
+    $application = new Zend_Application($env, $applicationIni);
     $application->bootstrap('db');
 
     if (isset($klearConfig->klear->languages)) {

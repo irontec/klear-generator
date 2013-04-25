@@ -13,17 +13,18 @@ try {
     );
     $opts->parse();
     $opts->checkRequired();
-
+    $env = $opts->getEnviroment();
+    
     $deltaWriter = null;
     if ($opts->getOption('generate-delta')) {
         $deltaPath = realpath($opts->getOption('generate-delta'));
         $deltaWriter = new Generator_Db_FakeAdapter($deltaPath);
     }
 
-    $klearConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/klear.ini', APPLICATION_ENV);
+    $klearConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/klear.ini', $env);
 
     if (isset($klearConfig->klear->languages)) {
-        $application = new Zend_Application(APPLICATION_ENV, APPLICATION_PATH . '/configs/application.ini');
+        $application = new Zend_Application($env, APPLICATION_PATH . '/configs/application.ini');
         $application->bootstrap('db');
 
         /** Generate Model Configuration Files **/

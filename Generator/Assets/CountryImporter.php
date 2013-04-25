@@ -1,5 +1,5 @@
 <?php
-class Generator_Country_Parser
+class Generator_Assets_CountryImporter
 {
     
     const INDEX_URL = 'https://raw.github.com/umpirsky/country-list/master/country/icu/%lang%/country.json';
@@ -123,6 +123,9 @@ class Generator_Country_Parser
 						
 						$country->$nameSetter($_tempCountryName, $lang);
 						$country->save();
+						if ($this->_verbose) {
+						    echo ".";
+						}
 						break;
 					}
 				}
@@ -170,13 +173,17 @@ class Generator_Country_Parser
                 $country->$nameSetter($countryName, $lang);
                 
                 $country->save();
-                
+                if ($this->_verbose) {
+                    echo ".";
+                }
             }
             
             $conts[] = $contAux;
             
         }
-        
+        if ($this->_verbose) {
+            echo "\n";
+        }
         $this->_populateNull();
         
         // Ordeno los contadores (en base al idioma), en modo reverso.
