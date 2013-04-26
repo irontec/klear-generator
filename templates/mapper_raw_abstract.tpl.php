@@ -810,16 +810,25 @@ abstract class MapperAbstract
      * Creates a unique value to be stored in $field by appending a number at the end of $data
      * @param string $data
      * @param string $field
+     * @param numeric $pk
      * @return string
      */
-    protected function _getUniqueValue($data, $field)
+    protected function _getUniqueValue($data, $field, $pk = null)
     {
-        $validator = new \Zend_Validate_Db_NoRecordExists(
-            array(
-                'table' => $this->getDbTable()->info('name'),
-                'field' => $field
-            )
+        $validatorParams = array(
+            'table' => $this->getDbTable()->info('name'),
+            'field' => $field
         );
+
+        if (! is_null($pk)) {
+
+            $validatorParams['exclude'] = array(
+                'field' => $this->loadModel(null)->getPrimaryKeyName(),
+                'value' => $pk
+            );
+        }
+
+        $validator = new \Zend_Validate_Db_NoRecordExists($validatorParams);
 
         $value = $data;
         $num = 0;
@@ -964,7 +973,7 @@ abstract class MapperAbstract
 
             $dirtyValue = $model->$dirtyValueGetter();
             $cleanValue = $this->_getSlug($dirtyValue);
-            $uniqueValue = $this->_getUniqueValue($cleanValue, $cleanFieldName);
+            $uniqueValue = $this->_getUniqueValue($cleanValue, $cleanFieldName, $model->getPrimaryKey());
 
             $model->$cleanValueSetter($uniqueValue);
         }
