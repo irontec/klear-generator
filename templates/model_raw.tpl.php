@@ -233,7 +233,7 @@ echo "$vars\n\n";
         $this->_defaultValues = array(
 <?php
     foreach ($this->_columns[$this->getTableName()] as $column):
-        if ($column['nullable'] == false and !is_null($column['default']) and !in_array($column['default'], array('CURRENT_TIMESTAMP'))) {
+        if ($column['nullable'] == false and !is_null($column['default'])) {
 ?>
             '<?php echo $column['normalized'];?>' => '<?php echo $column['default']; ?>',
 <?php
@@ -392,9 +392,14 @@ if($md5Column === true) {
 <?php
     if (in_array($column['type'], array('datetime', 'timestamp', 'date'))):
 ?>
+    
         if ($data == '0000-00-00 00:00:00') {
 
             $data = null;
+        }
+        
+        if ($data === 'CURRENT_TIMESTAMP') {
+        	$data = \Zend_Date::now()->setTimezone('UTC');
         }
 
         if ($data instanceof \Zend_Date) {
@@ -477,6 +482,7 @@ if($md5Column === true) {
             return $zendDate;
         }
 
+        
 <?php if ($column['type'] =='date'): ?>
         return $this->_<?=$column['normalized']; ?>->format('Y-m-d');
 <?php else: ?>
