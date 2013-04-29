@@ -398,18 +398,17 @@ if($md5Column === true) {
         }
 
         if ($data instanceof \Zend_Date) {
-            $data = $data->toString('yyyy-MM-dd HH:mm:ss');
+
+            $data = new \DateTime($data->toString('yyyy-MM-dd HH:mm:ss'), new \DateTimeZone($data->getTimezone()));
+
+        } elseif (!is_null($data) && !$data instanceof \DateTime) {
+
+            $data = new \DateTime($data, new \DateTimeZone('UTC'));
         }
 
-        if (!is_null($data) && !$data instanceof \DateTime) {
-            $data = new \DateTime($data);
-        }
+        if ($data instanceof \DateTime && $data->getTimezone()->getName() != 'UTC') {
 
-        //We set same timezone in both objects to be able to compare them
-        if ($data instanceof \DateTime && $this->_<?=$column['normalized']?> instanceof \DateTime) {
-            $defaultTimeZone = new \DateTimeZone(date_default_timezone_get());
-            $data->setTimezone($defaultTimeZone);
-            $this->_<?=$column['normalized']?>->setTimezone($defaultTimeZone);
+            $data->setTimezone(new \DateTimeZone('UTC'));
         }
 
 <?php
@@ -472,11 +471,10 @@ if($md5Column === true) {
             return null;
         }
 
-        $defaultTimezone = new \DateTimeZone(date_default_timezone_get());
-        $this->_<?=$column['normalized']; ?>->setTimezone($defaultTimezone);
-
         if ($returnZendDate) {
-            return new \Zend_Date($this->_<?=$column['normalized']; ?>->getTimestamp(), \Zend_Date::TIMESTAMP);
+            $zendDate = new \Zend_Date($this->_<?=$column['normalized']; ?>->getTimestamp(), \Zend_Date::TIMESTAMP);
+            $zendDate->setTimezone('UTC');
+            return $zendDate;
         }
 
 <?php if ($column['type'] =='date'): ?>
