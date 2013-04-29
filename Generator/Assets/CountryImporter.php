@@ -4,6 +4,11 @@ class Generator_Assets_CountryImporter
     
     const INDEX_URL = 'https://raw.github.com/umpirsky/country-list/master/country/icu/%lang%/country.json';
     
+    /*
+     * First we download from ISO the list of coutnries (so we get rid of Canary Islands and the other "Exceptional Reservations" 
+     * http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+     */
+    const ISO_URL = 'http://www.iso.org/iso/home/standards/country_codes/country_names_and_code_elements_txt.htm';
     
     protected $_countries = array();
     
@@ -41,7 +46,23 @@ class Generator_Assets_CountryImporter
         
         return $client->request()->getBody();
     }
+
+    
+    protected function _loadWhiteList()
+    {
+        $countryRaw = $this->_getContent(self::ISO_URL);
+
+        preg_match_all("/[^;]*;([A-Z]{2})/sm", $countryRaw, $result);
         
+        $this->_codeWhiteList = array_flip($result[1]);
+           
+    }
+    
+
+    protected function _isNotaValidCode($code) {
+        return ! isset($this->_codeWhiteList[$code]);
+    }
+             
     
     public function setNamespace($namespace)
     {
@@ -99,41 +120,7 @@ class Generator_Assets_CountryImporter
         }
         
     }
-    
-    /**
-     * Existen idiomas no traducidos en el repositorio, por lo que quedan a NULL (ó default), en el idioma no presente.
-     * Iteraremos en cada uno de los idiomas, buscando el nombre = NULL, y lo sustituiremos por el primero no NULL (en orden de self::_languages) 
-     */
-    protected function _populateNull()
-    {
-    	$mapperName = $this->_mapperClassName;
-    	$mapper = new $mapperName;
-    	
-    	
-    	$nameSetter = $this->_countryNameSetter;
-    	$nameGetter = $this->_countryNameGetter;
-    	
-    	foreach ($this->_languages as $lang) {
-    		$countryList = $mapper->fetchList($this->_countryName .'_'.$lang.' is NULL');
-
-			foreach($countryList as $country) {
-				foreach ($this->_languages as $AuxLang) {
-					$_tempCountryName = $country->$nameGetter($AuxLang);
-					if (!is_null($_tempCountryName)) {
-						
-						$country->$nameSetter($_tempCountryName, $lang);
-						$country->save();
-						if ($this->_verbose) {
-						    echo ".";
-						}
-						break;
-					}
-				}
-			}
-    	}
-    	
-    	
-    }
+   
     
     public function parseAll()
     {
@@ -146,13 +133,27 @@ class Generator_Assets_CountryImporter
         
         $countryListTmp = array();
         
+        $this->_loadWhiteList();
+        $ids = array();
+        
+        $url = str_replace("%lang%", "en", self::INDEX_URL);
+        $baseList = Zend_Json::decode($this->_getContent($url));
+        
+        
         foreach ($this->_languages as $lang) {
             $url = str_replace("%lang%", $lang, self::INDEX_URL);
             
             $countryList = Zend_Json::decode($this->_getContent($url));
             
+            //Para países no traducidos desde el inglés
+            $countryList = $countryList + $baseList;
+            
             $contAux = 0; 
             foreach($countryList as $code => $countryName) {
+                if ($this->_isNotaValidCode($code)) {
+                    continue;
+                }
+                
                 $contAux++;
                 $countryList = $mapper->fetchList(array($this->_countryCode . "=?",array($code)));
                 
@@ -172,7 +173,7 @@ class Generator_Assets_CountryImporter
                 $country->$codeSetter($code);
                 $country->$nameSetter($countryName, $lang);
                 
-                $country->save();
+                $ids[] = $country->save();
                 if ($this->_verbose) {
                     echo ".";
                 }
@@ -181,10 +182,6 @@ class Generator_Assets_CountryImporter
             $conts[] = $contAux;
             
         }
-        if ($this->_verbose) {
-            echo "\n";
-        }
-        $this->_populateNull();
         
         // Ordeno los contadores (en base al idioma), en modo reverso.
         arsort($conts);        
