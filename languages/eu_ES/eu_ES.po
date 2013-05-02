@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Klear-Public\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-05 12:20+0100\n"
-"PO-Revision-Date: 2013-03-05 12:22+0100\n"
+"POT-Creation-Date: 2013-05-02 17:17+0100\n"
+"PO-Revision-Date: 2013-05-02 17:20+0100\n"
 "Last-Translator: Lander Ontoria <lander@irontec.com>\n"
 "Language-Team: Irontec-Klear <lander+klear@irontec.com>\n"
 "Language: \n"
@@ -33,396 +33,664 @@ msgstr[0] "Emaila"
 msgstr[1] "Emailak"
 
 #: generator/languages/common-strings.php:10
+#, fuzzy
+msgid "Email address"
+msgid_plural "Email addresses"
+msgstr[0] "Helbidea"
+msgstr[1] "Helbideak"
+
+#: generator/languages/common-strings.php:11
 msgid "Pass"
 msgstr "Pasahitza"
 
-#: generator/languages/common-strings.php:11
-msgid "Password"
-msgstr "Pasahitza"
-
 #: generator/languages/common-strings.php:12
+msgid "Password"
+msgid_plural "Passwords"
+msgstr[0] "Pasahitza"
+msgstr[1] "Pasahitzak"
+
+#: generator/languages/common-strings.php:13
 msgid "User"
 msgid_plural "Users"
 msgstr[0] "Erabiltzailea"
 msgstr[1] "Erabiltzaileak"
 
-#: generator/languages/common-strings.php:13
+#: generator/languages/common-strings.php:14
 msgid "Name"
 msgid_plural "Names"
 msgstr[0] "Izena"
 msgstr[1] "Izenak"
 
-#: generator/languages/common-strings.php:14
+#: generator/languages/common-strings.php:15
 msgid "Surname"
 msgstr "Abizena"
 
-#: generator/languages/common-strings.php:15
+#: generator/languages/common-strings.php:16
 msgid "FirstName"
 msgstr "Izena"
 
-#: generator/languages/common-strings.php:16
+#: generator/languages/common-strings.php:17
+msgid "Firstname"
+msgstr "Izena"
+
+#: generator/languages/common-strings.php:18
+msgid "First name"
+msgstr "Izena"
+
+#: generator/languages/common-strings.php:19
 msgid "LastName"
 msgstr "Abizena"
 
-#: generator/languages/common-strings.php:17
+#: generator/languages/common-strings.php:20
+msgid "Lastname"
+msgstr "Abizena"
+
+#: generator/languages/common-strings.php:21
+msgid "Last name"
+msgstr "Abizena"
+
+#: generator/languages/common-strings.php:22
 msgid "PhoneNumber"
 msgid_plural "PhoneNumbers"
 msgstr[0] "Telefono zenbakia"
 msgstr[1] "Telefono zenbakiak"
 
-#: generator/languages/common-strings.php:18
+#: generator/languages/common-strings.php:23
+msgid "Phonenumber"
+msgid_plural "Phonenumbers"
+msgstr[0] "Telefono zenbakia"
+msgstr[1] "Telefono zenbakiak"
+
+#: generator/languages/common-strings.php:24
+msgid "Phone number"
+msgid_plural "Phone numbers"
+msgstr[0] "Telefono zenbakia"
+msgstr[1] "Telefono zenbakiak"
+
+#: generator/languages/common-strings.php:25
 msgid "Address"
 msgid_plural "Addresses"
 msgstr[0] "Helbidea"
 msgstr[1] "Helbideak"
 
-#: generator/languages/common-strings.php:19
+#: generator/languages/common-strings.php:26
 msgid "Street"
-msgstr "Kalea"
+msgid_plural "Streets"
+msgstr[0] "Kalea"
+msgstr[1] "Kaleak"
 
-#: generator/languages/common-strings.php:20
+#: generator/languages/common-strings.php:27
 msgid "PostalCode"
 msgid_plural "PostalCodes"
 msgstr[0] "Posta kodea"
 msgstr[1] "Posta kodeak"
 
-#: generator/languages/common-strings.php:21
-msgid "ZipCode"
-msgstr "Posta kodea"
+#: generator/languages/common-strings.php:28
+msgid "Postalcode"
+msgid_plural "Postalcodes"
+msgstr[0] "Posta kodea"
+msgstr[1] "Posta kodeak"
 
-#: generator/languages/common-strings.php:22
+#: generator/languages/common-strings.php:29
+msgid "Postal code"
+msgid_plural "Postal codes"
+msgstr[0] "Posta kodea"
+msgstr[1] "Posta kodeak"
+
+#: generator/languages/common-strings.php:30
+msgid "ZipCode"
+msgid_plural "ZipCodes"
+msgstr[0] "Posta kodea"
+msgstr[1] "Posta kodeak"
+
+#: generator/languages/common-strings.php:31
+msgid "Zipcode"
+msgid_plural "Zipcodes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: generator/languages/common-strings.php:32
+msgid "Zip code"
+msgid_plural "Zip codes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: generator/languages/common-strings.php:33
 msgid "Province"
 msgid_plural "Provinces"
 msgstr[0] "Probintzia"
 msgstr[1] "Probintziak"
 
-#: generator/languages/common-strings.php:23
+#: generator/languages/common-strings.php:34
 msgid "City"
 msgid_plural "Cities"
 msgstr[0] "Hiria"
 msgstr[1] "Hiriak"
 
-#: generator/languages/common-strings.php:24
+#: generator/languages/common-strings.php:35
 msgid "State"
 msgid_plural "States"
 msgstr[0] "Estatua"
 msgstr[1] "Estatuak"
 
-#: generator/languages/common-strings.php:25
+#: generator/languages/common-strings.php:36
 msgid "Country"
 msgid_plural "Countries"
 msgstr[0] "Herrialdea"
 msgstr[1] "Herrialdeak"
 
-#: generator/languages/common-strings.php:30
+#: generator/languages/common-strings.php:41
 msgid "File"
 msgid_plural "Files"
 msgstr[0] "Fitxategia"
 msgstr[1] "Fitxategiak"
 
-#: generator/languages/common-strings.php:31
+#: generator/languages/common-strings.php:42
 msgid "Path"
-msgstr "Helbidea"
+msgid_plural "Paths"
+msgstr[0] "Helbidea"
+msgstr[1] "Helbideak"
 
-#: generator/languages/common-strings.php:32
+#: generator/languages/common-strings.php:43
 msgid "Size"
-msgstr "Tamaina"
+msgid_plural "Sizes"
+msgstr[0] "Tamaina"
+msgstr[1] "Tamainak"
 
-#: generator/languages/common-strings.php:33
+#: generator/languages/common-strings.php:44
 msgid "FileSize"
 msgstr "Fitxategi tamaina"
 
-#: generator/languages/common-strings.php:34
+#: generator/languages/common-strings.php:45
+msgid "Filesize"
+msgstr "Fitxategi tamaina"
+
+#: generator/languages/common-strings.php:46
+msgid "File size"
+msgstr "Fitxategi tamaina"
+
+#: generator/languages/common-strings.php:47
 msgid "FilePath"
 msgstr "Fitxategi helbidea"
 
-#: generator/languages/common-strings.php:35
+#: generator/languages/common-strings.php:48
+msgid "Filepath"
+msgstr "Fitxategi helbidea"
+
+#: generator/languages/common-strings.php:49
+msgid "File path"
+msgstr "Fitxategi helbidea"
+
+#: generator/languages/common-strings.php:50
 msgid "MimeType"
 msgid_plural "MimeTypes"
 msgstr[0] "Fitxategi mota"
 msgstr[1] "Fitxategi motak"
 
-#: generator/languages/common-strings.php:36
+#: generator/languages/common-strings.php:51
+msgid "Mimetype"
+msgid_plural "Mimetypes"
+msgstr[0] "Fitxategi mota"
+msgstr[1] "Fitxategi motak"
+
+#: generator/languages/common-strings.php:52
+msgid "Mime type"
+msgid_plural "Mime types"
+msgstr[0] "Fitxategi mota"
+msgstr[1] "Fitxategi motak"
+
+#: generator/languages/common-strings.php:53
 msgid "BaseName"
 msgstr "Oinarrizko izena"
 
-#: generator/languages/common-strings.php:37
+#: generator/languages/common-strings.php:54
+msgid "Base name"
+msgstr "Oinarrizko izena"
+
+#: generator/languages/common-strings.php:55
 msgid "Image"
 msgid_plural "Images"
 msgstr[0] "Irudia"
 msgstr[1] "Irudiak"
 
-#: generator/languages/common-strings.php:38
+#: generator/languages/common-strings.php:56
 msgid "ImageSize"
 msgstr "Irudi tamaina"
 
-#: generator/languages/common-strings.php:39
+#: generator/languages/common-strings.php:57
+msgid "Imagesize"
+msgstr "Irudi tamaina"
+
+#: generator/languages/common-strings.php:58
+msgid "Image size"
+msgstr "Irudi tamaina"
+
+#: generator/languages/common-strings.php:59
 msgid "ImagePath"
 msgstr "Irudi helbidea"
 
-#: generator/languages/common-strings.php:40
+#: generator/languages/common-strings.php:60
+msgid "Imagepath"
+msgstr "Irudi helbidea"
+
+#: generator/languages/common-strings.php:61
+msgid "Image path"
+msgstr "Irudi helbidea"
+
+#: generator/languages/common-strings.php:62
 msgid "Picture"
 msgid_plural "Pictures"
 msgstr[0] "Argazkia"
 msgstr[1] "Argazkiak"
 
-#: generator/languages/common-strings.php:41
+#: generator/languages/common-strings.php:63
 msgid "PictureSize"
 msgstr "Argazki tamaina"
 
-#: generator/languages/common-strings.php:42
+#: generator/languages/common-strings.php:64
+msgid "Picturesize"
+msgstr "Argazki tamaina"
+
+#: generator/languages/common-strings.php:65
+msgid "Picture size"
+msgstr "Argazki tamaina"
+
+#: generator/languages/common-strings.php:66
 msgid "PicturePath"
 msgstr "Argazki helbidea"
 
-#: generator/languages/common-strings.php:47
+#: generator/languages/common-strings.php:67
+msgid "Picturepath"
+msgstr "Argazki helbidea"
+
+#: generator/languages/common-strings.php:68
+msgid "Picture path"
+msgstr "Argazki helbidea"
+
+#: generator/languages/common-strings.php:73
 msgid "Active"
 msgstr "Aktiboa"
 
-#: generator/languages/common-strings.php:48
+#: generator/languages/common-strings.php:74
 msgid "Status"
-msgstr "Egoera"
+msgid_plural "Statuses"
+msgstr[0] "Egoera"
+msgstr[1] "Egoerak"
 
-#: generator/languages/common-strings.php:49
+#: generator/languages/common-strings.php:75
 msgid "CreatedOn"
 msgstr "Sortua"
 
-#: generator/languages/common-strings.php:50
+#: generator/languages/common-strings.php:76
+msgid "Createdon"
+msgstr "Sortua"
+
+#: generator/languages/common-strings.php:77
+msgid "Created on"
+msgstr "Sortua"
+
+#: generator/languages/common-strings.php:78
 msgid "UpdatedOn"
 msgstr "Aldatua"
 
-#: generator/languages/common-strings.php:51
+#: generator/languages/common-strings.php:79
+msgid "Updatedon"
+msgstr "Aldatua"
+
+#: generator/languages/common-strings.php:80
+msgid "Updated on"
+msgstr "Aldatua"
+
+#: generator/languages/common-strings.php:81
 msgid "StartTime"
 msgstr "Hasiera"
 
-#: generator/languages/common-strings.php:52
+#: generator/languages/common-strings.php:82
+msgid "Starttime"
+msgstr "Hasiera"
+
+#: generator/languages/common-strings.php:83
+msgid "Start time"
+msgstr "Hasiera"
+
+#: generator/languages/common-strings.php:84
 msgid "EndTime"
 msgstr "Amaiera"
 
-#: generator/languages/common-strings.php:53
+#: generator/languages/common-strings.php:85
+msgid "Endtime"
+msgstr ""
+
+#: generator/languages/common-strings.php:86
+msgid "End time"
+msgstr ""
+
+#: generator/languages/common-strings.php:87
+msgid "Start"
+msgstr "Hasiera"
+
+#: generator/languages/common-strings.php:88
+msgid "End"
+msgstr "Amaiera"
+
+#: generator/languages/common-strings.php:89
+msgid "Date"
+msgid_plural "Dates"
+msgstr[0] ""
+msgstr[1] ""
+
+#: generator/languages/common-strings.php:90
+msgid "Time"
+msgid_plural "Times"
+msgstr[0] "Denbora"
+msgstr[1] "Denborak"
+
+#: generator/languages/common-strings.php:91
+msgid "Interval"
+msgid_plural "Intervals"
+msgstr[0] ""
+msgstr[1] ""
+
+#: generator/languages/common-strings.php:92
 msgid "Identifier"
 msgid_plural "Identifiers"
 msgstr[0] "Identifikatzailea"
 msgstr[1] "Identifikatzaileak"
 
-#: generator/languages/common-strings.php:54
+#: generator/languages/common-strings.php:93
 msgid "Iden"
-msgstr "Identifikatzailea"
+msgid_plural "Idens"
+msgstr[0] "Identifikatzailea"
+msgstr[1] "Identifikatzaileak"
 
-#: generator/languages/common-strings.php:55
+#: generator/languages/common-strings.php:94
 msgid "Order"
-msgstr "Ordena"
+msgid_plural "Orders"
+msgstr[0] "Ordena"
+msgstr[1] "Ordenak"
 
-#: generator/languages/common-strings.php:56
+#: generator/languages/common-strings.php:95
 msgid "Value"
 msgid_plural "Values"
 msgstr[0] "Balioa"
 msgstr[1] "Balioak"
 
-#: generator/languages/common-strings.php:58
+#: generator/languages/common-strings.php:96
 msgid "Title"
 msgid_plural "Titles"
 msgstr[0] "Izenburua"
 msgstr[1] "Izenburuak"
 
-#: generator/languages/common-strings.php:59
+#: generator/languages/common-strings.php:97
 msgid "Subtitle"
-msgstr "Azpi izenburua"
+msgid_plural "Subtitles"
+msgstr[0] "Azpi izenburua"
+msgstr[1] "Azpi izenburuak"
 
-#: generator/languages/common-strings.php:60
+#: generator/languages/common-strings.php:98
 msgid "Intro"
-msgstr "Sarrera"
+msgid_plural "Intros"
+msgstr[0] "Sarrera"
+msgstr[1] "Sarrerak"
 
-#: generator/languages/common-strings.php:61
+#: generator/languages/common-strings.php:99
 msgid "Introduction"
-msgstr "Sarrera"
+msgid_plural "Introductions"
+msgstr[0] "Sarrera"
+msgstr[1] "Sarrerak"
 
-#: generator/languages/common-strings.php:62
+#: generator/languages/common-strings.php:100
 msgid "Description"
-msgstr "Deskribapena"
+msgid_plural "Descriptions"
+msgstr[0] "Deskribapena"
+msgstr[1] "Deskribapenak"
 
-#: generator/languages/common-strings.php:63
+#: generator/languages/common-strings.php:101
 msgid "Text"
 msgid_plural "Texts"
 msgstr[0] "Testua"
 msgstr[1] "Testuak"
 
-#: generator/languages/common-strings.php:64
+#: generator/languages/common-strings.php:102
 msgid "News"
 msgid_plural "News(s)"
 msgstr[0] "Albiste"
 msgstr[1] "Albisteak"
 
-#: generator/languages/common-strings.php:66
+#: generator/languages/common-strings.php:103
 msgid "Subject"
-msgstr "Gaia"
+msgid_plural "Subjects"
+msgstr[0] "Gaia"
+msgstr[1] "Gaiak"
 
-#: generator/languages/common-strings.php:67
+#: generator/languages/common-strings.php:104
 msgid "Message"
 msgid_plural "Messages"
 msgstr[0] "Mezua"
 msgstr[1] "Mezuak"
 
-#: generator/languages/common-strings.php:69
+#: generator/languages/common-strings.php:105
 msgid "Section"
 msgid_plural "Sections"
 msgstr[0] "Atala"
 msgstr[1] "Atalak"
 
-#: generator/languages/common-strings.php:70
+#: generator/languages/common-strings.php:106
 msgid "Content"
 msgid_plural "Contents"
 msgstr[0] "Edukia"
 msgstr[1] "Edukiak"
 
-#: generator/languages/common-strings.php:71
+#: generator/languages/common-strings.php:107
 msgid "Html"
 msgstr ""
 
-#: generator/languages/common-strings.php:73
+#: generator/languages/common-strings.php:108
 msgid "Website"
 msgid_plural "Websites"
 msgstr[0] "Web tokia"
 msgstr[1] "Web tokiak"
 
-#: generator/languages/common-strings.php:74
+#: generator/languages/common-strings.php:109
 msgid "Url"
-msgstr ""
+msgid_plural "Urls"
+msgstr[0] ""
+msgstr[1] ""
 
-#: generator/languages/common-strings.php:75
+#: generator/languages/common-strings.php:110
 msgid "Link"
-msgstr "Esteka"
+msgid_plural "Links"
+msgstr[0] "Esteka"
+msgstr[1] "Estekak"
 
-#: generator/languages/common-strings.php:76
+#: generator/languages/common-strings.php:111
 msgid "Slug"
 msgstr ""
 
-#: generator/languages/common-strings.php:78
+#: generator/languages/common-strings.php:113
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] "Mota"
 msgstr[1] "Motak"
 
-#: generator/languages/common-strings.php:79
+#: generator/languages/common-strings.php:114
 msgid "Other"
-msgstr "Bestelakoa"
+msgid_plural "Others"
+msgstr[0] "Bestelakoa"
+msgstr[1] "Bestelakoak"
 
-#: generator/languages/common-strings.php:80
+#: generator/languages/common-strings.php:115
 msgid "Price"
-msgstr "Prezioa"
+msgid_plural "Prices"
+msgstr[0] "Prezioa"
+msgstr[1] "Prezioak"
 
-#: generator/languages/common-strings.php:81
+#: generator/languages/common-strings.php:116
 msgid "Quantity"
-msgstr "Zenbatekoa"
+msgid_plural "Quantities"
+msgstr[0] "Zenbatekoa"
+msgstr[1] "Zenbatekoak"
 
-#: generator/languages/common-strings.php:83
+#: generator/languages/common-strings.php:118
 msgid "Category"
 msgid_plural "Categories"
 msgstr[0] "Kategoria"
 msgstr[1] "Kategoriak"
 
-#: generator/languages/common-strings.php:85
+#: generator/languages/common-strings.php:119
+msgid "Theme"
+msgid_plural "Themes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: generator/languages/common-strings.php:120
+msgid "Template"
+msgid_plural "Templates"
+msgstr[0] ""
+msgstr[1] ""
+
+#: generator/languages/common-strings.php:122
 msgid "No"
 msgstr "Ez"
 
-#: generator/languages/common-strings.php:86
+#: generator/languages/common-strings.php:123
 msgid "Yes"
 msgstr "Bai"
 
-#: generator/languages/common-strings.php:87
+#: generator/languages/common-strings.php:124
 msgid "Off"
 msgstr "Desaktibatua"
 
-#: generator/languages/common-strings.php:88
+#: generator/languages/common-strings.php:125
 msgid "On"
 msgstr "Piztuta"
 
-#: generator/languages/common-strings.php:89
+#: generator/languages/common-strings.php:126
 msgid "Unasigned"
 msgstr "Esleigabea"
 
-#: generator/languages/common-strings.php:90
+#: generator/languages/common-strings.php:127
 msgid "Error"
 msgid_plural "Errors"
 msgstr[0] "Akatsa"
 msgstr[1] "Akatsak"
 
-#: generator/languages/common-strings.php:91
+#: generator/languages/common-strings.php:128
 msgid "Success"
 msgstr "Arrakastatsua"
 
-#: generator/languages/common-strings.php:92
+#: generator/languages/common-strings.php:129
 msgid "OK"
 msgstr "OK"
 
-#: generator/languages/common-strings.php:93
+#: generator/languages/common-strings.php:130
 msgid "Public"
 msgstr "Publikoa"
 
-#: generator/languages/common-strings.php:94
+#: generator/languages/common-strings.php:131
 msgid "Private"
 msgstr "Pribatua"
 
-#: generator/languages/common-strings.php:95
+#: generator/languages/common-strings.php:132
 msgid "Visibility"
 msgstr "Ikuspena"
 
-#: generator/languages/common-strings.php:101
+#: generator/languages/common-strings.php:138
 msgid "Upload file"
 msgstr "Fitxategia igo"
 
-#: generator/languages/common-strings.php:102
+#: generator/languages/common-strings.php:139
 msgid "Download"
-msgstr "Fitxategia jaitsi"
+msgid_plural "Downloads"
+msgstr[0] "Jaitsi"
+msgstr[1] "Jaitsierak"
 
-#: generator/languages/common-strings.php:103
+#: generator/languages/common-strings.php:140
 msgid "Download file"
-msgstr "Fitxategia jaitsi"
+msgid_plural "Download files"
+msgstr[0] "Fitxategia jaitsi"
+msgstr[1] "Fitxategiak jaitsi"
 
-#: generator/languages/common-strings.php:104
+#: generator/languages/common-strings.php:141
 #, php-format
 msgid "List of %s"
 msgstr "%s-(r)en zerrenda"
 
-#: generator/languages/common-strings.php:105
+#: generator/languages/common-strings.php:142
 #, php-format
 msgid "Edit %s"
 msgstr "%s editatu"
 
-#: generator/languages/common-strings.php:106
+#: generator/languages/common-strings.php:143
 #, php-format
 msgid "Add %s"
 msgstr "%s gehitu"
 
-#: generator/languages/common-strings.php:107
+#: generator/languages/common-strings.php:144
 #, php-format
 msgid "Delete %s"
 msgstr "%s ezabatu"
 
-#: generator/languages/common-strings.php:108
+#: generator/languages/common-strings.php:145
 #, php-format
 msgid "You want to delete this %s?"
 msgstr "%s ezabatu nahi duzu?"
 
-#: generator/languages/common-strings.php:109
+#: generator/languages/common-strings.php:146
 msgid "Option"
 msgid_plural "Options"
 msgstr[0] "Aukera"
 msgstr[1] "Aukerak"
 
-#: generator/languages/common-strings.php:110
+#: generator/languages/common-strings.php:147
+msgid "Setting"
+msgid_plural "Settings"
+msgstr[0] ""
+msgstr[1] ""
+
+#: generator/languages/common-strings.php:148
 msgid "Main management"
 msgstr "Kudeaketa orokorra"
 
-#: generator/languages/common-strings.php:113
+#: generator/languages/common-strings.php:151
 msgid "Test"
 msgid_plural "Tests"
 msgstr[0] ""
 msgstr[1] ""
 
-#: generator/doc/elementindex_default.html:536
-#: generator/doc/elementindex.html:264
+#: generator/languages/common-strings.php:156
 msgid "field"
-msgstr "Eremua"
+msgid_plural "fields"
+msgstr[0] "Eremua"
+msgstr[1] "Eremuak"
+
+#: generator/languages/common-strings.php:157
+msgid "note"
+msgid_plural "notes"
+msgstr[0] "Oharra"
+msgstr[1] "Oharrak"
+
+#: generator/languages/common-strings.php:158
+msgid "tag"
+msgid_plural "tags"
+msgstr[0] "etiketa"
+msgstr[1] "etiketak"
+
+#: generator/languages/common-strings.php:159
+msgid "src-line"
+msgstr ""
+
+#: generator/languages/common-strings.php:160
+msgid "Access denied"
+msgstr "Sarbide ukatua"
+
+#: generator/languages/common-strings.php:161
+msgid "Insert your username"
+msgstr "Zure erabiltzaile izena sartu"
+
+#: generator/languages/common-strings.php:162
+msgid "Insert your username or email address"
+msgstr "Zure erabiltzaile izena edo emaila sartu"
 
 #: generator/doc/default/_IncludeAbstract.php.html:59
 msgid "notes"
@@ -431,18 +699,6 @@ msgstr "Oharrak"
 #: generator/doc/default/IncludeAbstract.html:29
 msgid "tags"
 msgstr "etiketa"
-
-#: generator/doc/__filesource/fsource_default__IncludeAbstract.php.html:18
-msgid "src-line"
-msgstr ""
-
-#: generator/Generator/Yaml/klear/klear.yaml:22
-msgid "Access denied"
-msgstr "Sarbide ukatua"
-
-#: generator/Generator/Yaml/klear/klear.yaml:23
-msgid "Insert your username"
-msgstr "Zure erabiltzaile izena sartu"
 
 #~ msgid "Users"
 #~ msgstr "Erabiltzaileak"

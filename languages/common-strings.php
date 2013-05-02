@@ -7,18 +7,29 @@ exit;
 _('Login');
 _('Username');
 ngettext('Email', 'Emails', 1);
+ngettext('Email address', 'Email addresses', 1);
 _('Pass');
-_('Password');
+ngettext('Password', 'Passwords', 1);
 ngettext('User', 'Users', 1);
 ngettext('Name', 'Names', 1);
 _('Surname');
 _('FirstName');
+_('Firstname');
+_('First name');
 _('LastName');
+_('Lastname');
+_('Last name');
 ngettext('PhoneNumber', 'PhoneNumbers', 1);
+ngettext('Phonenumber', 'Phonenumbers', 1);
+ngettext('Phone number', 'Phone numbers', 1);
 ngettext('Address', 'Addresses', 1);
-_('Street');
+ngettext('Street', 'Streets', 1);
 ngettext('PostalCode', 'PostalCodes', 1);
-_('ZipCode');
+ngettext('Postalcode', 'Postalcodes', 1);
+ngettext('Postal code', 'Postal codes', 1);
+ngettext('ZipCode', 'ZipCodes', 1);
+ngettext('Zipcode', 'Zipcodes', 1);
+ngettext('Zip code', 'Zip codes', 1);
 ngettext('Province', 'Provinces', 1);
 ngettext('City', 'Cities', 1);
 ngettext('State', 'States', 1);
@@ -28,59 +39,85 @@ ngettext('Country', 'Countries', 1);
  * Ficheros
  */
 ngettext('File','Files', 1);
-_('Path');
-_('Size');
+ngettext('Path','Paths', 1);
+ngettext('Size','Sizes', 1);
 _('FileSize');
+_('Filesize');
+_('File size');
 _('FilePath');
+_('Filepath');
+_('File path');
 ngettext('MimeType', 'MimeTypes', 1);
+ngettext('Mimetype', 'Mimetypes', 1);
+ngettext('Mime type', 'Mime types', 1);
 _('BaseName');
+_('Base name');
 ngettext('Image', 'Images', 1);
 _('ImageSize');
+_('Imagesize');
+_('Image size');
 _('ImagePath');
+_('Imagepath');
+_('Image path');
 ngettext('Picture', 'Pictures', 1);
 _('PictureSize');
+_('Picturesize');
+_('Picture size');
 _('PicturePath');
+_('Picturepath');
+_('Picture path');
 
 /*
  * Estados y valores comunes
  */
 _('Active');
-_('Status');
+ngettext('Status', 'Statuses', 1);
 _('CreatedOn');
+_('Createdon');
+_('Created on');
 _('UpdatedOn');
+_('Updatedon');
+_('Updated on');
 _('StartTime');
+_('Starttime');
+_('Start time');
 _('EndTime');
+_('Endtime');
+_('End time');
+_('Start');
+_('End');
+ngettext('Date', 'Dates', 1);
+ngettext('Time', 'Times', 1);
+ngettext('Interval', 'Intervals', 1);
 ngettext('Identifier', 'Identifiers', 1);
-_('Iden');
-_('Order');
+ngettext('Iden', 'Idens', 1);
+ngettext('Order', 'Orders', 1);
 ngettext('Value', 'Values', 1);
-
 ngettext('Title', 'Titles', 1);
-_('Subtitle');
-_('Intro');
-_('Introduction');
-_('Description');
+ngettext('Subtitle', 'Subtitles', 1);
+ngettext('Intro', 'Intros', 1);
+ngettext('Introduction', 'Introductions', 1);
+ngettext('Description', 'Descriptions', 1);
 ngettext('Text', 'Texts', 1);
 ngettext('News', 'News(s)', 1);
-
-_('Subject');
+ngettext('Subject', 'Subjects', 1);
 ngettext('Message', 'Messages',1 );
-
 ngettext('Section', 'Sections', 1);
 ngettext('Content', 'Contents', 1);
 _('Html');
-
 ngettext('Website', 'Websites', 1);
-_('Url');
-_('Link');
+ngettext('Url', 'Urls', 1);
+ngettext('Link', 'Links', 1);
 _('Slug');
 
 ngettext('Type', 'Types', 1);
-_('Other');
-_('Price');
-_('Quantity');
+ngettext('Other', 'Others', 1);
+ngettext('Price', 'Prices', 1);
+ngettext('Quantity', 'Quantities', 1);
 
 ngettext('Category', 'Categories', 1);
+ngettext('Theme', 'Themes', 1);
+ngettext('Template', 'Templates', 1);
 
 _('No');
 _('Yes');
@@ -99,15 +136,27 @@ _('Visibility');
  * YAML
  */
 _('Upload file');
-_('Download');
-_('Download file');
+ngettext('Download', 'Downloads', 1);
+ngettext('Download file', 'Download files', 1);
 _('List of %s');
 _('Edit %s');
 _('Add %s');
 _('Delete %s');
 _('You want to delete this %s?');
 ngettext('Option', 'Options', 1);
+ngettext('Setting', 'Settings', 1);
 _('Main management');
 
 
 ngettext('Test', 'Tests', 1);
+
+/*
+ * Others
+ */
+ngettext('field', 'fields', 1);
+ngettext('note', 'notes', 1);
+ngettext('tag', 'tags', 1);
+_('src-line');
+_('Access denied');
+_('Insert your username');
+_('Insert your username or email address');
