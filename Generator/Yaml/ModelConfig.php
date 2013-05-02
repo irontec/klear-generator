@@ -105,25 +105,8 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFieldConf(Generator_Db_Field $fieldDesc)
     {
-        /*$translated = false;
-        $titles = array('i18n' => array());
-        foreach ($this->_enabledLanguages as $languageIden => $languageData) {
-            $this->_translate->setLocale($languageData['locale']);
-            if ($this->_translate->isTranslated(ucfirst($this->_getFieldName($fieldDesc)))) {
-                $translated = true;
-            }
-            $titles['i18n'][$languageData['language']] = $this->_translate->{'translate'}(ucfirst($this->_getFieldName($fieldDesc)));
-        }
-
-        if ($translated == false) {
-            unset($titles['i18n']);
-            $titles = "_('" . ucfirst($this->_getFieldName($fieldDesc)) . "')";
-        }
-        */
-
-        
         $this->_translate->setLocale('es_ES');
-        
+
         $title = ucfirst($this->_getFieldName($fieldDesc));
         
         $normalizedEntity = ucfirst(Generator_Yaml_StringUtils::toCamelCase($title));
@@ -137,7 +120,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         
         
         
-        $titles = "_('" . $normalizedEntity . "')";
+        $titles = "_('" . $singularEntity . "')";
         
         if ($this->_translate->isTranslated($singularEntity)) {
         
@@ -150,31 +133,11 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         
         }
         
+        
         if ($singularEntity == $pluralEntity) {
             $pluralEntity = $pluralEntity . '(s)';
         }
-        /*
-        
-        $titles = "_('" . $title . "')";
-        
-            
-        $singularEntity = Generator_Yaml_StringUtils::getSingular($title);
-        
-        if ($this->_translate->isTranslated($singularEntity)) {
-            
-            $trans = $this->_translate->translate($singularEntity);
-            
-            if (is_array($trans)) {
-                
-                $titles = "ngettext('" . $singularEntity . "', '" . $title . "', 1)";
-            }
-            
-        }
-        
-        */
-        
-       
-        
+
         $data = array(
             'title' => $titles,
             'type' => $this->_getFieldDataType($fieldDesc),
@@ -192,33 +155,6 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             $data['required'] = 'true';
         }
         
-        
-        
-//         if ($title == 'Smatc') {
-//             $o = "0";
-//             var_dump($o, empty($o));
-//             $o = 1;
-//             var_dump($o, empty($o));
-//             var_dump($fieldDesc->getDefaultValue(), $fieldDesc->hasDefaultValue());
-        
-//             exit;
-//         }
-        
-//        'required' => $fieldDesc->isNullable()? 'false' : 'true',
-        
-       /* if (($fieldDesc->hasDefaultValue())) {
-            defaultValue
-        
-            //    var_dump($fieldDesc->hasDefaultValue(), $fieldDesc->getDefaultValue()); exit;
-        
-        
-        }*/        
-        
-
-//         if ($fieldDesc['DEFAULT']) {
-//             $data['defaultValue'] = $fieldDesc['DEFAULT'];
-//         }
-
         switch ($data['type']) {
             case 'picker':
                 $data['source'] = $this->_getTimeSource($fieldDesc);
@@ -242,14 +178,6 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                 $data['adapter'] = 'Blowfish';
                 break;
         }
-        
-        
-       
-        
-        
-        
-        
-                
 
         return $data;
     }
@@ -307,14 +235,6 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             'data' => 'mapper'
         );
 
-        /*if (isset($this->_klearConfig->klear->languages)) {
-            foreach ($this->_klearConfig->klear->languages as $language) {
-                $unasigned[$language] = 'unasigned';
-            }
-        } else {
-            $unasigned = array('es' => 'Sin asignar');
-        }
-        */
         if ($fieldDesc->isNullable()) {
             $data["'null'"] = '_("Unasigned")';
         }
@@ -353,31 +273,9 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getBooleanSelector()
     {
-        /*foreach ($this->_enabledLanguages as $languageIden => $languageData) {
-            $this->_translate->setLocale($languageData['locale']);
-            $no[$languageData['language']] = '"'.$this->_translate->translate('No').'"';
-            $yes[$languageData['language']] = '"'.$this->_translate->translate('Yes').'"';
-        }*/
-
         $no = '_("No")';
         $yes = '_("Yes")';
         
-        
-        /*return array(
-            'data' => 'inline',
-            'values' => array(
-                "'0'" => array(
-                    'title' => array(
-                        'i18n' => $no
-                    )
-                ),
-                "'1'" => array(
-                    'title' => array(
-                        'i18n' => $yes
-                    )
-                )
-            )
-        );*/
         return array(
                 'data' => 'inline',
                 'values' => array(
@@ -469,13 +367,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFileSource($fieldDesc)
     {
-        /*foreach ($this->_enabledLanguages as $languageIden => $languageData) {
-            $this->_translate->setLocale($languageData['locale']);
-            $download[$languageData['language']] = '"'.$this->_translate->translate('Download file').'"';
-            $upload[$languageData['language']] = '"'.$this->_translate->translate('Upload file').'"';
-        }*/
 
-        
         $download = '_("Download file")';
         $upload = '_("Upload file")';
         
