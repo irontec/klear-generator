@@ -46,7 +46,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $editTitles = '_("Edit %s", ' . $titleSingular . ')';
         $addTitles = '_("Add %s", ' . $titleSingular . ')';
         $deleteTitles = '_("Delete %s", ' . $titleSingular . ')';
-        $askDeleteTitles = '_("You want to delete this %s?", ' . $titleSingular . ')';
+        $askDeleteTitles = '_("Do you want to delete this %s?", ' . $titleSingular . ')';
         $options = '_("Options")';
         
         
