@@ -35,8 +35,19 @@ try {
     // Sistema actual en uso, no sobreescribe ficheros existentes
     $klearDir = APPLICATION_PATH . '/configs/klear';
     $yamlFactory = new Generator_Yaml_Factory($klearDir, $namespace);
-    $yamlFactory->createAllFiles();
+    $yamlFactory->createAllFiles($generateLinks);
+    
+    // Sistema base en raw, siempre se sobreescribe
+    $klearDirRaw = APPLICATION_PATH . '/configs/klearRaw';
+    $rawYamlFactory = new Generator_Yaml_Factory($klearDirRaw, $namespace, true);
+    $rawYamlFactory->createAllFiles($generateLinks);
 
+    // genera y copia ficheros base de idiomas.
+    $langs = new Generator_Languages_Config();
+    $langs->createAllFiles();
+    
+    
+    
     //Guardamos la revisión del svn actual
     $output = array();
     exec('svn info', $output);
@@ -50,46 +61,7 @@ try {
     }
     $svnData = '[' . date('r') . ']' . ' revision: ' . $revision . "\n";
     file_put_contents($klearDir . '/generator.log', $svnData, FILE_APPEND);
-
-
-    // Sistema base en raw, siempre se sobreescribe
-    $klearDirRaw = APPLICATION_PATH . '/configs/klearRaw';
-    $rawYamlFactory = new Generator_Yaml_Factory($klearDirRaw, $namespace, true);
-    $rawYamlFactory->createAllFiles($generateLinks);
-
     file_put_contents($klearDirRaw . '/generator.log', $svnData, FILE_APPEND);
-
-
-    $dirFiles=array(
-    'languages/',
-    'languages/common-strings.php',
-    'languages/en_US',
-    'languages/en_US/en_US.mo',
-    'languages/en_US/en_US.po',
-    'languages/es_ES',
-    'languages/es_ES/es_ES.mo',
-    'languages/es_ES/es_ES.po',
-    'languages/eu_ES',
-    'languages/eu_ES/eu_ES.mo',
-    'languages/eu_ES/eu_ES.po'
-            );
-
-    foreach ($dirFiles as $file) {
-
-        $orig = __DIR__ . '/' . $file;
-
-        $dest = APPLICATION_PATH . '/' . $file;
-
-        if (!file_exists($dest)) {
-
-            if (is_dir($orig)) {
-                mkdir($dest);
-            } else {
-                copy($orig , $dest);
-            }
-
-        }
-    }
 
 
 } catch (Zend_Console_Getopt_Exception $e) {

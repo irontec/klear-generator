@@ -42,16 +42,6 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 
         $options = array();
 
-        /*foreach ($this->_enabledLanguages as $languageIden => $languageData) {
-            $this->_translate->setLocale($languageData['locale']);
-            $listTitles[$languageData['language']] = sprintf($this->_translate->translate('List of %s'), $titlePlural);
-            $editTitles[$languageData['language']] = sprintf($this->_translate->translate('Edit %s'), $titleSingular);
-            $addTitles[$languageData['language']] = sprintf($this->_translate->translate('Add %s'), $titleSingular);
-            $deleteTitles[$languageData['language']] = sprintf($this->_translate->translate('Delete %s'), $titleSingular);
-            $askDeleteTitles[$languageData['language']] = sprintf($this->_translate->translate('You want to delete this %s?'), $titleSingular);
-            $options[$languageData['language']] = $this->_translate->translate('Options');
-        }*/
-
         $listTitles = '_("List of %s", ' . $titlePlural . ')';
         $editTitles = '_("Edit %s", ' . $titleSingular . ')';
         $addTitles = '_("Add %s", ' . $titleSingular . ')';

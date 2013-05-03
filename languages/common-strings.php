@@ -1,6 +1,5 @@
 <?php
 exit;
-
 /*
  * USUARIO
  */
@@ -12,7 +11,7 @@ _('Pass');
 ngettext('Password', 'Passwords', 1);
 ngettext('User', 'Users', 1);
 ngettext('Name', 'Names', 1);
-_('Surname');
+ngettext('Surname', 'Surnames', 1);
 _('FirstName');
 _('Firstname');
 _('First name');
@@ -127,22 +126,23 @@ _('Unasigned');
 ngettext('Error', 'Errors', 1);
 _('Success');
 _('OK');
-_('Public');
-_('Private');
-_('Visibility');
+
+ngettext('Public', 'Publics', 1);
+ngettext('Private', 'Privates', 1);
+ngettext('Visibility', 'Visibilities', 1);
 
 
 /*
  * YAML
  */
-_('Upload file');
+ngettext('Upload file', 'Upload files', 1);
 ngettext('Download', 'Downloads', 1);
 ngettext('Download file', 'Download files', 1);
 _('List of %s');
 _('Edit %s');
 _('Add %s');
 _('Delete %s');
-_('You want to delete this %s?');
+ngettext('Do you want to delete this %s?', 'Do you want to delete these %s?', 1);
 ngettext('Option', 'Options', 1);
 ngettext('Setting', 'Settings', 1);
 _('Main management');

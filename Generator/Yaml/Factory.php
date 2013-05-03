@@ -10,32 +10,6 @@ class Generator_Yaml_Factory
 
     protected $_tables = null;
 
-    protected $_availableLanguages = array(
-        'es' => array(
-            'title' => 'Español',
-            'language' => 'es',
-            'locale' => 'es_ES'),
-        'eu' => array(
-                'title' => 'Euskera',
-                'language' => 'eu',
-                'locale' => 'eu_ES'),
-        'ca' => array(
-                'title' => 'Català',
-                'language' => 'ca',
-                'locale' => 'ca_ES'),
-        'ga' => array(
-                'title' => 'Galego',
-                'language' => 'gl',
-                'locale' => 'gl_ES'),
-        'en' => array(
-                'title' => 'English',
-                'language' => 'en',
-                'locale' => 'en_US'),
-        'fr' => array(
-                'title' => 'français',
-                'language' => 'fr',
-                'locale' => 'fr_FR')
-    );
 
     protected $_enabledLanguages = array();
 
@@ -52,31 +26,17 @@ class Generator_Yaml_Factory
 
         $this->_klearConfig = new Zend_Config_Ini(APPLICATION_PATH. '/configs/klear.ini', APPLICATION_ENV);
 
-        $this->_loadLanguages();
+        $this->_getLanguages();
 
         $this->_configWriter = new Zend_Config_Writer_Yaml();
 
         $this->_createDirStructure();
     }
 
-    protected function _loadLanguages()
+    protected function _getLanguages()
     {
-        foreach ($this->_klearConfig->klear->languages as $language) {
-            $result = false;
-            foreach ($this->_availableLanguages as $languageIden => $languageData) {
-                if ($languageData['language'] == $language) {
-                    $result = true;
-                    $this->_enabledLanguages[$languageIden] = $languageData;
-                }
-            }
-            if (!$result) {
-                $this->_enabledLanguages[$language] = array(
-                        'title' => $language,
-                        'language' => $language,
-                        'locale' => $language
-                        );
-            }
-        }
+        $languages = new Generator_Languages_Config();
+        $this->_enabledLanguages = $languages->getEnabledLanguages(); 
     }
 
     protected function _createDirStructure()
@@ -105,7 +65,7 @@ class Generator_Yaml_Factory
             else
                 unlink($file);
         }
-        rmdir($dir);
+        @rmdir($dir);
     }
 
     public function createErrorsFile()
