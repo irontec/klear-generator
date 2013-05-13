@@ -21,7 +21,7 @@ try {
     $opts->parse();
     $opts->checkRequired();
     $env = $opts->getEnviroment();
-    
+
     $defaultValues = array(
         'dbtype' => 'mysql',
         'docs' => array(
@@ -42,8 +42,6 @@ try {
         )
     );
 
-    
-    
     $applicationIni = APPLICATION_PATH . '/configs/application.ini';
     $klearIni = APPLICATION_PATH . '/configs/klear.ini';
 

@@ -161,6 +161,11 @@ abstract class MakeDbTable {
      */
     protected $_urlIdentifiers = array();
 
+    /***
+     * Sets the timezone used by all date/time fields
+     */
+     protected $_defaultTimeZone = 'UTC';
+
     /**
      *
      * @param array $info
@@ -569,6 +574,19 @@ abstract class MakeDbTable {
 
         $this->_loggerName = $this->_config->log->logger_name;
 
+        if (isset($this->_config->klear->defaultTimeZone)) {
+
+            $proposedTimeZone = $this->_config->klear->defaultTimeZone;
+
+            if (in_array($proposedTimeZone, DateTimeZone::listIdentifiers())) {
+
+                $this->_defaultTimeZone = $proposedTimeZone;
+            } else {
+
+                echo "Warning: $proposedTimeZone is not a valid timezone identifier... Skipping configuration\n";
+            }
+        }
+
         $path = $this->_config->include->path;
         if (!is_dir($path)) {
             // Use path relative to root of the application
@@ -791,12 +809,13 @@ abstract class MakeDbTable {
         $class = 'Model\\' . $this->_className;
 
         $file = $this->getIncludePath() . $class . '.inc.php';
+
         if (file_exists($file)) {
             include_once $file;
             $include = new $class($this->_namespace);
             $this->_includeModel = $include;
         } else {
-            $this->_includeModel = new Model_Default($this->_namespace);
+            $this->_includeModel = new Model_Default($this->_namespace, $this->_defaultTimeZone);
         }
 
         $modelFile = array(
@@ -806,6 +825,7 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $modelFile = implode(DIRECTORY_SEPARATOR , $modelFile);
+
         $modelData = $this->getParsedTplContents('model_raw.tpl.php');
 
         $smartModelFile = array(

@@ -392,14 +392,14 @@ if($md5Column === true) {
 <?php
     if (in_array($column['type'], array('datetime', 'timestamp', 'date'))):
 ?>
-    
+
         if ($data == '0000-00-00 00:00:00') {
 
             $data = null;
         }
-        
+
         if ($data === 'CURRENT_TIMESTAMP') {
-        	$data = \Zend_Date::now()->setTimezone('UTC');
+            $data = \Zend_Date::now()->setTimezone('<?=$this->_defaultTimeZone;?>');
         }
 
         if ($data instanceof \Zend_Date) {
@@ -408,12 +408,12 @@ if($md5Column === true) {
 
         } elseif (!is_null($data) && !$data instanceof \DateTime) {
 
-            $data = new \DateTime($data, new \DateTimeZone('UTC'));
+            $data = new \DateTime($data, new \DateTimeZone('<?=$this->_defaultTimeZone;?>'));
         }
 
-        if ($data instanceof \DateTime && $data->getTimezone()->getName() != 'UTC') {
+        if ($data instanceof \DateTime && $data->getTimezone()->getName() != '<?=$this->_defaultTimeZone;?>') {
 
-            $data->setTimezone(new \DateTimeZone('UTC'));
+            $data->setTimezone(new \DateTimeZone('<?=$this->_defaultTimeZone;?>'));
         }
 
 <?php
@@ -478,11 +478,11 @@ if($md5Column === true) {
 
         if ($returnZendDate) {
             $zendDate = new \Zend_Date($this->_<?=$column['normalized']; ?>->getTimestamp(), \Zend_Date::TIMESTAMP);
-            $zendDate->setTimezone('UTC');
+            $zendDate->setTimezone('<?=$this->_defaultTimeZone;?>');
             return $zendDate;
         }
 
-        
+
 <?php if ($column['type'] =='date'): ?>
         return $this->_<?=$column['normalized']; ?>->format('Y-m-d');
 <?php else: ?>

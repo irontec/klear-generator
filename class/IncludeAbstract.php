@@ -7,9 +7,9 @@
  */
 abstract class IncludeAbstract
 {
-	const TYPE_MODEL = 'Model';
-	const TYPE_MAPPER = 'Mapper';
-	const TYPE_DBTABLE = 'DbTable';
+    const TYPE_MODEL = 'Model';
+    const TYPE_MAPPER = 'Mapper';
+    const TYPE_DBTABLE = 'DbTable';
 
     protected $_vars;
 
@@ -21,7 +21,7 @@ abstract class IncludeAbstract
 
     public function __construct($namespace)
     {
-    	$this->_namespace = $namespace;
+        $this->_namespace = $namespace;
         $this->setVars();
         $this->setFunctions();
         $this->setParentClass();
@@ -60,7 +60,7 @@ abstract class IncludeAbstract
      */
     public function getParentClass()
     {
-		return $this->_parent_class;
+        return $this->_parent_class;
     }
 
     /**
@@ -70,26 +70,26 @@ abstract class IncludeAbstract
      */
     public function setParentClass()
     {
-    	$type = $this->getType();
+        $type = $this->getType();
 
-    	$class = "";
+        $class = "";
 
-    	switch ($type) {
-    		case self::TYPE_MODEL:
-    			$class .= 'ModelAbstract';
-    			break;
-    		case self::TYPE_MAPPER:
-    			$class .= 'MapperAbstract';
-    			break;
-    		case self::TYPE_DBTABLE:
-    			$class .= 'TableAbstract';
-    			break;
+        switch ($type) {
+            case self::TYPE_MODEL:
+                $class .= 'ModelAbstract';
+                break;
+            case self::TYPE_MAPPER:
+                $class .= 'MapperAbstract';
+                break;
+            case self::TYPE_DBTABLE:
+                $class .= 'TableAbstract';
+                break;
 
-    		default:
-    			throw new Exception('Unknown Type');
-    			break;
-    	}
+            default:
+                throw new Exception('Unknown Type');
+                break;
+        }
 
-		$this->_parent_class = $class;
+        $this->_parent_class = $class;
     }
 }
