@@ -31,15 +31,13 @@ abstract class MapperAbstract
      */
     protected $_dbTable;
 
-<?php if (!empty($this->_cacheManagerName)):?>
     /**
      * $_cache - Zend_Cache object as configured by Cache manager
      *
      * @var Zend_Cache
      */
-    protected $_cache;
+    protected $_cache = null;
 
-<?php endif; ?>
 <?php if (!empty($this->_loggerName)):?>
     /**
      * $_logger - Zend_Log object
@@ -77,7 +75,7 @@ abstract class MapperAbstract
         }
 
 <?php else: ?>
-        $this->_cache = false;
+        $this->_cache = null;
 <?php endif; ?>
 <?php if (!empty($this->_loggerName)):?>
         $this->_logger = \Zend_Registry::get('<?=$this->_loggerName ?>');

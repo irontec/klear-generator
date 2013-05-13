@@ -237,11 +237,11 @@ abstract class ModelAbstract implements \IteratorAggregate
         return $this;
     }
 
-    public function hasChange ($field = '')
+    public function hasChange($field = '')
     {
         if (empty($field)) {
 
-            if ( !empty($this->_changeLog) ) {
+            if (!empty($this->_changeLog)) {
 
                 return true;
             }
@@ -252,7 +252,7 @@ abstract class ModelAbstract implements \IteratorAggregate
 
                 return true;
 
-            } else if ( in_array(lcfirst($field), $this->_changeLog) ) {
+            } elseif (in_array(lcfirst($field), $this->_changeLog)) {
 
                 return true;
             }
