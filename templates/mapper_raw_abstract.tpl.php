@@ -950,23 +950,31 @@ abstract class MapperAbstract
      */
     protected abstract function loadModel($data, $entry);
 
-
     /**
      * Cleans urlIdentifier fields, so they can be used as url slugs
-     * @param <?=$namespace?>Model\Raw\ModelAbstract $model The model to clean
+     * @param Cianoplan\Model\Raw\ModelAbstract $model The model to clean
      *
      */
-    protected function _setCleanUrlIdentifiers(\<?=$namespace?>Model\Raw\ModelAbstract $model)
+    protected function _setCleanUrlIdentifiers(\Cianoplan\Model\Raw\ModelAbstract $model)
     {
         foreach ($this->_urlIdentifiers as $cleanFieldName => $dirtyFieldName)
         {
-            $cleanValueGetter = 'get' . $model->columnNameToVar($cleanFieldName);
-            if ($model->$cleanValueGetter()) {
+            $cleanValueAttribute = $model->columnNameToVar($cleanFieldName);
+            $cleanValueGetter = 'get' . $cleanValueAttribute;
+            $cleanValueHasChangeAndIsNotEmpty = $model->hasChange($cleanValueAttribute) && $model->$cleanValueGetter() != '';
+
+            if ($model->$cleanValueGetter() && !$cleanValueHasChangeAndIsNotEmpty) {
+
                 // Clean value allready exists
                 continue;
             }
 
-            $dirtyValueGetter = 'get' . $model->columnNameToVar($dirtyFieldName);
+            $dirtyValueAttribute = $model->columnNameToVar($dirtyFieldName);
+            if ($cleanValueHasChangeAndIsNotEmpty) {
+                $dirtyValueAttribute = $cleanValueAttribute;
+            }
+
+            $dirtyValueGetter = 'get' . $dirtyValueAttribute;
             $cleanValueSetter = 'set' . $model->columnNameToVar($cleanFieldName);
 
             $dirtyValue = $model->$dirtyValueGetter();
@@ -976,6 +984,4 @@ abstract class MapperAbstract
             $model->$cleanValueSetter($uniqueValue);
         }
     }
-
-
 }
