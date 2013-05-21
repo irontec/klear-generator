@@ -952,10 +952,10 @@ abstract class MapperAbstract
 
     /**
      * Cleans urlIdentifier fields, so they can be used as url slugs
-     * @param Cianoplan\Model\Raw\ModelAbstract $model The model to clean
+     * @param \<?=$namespace?>\Model\Raw\ModelAbstract $model The model to clean
      *
      */
-    protected function _setCleanUrlIdentifiers(\Cianoplan\Model\Raw\ModelAbstract $model)
+    protected function _setCleanUrlIdentifiers(\<?=$namespace?>\Model\Raw\ModelAbstract $model)
     {
         foreach ($this->_urlIdentifiers as $cleanFieldName => $dirtyFieldName)
         {
