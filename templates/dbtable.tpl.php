@@ -52,6 +52,9 @@ class <?=$this->_className?> extends <?= str_replace("_", "\\", $this->_includeT
     }
     ?>;
 
+    protected $_rowClass = '<?=$namespace?>\Model\\<?=$this->getTableName()?>';
+    protected $_rowMapperClass = '<?=$namespace?>\Mapper\\Sql\\<?=$this->getTableName()?>';
+
     protected $_sequence = <?=($this->_primaryKey[$this->getTablename()]['phptype'] !== 'array') ? 'true' : 'false'; ?>; // <?=$this->_primaryKey[$this->getTablename()]['phptype'];?>
 
     <?=$referenceMap?>
@@ -63,4 +66,5 @@ class <?=$this->_className?> extends <?= str_replace("_", "\\", $this->_includeT
 <?=$this->_includeTable->getVars() . "\n"?>
 
 <?=$this->_includeTable->getFunctions() . "\n"?>
+
 }

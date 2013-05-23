@@ -274,7 +274,9 @@ abstract class ModelAbstract implements \IteratorAggregate
 
     protected final function _logChange($field)
     {
-        $this->_changeLog[] = $field;
+        if ($this->_logChanges === true) {
+            $this->_changeLog[] = $field;
+        }
     }
 
     protected function _setLoaded($foreignKeyName)
@@ -627,6 +629,21 @@ abstract class ModelAbstract implements \IteratorAggregate
         $this->_logger->log("Unrecoginized method requested in call for '$method' in " . get_class($this), \Zend_Log::ERR);
 <?php endif; ?>
         throw new \Exception("Unrecognized method '$method()'");
+    }
+
+    public function __isset($name)
+    {
+        $method = 'get' . ucfirst($name);
+
+        if (('mapper' == $name) || !method_exists($this, $method)) {
+            $name = $this->columnNameToVar($name);
+            $method = 'get' . ucfirst($name);
+            if (('mapper' == $name) || !method_exists($this, $method)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

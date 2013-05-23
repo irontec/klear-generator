@@ -37,6 +37,8 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
      */
     protected $_name;
 
+    protected $_rowsetClass = '<?=$namespace?>\Mapper\\Sql\\DbTable\\Rowset';
+
     /**
      * $_id - The primary key name(s)
      *
@@ -156,5 +158,51 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
             return $this->_referenceMap[$key]['columns'];
         }
         return null;
+    }
+
+    public function getRowMapperClass()
+    {
+        return $this->_rowMapperClass;
+    }
+
+    public function fetchRow($where = null, $order = null, $offset = null)
+    {
+        if (!($where instanceof \Zend_Db_Table_Select)) {
+            $select = $this->select();
+
+            if ($where !== null) {
+                $this->_where($select, $where);
+            }
+
+            if ($order !== null) {
+                $this->_order($select, $order);
+            }
+
+            $select->limit(1, ((is_numeric($offset)) ? (int) $offset : null));
+
+        } else {
+            $select = $where->limit(1, $where->getPart(\Zend_Db_Select::LIMIT_OFFSET));
+        }
+        $rows = $this->_fetch($select);
+
+        if (count($rows) == 0) {
+            return null;
+        }
+
+        $data = array(
+            'table'   => $this,
+            'data'     => $rows[0],
+            'readOnly' => $select->isReadOnly(),
+            'stored'  => true
+        );
+
+        $rowClass = $this->getRowClass();
+        if (!class_exists($rowClass)) {
+            require_once 'Zend/Loader.php';
+            \Zend_Loader::loadClass($rowClass);
+        }
+        $row = new $rowClass();
+        $row->setFromArray($rows[0]);
+        return $row;
     }
 }

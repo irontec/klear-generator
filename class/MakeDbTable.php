@@ -892,15 +892,20 @@ abstract class MakeDbTable {
             die("Error: could not write model file $paginatorFile.");
 
         $mapperFile = $this->getLocation() . DIRECTORY_SEPARATOR . 'Mapper/Sql/Raw' . DIRECTORY_SEPARATOR . 'MapperAbstract.php';
+        $rowsetFile = $this->getLocation() . DIRECTORY_SEPARATOR . 'Mapper/Sql/DbTable' . DIRECTORY_SEPARATOR . 'Rowset.php';
 
         /****************************
          ********** Mappers *********
          ****************************/
         $mapperData = $this->getParsedTplContents('mapper_class.tpl.php');
         $rawMapperData = $this->getParsedTplContents('mapper_raw_abstract.tpl.php');
+        $rowsetData = $this->getParsedTplContents('dbtable_rowset.tpl.php');
 
         if (!file_put_contents($mapperFile, $rawMapperData))
             die("Error: could not write mapper file $mapperFile.");
+
+        if (!file_put_contents($rowsetFile, $rowsetData))
+            die("Error: could not write rowset file $rosetFile.");
 
         $tableFile = $this->getLocation() . DIRECTORY_SEPARATOR . 'Mapper/Sql/DbTable' . DIRECTORY_SEPARATOR . 'TableAbstract.php';
 

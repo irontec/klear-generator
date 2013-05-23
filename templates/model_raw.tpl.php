@@ -435,7 +435,7 @@ if($md5Column === true) {
 <?php
     else:
 ?>
-        if ($this->_logChanges === true && $this->_<?=$column['normalized']?> != $data) {
+        if ($this->_<?=$column['normalized']?> != $data) {
 
             $this->_logChange('<?=$column['normalized']?>');
         }
@@ -725,6 +725,11 @@ else : ?>
         }
 
         return $this->_validator;
+    }
+
+    public function setFromArray($data)
+    {
+        return $this->getMapper()->loadModel($data, $this);
     }
 
     /**

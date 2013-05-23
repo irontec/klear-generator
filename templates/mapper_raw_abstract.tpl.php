@@ -564,8 +564,7 @@ abstract class MapperAbstract
         $resultSet = $this->getDbTable()->fetchAll();
         $entries   = array();
         foreach ($resultSet as $row) {
-            $entry = $this->loadModel($row);
-            $entries[] = $entry;
+            $entries[] = $row;
         }
 
         return $entries;
@@ -611,8 +610,7 @@ abstract class MapperAbstract
                                      ->fetchList($where, $order, $limit, $offset));
         $entries   = array();
         foreach ($resultSet as $row) {
-            $entry = $this->loadModel($row);
-            $entries[] = $entry;
+            $entries[] = $row;
         }
 
         if ($limit == 1) {
@@ -686,8 +684,7 @@ abstract class MapperAbstract
         $result = array();
         $rows = $table->fetchAll($select);
         foreach ($rows as $row) {
-            $model = $this->loadModel($row);
-            $result[] = $model;
+            $result[] = $row;
         }
 
         return $result;
@@ -712,8 +709,7 @@ abstract class MapperAbstract
             return null;
         }
 
-        $model = $this->loadModel($row, $model);
-        return $model;
+        return $row;
     }
 
     protected function _getFindByFieldSelect($field, $value = null)
