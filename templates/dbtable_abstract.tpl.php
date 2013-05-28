@@ -205,4 +205,32 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
         $row->setFromArray($rows[0]);
         return $row;
     }
+
+    /**
+     * Deletes existing rows.
+     *
+     * @param  array|string $where SQL WHERE clause(s).
+     * @return int          The number of rows deleted.
+     */
+    public function delete($where)
+    {
+        $depTables = $this->getDependentTables();
+        if (!empty($depTables)) {
+            $resultSet = $this->fetchAll($where);
+            if (count($resultSet) > 0 ) {
+                foreach ($resultSet as $row) {
+                    /**
+                     * Execute cascading deletes against dependent tables
+                     */
+                    foreach ($depTables as $tableClass) {
+                        $t = self::getTableFromString($tableClass, $this);
+                        $t->_cascadeDelete($tableClass, array($row->getPrimaryKey()));
+                    }
+                }
+            }
+        }
+
+        $tableSpec = ($this->_schema ? $this->_schema . '.' : '') . $this->_name;
+        return $this->_db->delete($tableSpec, $where);
+    }
 }
