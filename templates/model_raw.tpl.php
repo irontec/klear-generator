@@ -110,22 +110,22 @@ if (!empty($vars)) {
 echo "$vars\n\n";
 }
 ?>
+    protected $_columnsList = array(
+<?php
+    foreach ($this->_columns[$this->getTableName()] as $column):
+         $mlFields = $column['field'];
+?>
+        '<?=$column['field']?>'=>'<?=$column['normalized']?>',
+<?php
+    endforeach;
+?>        
+    );
+    
     /**
      * Sets up column and relationship lists
      */
     public function __construct()
     {
-        $this->setColumnsList(array(
-<?php
-    foreach ($this->_columns[$this->getTableName()] as $column):
-
-         $mlFields = $column['field'];
-?>
-            '<?=$column['field']?>'=>'<?=$column['normalized']?>',
-<?php
-    endforeach;
-?>        ));
-
         $this->setColumnsMeta(array(
 <?php
     foreach ($this->_columns[$this->getTableName()] as $column):

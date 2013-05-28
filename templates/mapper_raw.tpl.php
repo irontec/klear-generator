@@ -711,6 +711,9 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             $entry = new \<?=$namespace?>Model\<?=$this->_className?>();
         }
 
+        // We don't need to log changes as we will reset them later...
+        $entry->stopChangeLog();
+
         if (is_array($data)) {
             $entry<?php
                 $count = count($this->_columns[$this->getTableName()]);
