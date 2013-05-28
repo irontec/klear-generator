@@ -233,4 +233,70 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
         $tableSpec = ($this->_schema ? $this->_schema . '.' : '') . $this->_name;
         return $this->_db->delete($tableSpec, $where);
     }
+
+    /**
+     * Called by parent table's class during delete() method.
+     *
+     * @param  string $parentTableClassname
+     * @param  array  $primaryKey
+     * @return int    Number of affected rows
+     */
+    public function _cascadeDelete($parentTableClassname, array $primaryKey)
+    {
+        // setup metadata
+        $this->_setupMetadata();
+
+        // get this class name
+        $thisClass = get_class($this);
+        if ($thisClass === 'Zend_Db_Table') {
+            $thisClass = $this->_definitionConfigName;
+        }
+
+        $rowsAffected = 0;
+
+        foreach ($this->_getReferenceMapNormalized() as $map) {
+            if ($map[self::REF_TABLE_CLASS] == $parentTableClassname && isset($map[self::ON_DELETE])) {
+
+                $where = array();
+
+                // CASCADE or CASCADE_RECURSE
+                if (in_array($map[self::ON_DELETE], array(self::CASCADE, self::CASCADE_RECURSE))) {
+                    for ($i = 0; $i < count($map[self::COLUMNS]); ++$i) {
+                        $col = $this->_db->foldCase($map[self::COLUMNS][$i]);
+                        $refCol = $this->_db->foldCase($map[self::REF_COLUMNS][$i]);
+                        $type = $this->_metadata[$col]['DATA_TYPE'];
+                        $where[] = $this->_db->quoteInto(
+                            $this->_db->quoteIdentifier($col, true) . ' = ?',
+                            $primaryKey[$refCol], $type);
+                    }
+                }
+
+                // CASCADE_RECURSE
+                if ($map[self::ON_DELETE] == self::CASCADE_RECURSE) {
+
+                    /**
+                     * Execute cascading deletes against dependent tables
+                     */
+                    $depTables = $this->getDependentTables();
+                    if (!empty($depTables)) {
+                        foreach ($depTables as $tableClass) {
+                            $t = self::getTableFromString($tableClass, $this);
+                            foreach ($this->fetchAll($where) as $depRow) {
+                                $rowsAffected += $t->_cascadeDelete($thisClass, array($depRow->getPrimaryKey()));
+                            }
+                        }
+                    }
+                }
+
+                // CASCADE or CASCADE_RECURSE
+                if (in_array($map[self::ON_DELETE], array(self::CASCADE, self::CASCADE_RECURSE))) {
+                    $rowsAffected += $this->delete($where);
+                }
+
+            }
+        }
+        return $rowsAffected;
+    }
+
+
 }
