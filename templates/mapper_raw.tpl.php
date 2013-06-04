@@ -132,9 +132,12 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
         $useTransaction = true;
 
+		$dbTable = $this->getDbTable();
+		$dbAdapter = $dbTable->getAdapter();
+
         try {
 
-            $this->getDbTable()->getAdapter()->beginTransaction();
+            $dbAdapter->beginTransaction();
 
         } catch (\Exception $e) {
 
@@ -287,7 +290,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             if ($useTransaction) {
 
-                $this->getDbTable()->getAdapter()->rollback();
+                $dbAdapter->rollback();
             }
 
             $result = false;
@@ -308,13 +311,13 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 <?php endif; ?>
                 throw new \Exception('The value for <?=$key['capital']?> cannot be null', 2000);
             } else {
-                $where[] = $this->getDbTable()->getAdapter()->quoteInto('<?=$key['field']?> = ?', $pk_val);
+                $where[] = $dbAdapter->quoteInto($dbAdapter->quoteIdentifier('<?=$key['field']?> = ?'), $pk_val);
             }
 <?php endforeach; ?>
 <?php else :?>
-            $where = $this->getDbTable()->getAdapter()->quoteInto('<?=$this->_primaryKey[$this->getTablename()]['field']?> = ?', $model->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>());
+            $where = $dbAdapter->quoteInto($dbAdapter->quoteIdentifier('<?=$this->_primaryKey[$this->getTablename()]['field']?>') . ' = ?', $model->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>());
 <?php endif; ?>
-            $result = $this->getDbTable()->delete($where);
+            $result = $dbTable->delete($where);
 
             if ($this->_cache) {
 
@@ -331,7 +334,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             }
 
             if ($useTransaction) {
-                $this->getDbTable()->getAdapter()->commit();
+                $dbAdapter->commit();
             }
 
         } catch (\Exception $exception) {
@@ -358,7 +361,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
             if ($useTransaction) {
 
-                $this->getDbTable()->getAdapter()->rollback();
+                $dbAdapter->rollback();
             }
 
             throw $exception;
@@ -543,7 +546,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 $this->getDbTable()
                      ->update(
                          $data,
-                         array(<?php echo "\n                                 ";
+                         array(<?php echo "\n                             ";
             if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') {
                 $fields = count($this->_primaryKey[$this->getTablename()]['fields']);
                 $i = 0;
@@ -555,7 +558,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                     }
                 }
             } else {
-                echo '\'' . $this->_primaryKey[$this->getTablename()]['field'] . ' = ?\' => $primaryKey';
+                echo '$this->getDbTable()->getAdapter()->quoteIdentifier(\'' . $this->_primaryKey[$this->getTablename()]['field'] . '\') .\' = ?\' => $primaryKey';
             }
             echo "\n";?>
                          )
