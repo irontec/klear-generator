@@ -243,6 +243,43 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
      */
     public function _cascadeDelete($parentTableClassname, array $primaryKey)
     {
+        if (\Zend_Version::compare("1.12") == -1) {
+            return $this->_cascadeDelete11($parentTableClassname, $primaryKey);
+        } else {
+            return $this->_cascadeDelete12($parentTableClassname, $primaryKey);
+        }
+    }
+
+    protected function _cascadeDelete11($parentTableClassname, array $primaryKey)
+    {
+        $this->_setupMetadata();
+        $rowsAffected = 0;
+        foreach ($this->_getReferenceMapNormalized() as $map) {
+            if ($map[self::REF_TABLE_CLASS] == $parentTableClassname && isset($map[self::ON_DELETE])) {
+                switch ($map[self::ON_DELETE]) {
+                    case self::CASCADE:
+                        $where = array();
+                        for ($i = 0; $i < count($map[self::COLUMNS]); ++$i) {
+                            $col = $this->_db->foldCase($map[self::COLUMNS][$i]);
+                            $refCol = $this->_db->foldCase($map[self::REF_COLUMNS][$i]);
+                            $type = $this->_metadata[$col]['DATA_TYPE'];
+                            $where[] = $this->_db->quoteInto(
+                                    $this->_db->quoteIdentifier($col, true) . ' = ?',
+                                    $primaryKey[$refCol], $type);
+                        }
+                        $rowsAffected += $this->delete($where);
+                        break;
+                    default:
+                        // no action
+                        break;
+                }
+            }
+        }
+        return $rowsAffected;
+    }
+
+    protected function _cascadeDelete12($parentTableClassname, array $primaryKey)
+    {
         // setup metadata
         $this->_setupMetadata();
 
@@ -297,6 +334,5 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
         }
         return $rowsAffected;
     }
-
 
 }
