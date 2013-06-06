@@ -137,13 +137,13 @@ class Generator_Assets_CountryImporter
         $ids = array();
         
         $url = str_replace("%lang%", "en", self::INDEX_URL);
-        $baseList = Zend_Json::decode($this->_getContent($url));
+        $baseList = json_decode($this->_getContent($url), true);
         
         
         foreach ($this->_languages as $lang) {
             $url = str_replace("%lang%", $lang, self::INDEX_URL);
             
-            $countryList = Zend_Json::decode($this->_getContent($url));
+            $countryList = json_decode($this->_getContent($url), true);
             
             //Para países no traducidos desde el inglés
             $countryList = $countryList + $baseList;
@@ -169,7 +169,7 @@ class Generator_Assets_CountryImporter
                 if (!$countryName || empty($countryName)) {
                     $countryName = 'undefined';
                 }
-                
+
                 $country->$codeSetter($code);
                 $country->$nameSetter($countryName, $lang);
                 
