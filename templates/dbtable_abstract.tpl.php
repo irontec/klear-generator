@@ -243,7 +243,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
      */
     public function _cascadeDelete($parentTableClassname, array $primaryKey)
     {
-        if (\Zend_Version::compare("1.12") == -1) {
+        if (\Zend_Version::compareVersion("1.12") == -1) {
             return $this->_cascadeDelete11($parentTableClassname, $primaryKey);
         } else {
             return $this->_cascadeDelete12($parentTableClassname, $primaryKey);
