@@ -207,12 +207,27 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
     }
 
     /**
-     * Deletes existing rows.
-     *
-     * @param  array|string $where SQL WHERE clause(s).
-     * @return int          The number of rows deleted.
-     */
+    * Deletes existing rows.
+    *
+    
+    * @return int          The number of rows deleted.
+    */
     public function delete($where)
+    {
+        if ($this->_oldZend()) {
+            return $this->_delete11($where);
+        } else {
+            return $this->_delete12($where);
+        }
+    }
+    
+    protected function _delete11($where)
+    {
+        $tableSpec = ($this->_schema ? $this->_schema . '.' : '') . $this->_name;
+        return $this->_db->delete($tableSpec, $where);
+    }
+    
+    protected function _delete12($where)
     {
         $depTables = $this->getDependentTables();
         if (!empty($depTables)) {
@@ -233,7 +248,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
         $tableSpec = ($this->_schema ? $this->_schema . '.' : '') . $this->_name;
         return $this->_db->delete($tableSpec, $where);
     }
-
+    
     /**
      * Called by parent table's class during delete() method.
      *
@@ -243,13 +258,13 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
      */
     public function _cascadeDelete($parentTableClassname, array $primaryKey)
     {
-        if (\Zend_Version::compareVersion("1.12") == -1) {
+        if ($this->_oldZend()) {
             return $this->_cascadeDelete11($parentTableClassname, $primaryKey);
         } else {
             return $this->_cascadeDelete12($parentTableClassname, $primaryKey);
         }
     }
-
+    
     protected function _cascadeDelete11($parentTableClassname, array $primaryKey)
     {
         $this->_setupMetadata();
@@ -334,5 +349,9 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
         }
         return $rowsAffected;
     }
-
+    
+    protected function _oldZend()
+    {
+        return \Zend_Version::compareVersion("1.12") !== -1;
+    }
 }
