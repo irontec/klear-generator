@@ -406,7 +406,8 @@ abstract class MapperAbstract
                 $tmp = array();
                 foreach ($where as $key => $value) {
 
-                    $tmp[] = $key . " = '" . $value . "'";
+                    $sanitizedKey = $this->getDbTable()->getAdapter()->quoteIdentifier($key);
+                    $tmp[] = $sanitizedKey . " = '" . $value . "'";
                 }
                 $where = implode(" AND ", $tmp);
 
