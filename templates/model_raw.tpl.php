@@ -118,9 +118,9 @@ echo "$vars\n\n";
         '<?=$column['field']?>'=>'<?=$column['normalized']?>',
 <?php
     endforeach;
-?>        
+?>
     );
-    
+
     /**
      * Sets up column and relationship lists
      */
@@ -390,7 +390,9 @@ if($md5Column === true) {
     public function set<?=$column['capital']?>(<?= $multilang ? $setterParams : '$data'; ?>)
     {
 <?php
+    $applyCasting = true;
     if (in_array($column['type'], array('datetime', 'timestamp', 'date'))):
+        $applyCasting = false;
 ?>
 
         if ($data == '0000-00-00 00:00:00') {
@@ -434,13 +436,30 @@ if($md5Column === true) {
         $this->$methodName($data);
 <?php
     else:
+
+        $casting = '';
+        if ($applyCasting) {
+            switch($column['phptype']) {
+
+                case 'text':
+                    $casting = '(string)';
+                    break;
+
+                case 'string':
+                case 'int':
+                case 'float':
+                case 'boolean':
+
+                    $casting = '(' . $column['phptype'] . ')';
+            }
+        }
 ?>
         if ($this->_<?=$column['normalized']?> != $data) {
 
             $this->_logChange('<?=$column['normalized']?>');
         }
 
-        $this->_<?=$column['normalized']?> = $data;
+        $this->_<?=$column['normalized']?> = <?php echo $casting; ?> $data;
 <?php
     endif;
 ?>
