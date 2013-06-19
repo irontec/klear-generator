@@ -458,8 +458,9 @@ if($md5Column === true) {
 
             $this->_logChange('<?=$column['normalized']?>');
         }
-
-        $this->_<?=$column['normalized']?> = <?php echo $casting; ?> $data;
+		if (!is_null($data)) {
+        	$this->_<?=$column['normalized']?> = <?php echo $casting; ?> $data;
+       	}
 <?php
     endif;
 ?>
