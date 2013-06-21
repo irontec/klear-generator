@@ -222,6 +222,17 @@ abstract class MakeDbTable {
     }
 
     /**
+     * 
+     * @return string
+     */
+    public function getNormalizedTableName() {
+        $tableName = $this->_tbname;
+        $tableParts = explode('_', $tableName);
+        
+        return implode('', array_map("ucfirst", $tableParts));
+    }
+
+    /**
      *
      * @param array $list
      */
