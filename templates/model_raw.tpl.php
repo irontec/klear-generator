@@ -460,6 +460,8 @@ if($md5Column === true) {
         }
 		if (!is_null($data)) {
         	$this->_<?=$column['normalized']?> = <?php echo $casting; ?> $data;
+       	} else {
+       	    $this->_<?=$column['normalized']?> = $data;
        	}
 <?php
     endif;
