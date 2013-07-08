@@ -537,6 +537,8 @@ foreach ($fields as $column):
 
 <?php if ($column->getType() =='date'): ?>
         return $this->_<?=$column->getNormalizedName()?>->format('Y-m-d');
+<?php elseif ($column->getType() =='time') : ?>
+        return $this->_<?=$column->getNormalizedName()?>->format('H:i:s');
 <?php else: ?>
         return $this->_<?=$column->getNormalizedName()?>->format('Y-m-d H:i:s');
 <?php endif; ?>
