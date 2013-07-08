@@ -31,12 +31,16 @@ class Generator_Db_Field implements \IteratorAggregate
     public function getAcceptedValues()
     {
         $acceptedValues = array();
-        if ($this->isEnum()) {
+        if ($this->_isRealEnum()) {
             if (preg_match('/enum\((?<acceptedValues>.*)\)$/i', $this->_description['DATA_TYPE'], $matches)) {
                 $acceptedValues = explode(',', $matches['acceptedValues']);
                 $acceptedValues = array_map(function($value) {
                     return trim($value, '\'"');
                 }, $acceptedValues);
+            }
+        } else if ($this->_checkTag('enum')) {
+            if (preg_match('/\[enum:(?P<fieldValues>.+)\]/', $this->getComment(), $matches)) {
+                $acceptedValues = explode('|', $matches['fieldValues']);
             }
         }
 
@@ -103,7 +107,12 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function isEnum()
     {
-        return preg_match('/enum\(.*\)$/', $this->_description['DATA_TYPE']);
+        return $this->_isRealEnum() || $this->_checkTag('enum');
+    }
+
+    protected function _isRealEnum()
+    {
+        return (bool)preg_match('/enum\(.*\)$/', $this->_description['DATA_TYPE']);
     }
 
     public function isFile()
@@ -154,7 +163,7 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function isUrlIdentifier()
     {
-        return $this->_checkTag('urlIdentifier') || (bool)stristr($this->getComment(), '[urlIdentifier:');
+        return $this->_checkTag('urlIdentifier');
     }
 
     public function getIdentifiedFieldName()
@@ -178,7 +187,7 @@ class Generator_Db_Field implements \IteratorAggregate
 
     protected function _checkTag($tag)
     {
-        return $this->hasComment() && stristr($this->getComment(), '[' . $tag . ']');
+        return $this->hasComment() && preg_match('/\[' . $tag . '(:.*)?\]/i', $this->getComment());
     }
 
     public function getRelatedTable()
