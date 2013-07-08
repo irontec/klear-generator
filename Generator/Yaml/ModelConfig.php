@@ -108,32 +108,32 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         $this->_translate->setLocale('es_ES');
 
         $title = ucfirst($this->_getFieldName($fieldDesc));
-        
+
         $normalizedEntity = ucfirst(Generator_StringUtils::toCamelCase($title));
-        
+
         $pluralEntity = ucfirst(Generator_StringUtils::getSentenceFromCamelCase($normalizedEntity));
-        
+
         $pluralEntity = Generator_StringUtils::getPlural($pluralEntity);
-        
+
         $singularEntity = Generator_StringUtils::getSingular($normalizedEntity);
         $singularEntity = ucfirst(Generator_StringUtils::getSentenceFromCamelCase($singularEntity));
-        
-        
-        
+
+
+
         $titles = "_('" . $singularEntity . "')";
-        
+
         if ($this->_translate->isTranslated($singularEntity)) {
-        
+
             $trans = $this->_translate->translate($singularEntity);
-        
+
             if (is_array($trans)) {
-        
+
                 $titles = "ngettext('" . $singularEntity . "', '" . $pluralEntity . "', 1)";
             }
-        
+
         }
-        
-        
+
+
         if ($singularEntity == $pluralEntity) {
             $pluralEntity = $pluralEntity . '(s)';
         }
@@ -143,18 +143,18 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             'type' => $this->_getFieldDataType($fieldDesc),
 //             'readonly' => '${auth.readOnly}'
         );
-        
+
 
         $isRequired = $fieldDesc->isNullable()? false : true;
-        
+
         if ($fieldDesc->hasDefaultValue()) {
             $data['defaultValue'] = $fieldDesc->getDefaultValue();
         }
-        
+
         if ($isRequired && !$fieldDesc->hasDefaultValue()) {
             $data['required'] = 'true';
         }
-        
+
         switch ($data['type']) {
             case 'picker':
                 $data['source'] = $this->_getTimeSource($fieldDesc);
@@ -275,7 +275,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
     {
         $no = '_("No")';
         $yes = '_("Yes")';
-        
+
         return array(
                 'data' => 'inline',
                 'values' => array(
@@ -299,14 +299,10 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getEnumValues(Generator_Db_Field $fieldDesc)
     {
+        $acceptedValues = $fieldDesc->getAcceptedValues();
         $values = array();
-        if (preg_match('/enum\((?P<values>.*)\)$/', $fieldDesc->getType(), $matches)) {
-            if (isset($matches['values'])) {
-                $untrimmedValues = explode(',', $matches[1]);
-                foreach ($untrimmedValues as $value) {
-                    $values[trim($value, '"\'')] = "_('" . trim($value, '"\'') . "')";
-                }
-            }
+        foreach ($acceptedValues as $value) {
+            $values["'" . $value . "'"] = "_('" . $value . "')";
         }
         return $values;
     }
@@ -370,7 +366,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
         $download = '_("Download file")';
         $upload = '_("Upload file")';
-        
+
         return array(
             'data' => 'fso',
             'size_limit' => '20M',

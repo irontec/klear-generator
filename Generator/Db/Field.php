@@ -34,9 +34,6 @@ class Generator_Db_Field implements \IteratorAggregate
         if ($this->_isRealEnum()) {
             if (preg_match('/enum\((?<acceptedValues>.*)\)$/i', $this->_description['DATA_TYPE'], $matches)) {
                 $acceptedValues = explode(',', $matches['acceptedValues']);
-                $acceptedValues = array_map(function($value) {
-                    return trim($value, '\'"');
-                }, $acceptedValues);
             }
         } else if ($this->_checkTag('enum')) {
             if (preg_match('/\[enum:(?P<fieldValues>.+)\]/', $this->getComment(), $matches)) {
@@ -44,6 +41,9 @@ class Generator_Db_Field implements \IteratorAggregate
             }
         }
 
+        $acceptedValues = array_map(function($value) {
+            return trim($value, '\'" ');
+        }, $acceptedValues);
         return $acceptedValues;
     }
 
