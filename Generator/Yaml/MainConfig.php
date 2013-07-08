@@ -53,12 +53,12 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
         $entitiesConfig = array();
         foreach ($entities as $entity) {
 
-            $normalizedEntity = ucfirst(Generator_Yaml_StringUtils::toCamelCase($entity));
+            $normalizedEntity = ucfirst(Generator_StringUtils::toCamelCase($entity));
 
-            $pluralEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($normalizedEntity));
+            $pluralEntity = ucfirst(Generator_StringUtils::getSentenceFromCamelCase($normalizedEntity));
 
-            $singularEntity = Generator_Yaml_StringUtils::getSingular($normalizedEntity);
-            $singularEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($singularEntity));
+            $singularEntity = Generator_StringUtils::getSingular($normalizedEntity);
+            $singularEntity = ucfirst(Generator_StringUtils::getSentenceFromCamelCase($singularEntity));
 
             $translateString = "ngettext('" . $singularEntity . "', '" . $pluralEntity . "', 0)";
             $entitiesConfig[$normalizedEntity . 'List'] = array(

@@ -16,7 +16,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $this->_klearConfig = $klearConfig;
         $this->_tableDescription = Generator_Db::describeTable($table);
 
-        $normalizedTable = ucfirst(Generator_Yaml_StringUtils::toCamelCase($table));
+        $normalizedTable = ucfirst(Generator_StringUtils::toCamelCase($table));
         $this->_normalizedTable = $normalizedTable;
 
         $listScreenName = lcfirst($normalizedTable) . 'List_screen';
@@ -28,10 +28,10 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 
         $normalizedEntity = $normalizedTable;
 
-        $pluralEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($normalizedEntity));
+        $pluralEntity = ucfirst(Generator_StringUtils::getSentenceFromCamelCase($normalizedEntity));
 
-        $singularEntity = Generator_Yaml_StringUtils::getSingular($normalizedEntity);
-        $singularEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($singularEntity));
+        $singularEntity = Generator_StringUtils::getSingular($normalizedEntity);
+        $singularEntity = ucfirst(Generator_StringUtils::getSentenceFromCamelCase($singularEntity));
 
         if ($singularEntity == $pluralEntity) {
             $pluralEntity = $pluralEntity . '(s)';

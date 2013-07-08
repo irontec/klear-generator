@@ -1,6 +1,23 @@
 <?="<?php\n"?>
 <?php
 $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
+$tableName = $this->getTableName();
+$tableFields = $this->_columns[$tableName];
+$fields = Generator_Db::describeTable($tableName);
+
+$enumFields = array();
+$fsoFields = array();
+foreach ($fields as $field) {
+    if ($field->isEnum()) {
+        $enumFields[] = $field;
+        continue;
+    }
+
+    if ($field->isFso()) {
+        $fsoFields[] = $field;
+        continue;
+    }
+}
 ?>
 
 /**
@@ -25,47 +42,47 @@ namespace <?=$namespace?>Model\Raw;
 class <?=$this->_className?> extends <?=$this->_includeModel->getParentClass() . "\n"?>
 {
 <?php
- $fsoFields = array();
+$fsoObjects = array();
 
- foreach ($this->_columns[$this->getTableName()] as $column):
+foreach ($fsoFields as $field) {
+    $fsoObject = str_replace('FileSize', '', $field->getName());
 
-    if (stristr($column['comment'], '[fso]')) {
-
-        $fsoFields[] = $column;
+    if (empty($fsoObject)) {
+        $fsoObject = $this->_className;
     }
 
- endforeach;
+    $fsoObjects[] = $fsoObject;
+}
 
-$objects = array();
- if (count($fsoFields)) {
+$fsoObjects = array_unique($fsoObjects);
 
-     foreach ($fsoFields as $field) {
-
-         $object = str_replace('FileSize', '', $field['field']);
-
-         if (empty($object)) {
-
-             $object = $this->_className;
-         }
-
-         $objects[] = $object;
-     }
-
-     $objects = array_unique($objects);
-
-     foreach ($objects as $item) {
+foreach ($fsoObjects as $item) :
 ?>
     /*
      * @var \KlearMatrix_Model_Fso
      */
     protected $_<?php echo lcfirst($item); ?>Fso;
+<?php
+endforeach;
+?>
 
 <?php
-     }
- }
-
+foreach ($enumFields as $field) :
 ?>
-<?php foreach ($this->_columns[$this->getTableName()] as $column): ?>
+    protected $_<?php echo $field->getNormalizedName()?>AcceptedValues = array(
+<?php
+    foreach ($field->getAcceptedValues() as $acceptedValue) :
+?>
+        '<?php echo $acceptedValue?>',
+<?php
+    endforeach;
+?>
+    );
+<?php
+endforeach;
+?>
+
+<?php foreach ($tableFields as $column): ?>
     /**
 <?php if (!empty($column['comment'])) : ?>
      * <?=$column['comment'] . "\n"?>
@@ -105,17 +122,18 @@ foreach ($this->getDependentTables() as $key):
     protected $_<?=$this->_getRelationName($key, 'dependent')?>;
 
 <?php endforeach;?>
-<?php $vars = $this->_includeModel->getVars();
+
+<?php
+$vars = $this->_includeModel->getVars();
 if (!empty($vars)) {
-echo "$vars\n\n";
+    echo $vars . "\n\n";
 }
 ?>
     protected $_columnsList = array(
 <?php
-    foreach ($this->_columns[$this->getTableName()] as $column):
-         $mlFields = $column['field'];
+    foreach ($fields as $column):
 ?>
-        '<?=$column['field']?>'=>'<?=$column['normalized']?>',
+        '<?=$column->getName()?>'=>'<?=$column->getNormalizedName()?>',
 <?php
     endforeach;
 ?>
@@ -128,19 +146,17 @@ echo "$vars\n\n";
     {
         $this->setColumnsMeta(array(
 <?php
-    foreach ($this->_columns[$this->getTableName()] as $column):
+    foreach ($fields as $column):
+        if (!$column->hasComment()) {
+            continue;
+        }
 
-         if (empty($column['comment'])) {
-
-             continue;
-         }
-
-        $meta = str_replace("[", "", $column['comment']);
+        $meta = str_replace("[", "", $column->getComment());
         $meta = explode("]", $meta);
         array_pop($meta);
         $meta = "'" . implode("','", $meta) . "'";
 ?>
-            '<?=$column['field']?>'=> array(<?= $meta ?>),
+            '<?=$column->getName()?>'=> array(<?= $meta ?>),
 <?php
     endforeach;
 ?>        ));
@@ -148,7 +164,7 @@ echo "$vars\n\n";
         $this->setMultiLangColumnsList(array(
 <?php
     $mlFields = array();
-    foreach ($this->_columns[$this->getTableName()] as $column):
+    foreach ($tableFields as $column):
         if(!stristr($column['comment'], '[ml]')) {
             continue;
         }
@@ -213,31 +229,38 @@ echo "$vars\n\n";
 <?php endforeach;?>
         ));
 
-<?php if (count($deleteCascade) > 0) { ?>
+<?php if (count($deleteCascade) > 0) : ?>
         $this->setOnDeleteCascadeRelationships(array(
             '<?php echo implode("',\n            '" , array_keys($deleteCascade)); ?>'
         ));
-<?php } //endif ?>
+<?php endif ?>
 
-<?php if (count($deleteSetNull) > 0) { ?>
+<?php if (count($deleteSetNull) > 0) : ?>
         $this->setOnDeleteSetNullRelationships(array(
             '<?php echo implode("',\n            '" , array_keys($deleteSetNull)); ?>'
         ));
-<?php } //endif ?>
-<?php if (FALSE AND count($updateCascade) > 0) { ?>
+<?php endif ?>
+
+<?php
+    //TODO: Quitar o poner esto aquí, pero ese false && ...
+    if (false && count($updateCascade) > 0) :
+?>
         $this->setOnUpdateCascadeRelationships(array(
             '<?php echo implode("',\n            '" , array_keys($updateCascade)); ?>'
         ));
-    <?php } //endif ?>
+
+<?php
+    endif
+?>
 
         $this->_defaultValues = array(
 <?php
-    foreach ($this->_columns[$this->getTableName()] as $column):
-        if ($column['nullable'] == false and !is_null($column['default'])) {
+    foreach ($fields as $column):
+        if ($column->isRequired() && !is_null($column->getDefaultValue())) :
 ?>
-            '<?php echo $column['normalized'];?>' => '<?php echo $column['default']; ?>',
+            '<?php echo $column->getNormalizedName()?>' => '<?php echo $column->getDefaultValue(); ?>',
 <?php
-        } //endif
+        endif;
     endforeach;
 ?>
         );
@@ -259,7 +282,7 @@ echo "$vars\n\n";
     protected function _initFileObjects()
     {
 <?php
-foreach ($objects as $fsoObject):
+foreach ($fsoObjects as $fsoObject):
 ?>
         $this->_<?php echo lcfirst($fsoObject); ?>Fso = new \KlearMatrix_Model_Fso($this, $this->get<?php echo ucfirst($fsoObject); ?>Specs());
 <?php
@@ -275,7 +298,7 @@ endforeach;
 <?php
     if (count($fsoFields) > 0) :
 ?>
-        return array('<?php echo implode("','", $objects); ?>');
+        return array('<?php echo implode("','", $fsoObjects); ?>');
 
 <?php
     else:
@@ -292,8 +315,8 @@ endforeach;
 
 ?>
 <?php
- $columns = $this->_columns[$this->getTableName()];
- foreach ($objects as $item) {
+ $columns = $tableFields;
+ foreach ($fsoObjects as $item) {
 
     $md5Column = false;
     foreach ($columns as $column) {
@@ -361,14 +384,14 @@ if($md5Column === true) {
     /**************************************************************************
     *********************************** /FSO ***********************************
     ***************************************************************************/
-<?php foreach ($this->_columns[$this->getTableName()] as $column):
+<?php
+foreach ($fields as $column):
 
     $setterParams = '';
     $getterParams = '';
     $multilang = false;
 
-    if (stristr($column['comment'], '[ml]')) {
-
+    if ($column->isMultilang()) {
         $multilang = true;
         $setterParams = '$data, $language = \'\'';
         $getterParams = '$language = \'\'';
@@ -376,22 +399,32 @@ if($md5Column === true) {
 
 ?>
 
-
     /**
-     * Sets column <?=$column['field']?><?php if (in_array($column['type'], array('datetime', 'timestamp', 'date'))): ?>. Stored in ISO 8601 format.<?php endif; echo "\n";?>
+     * Sets column <?=$column->getName() . $column->isAnyDateType()? "Stored in ISO 8601 format." : '' . "\n";?>
      *
-<?php if (in_array($column['type'], array('datetime', 'timestamp', 'date'))): ?>
+<?php if ($column->isAnyDateType()): ?>
      * @param string|Zend_Date $date
 <?php else: ?>
-     * @param <?=$column['phptype']?> $data
+     * @param <?=$column->getPhpType()?> $data
 <?php endif; ?>
      * @return \<?=$namespace?>Model\<?=$this->_className . "\n"?>
      */
-    public function set<?=$column['capital']?>(<?= $multilang ? $setterParams : '$data'; ?>)
+    public function set<?=$column->getNormalizedName('upper')?>(<?=$multilang ? $setterParams : '$data'; ?>)
     {
 <?php
+    if ($column->isRequired()) :
+?>
+        if (is_null($data)) {
+            throw new \Exception(_('Required values cannot be null'));
+        }
+<?php
+    endif;
+?>
+
+<?php
     $applyCasting = true;
-    if (in_array($column['type'], array('datetime', 'timestamp', 'date'))):
+
+    if ($column->isAnyDateType()):
         $applyCasting = false;
 ?>
 
@@ -426,11 +459,11 @@ if($md5Column === true) {
 
         $language = $this->_getCurrentLanguage($language);
 
-        $methodName = "set<?=$column['capital']?>". ucfirst(str_replace('_', '', $language));
+        $methodName = "set<?=$column->getNormalizedName('upper')?>". ucfirst(str_replace('_', '', $language));
         if (!method_exists($this, $methodName)) {
 
-            //Throw new \Exception('Unavailable language');
-            $this->_<?=$column['normalized']?> = $data;
+            // new \Exception('Unavailable language');
+            $this->_<?=$column->getNormalizedName()?> = $data;
             return $this;
         }
         $this->$methodName($data);
@@ -439,7 +472,7 @@ if($md5Column === true) {
 
         $casting = '';
         if ($applyCasting) {
-            switch($column['phptype']) {
+            switch($column->getPhpType()) {
 
                 case 'text':
                     $casting = '(string)';
@@ -450,19 +483,28 @@ if($md5Column === true) {
                 case 'float':
                 case 'boolean':
 
-                    $casting = '(' . $column['phptype'] . ')';
+                    $casting = '(' . $column->getPhpType() . ')';
             }
         }
 ?>
-        if ($this->_<?=$column['normalized']?> != $data) {
-
-            $this->_logChange('<?=$column['normalized']?>');
+        if ($this->_<?=$column->getNormalizedName()?> != $data) {
+            $this->_logChange('<?=$column->getNormalizedName()?>');
         }
-		if (!is_null($data)) {
-        	$this->_<?=$column['normalized']?> = <?php echo $casting; ?> $data;
-       	} else {
-       	    $this->_<?=$column['normalized']?> = $data;
-       	}
+
+        if (!is_null($data)) {
+<?php
+            if ($column->isEnum()) :
+?>
+            if (!in_array($data, $this->_<?=$column->getNormalizedName()?>AcceptedValues) && !empty($data)) {
+                throw new \Exception(_('Invalid value for <?=$column->getNormalizedName()?>'));
+            }
+<?php
+            endif;
+?>
+            $this->_<?=$column->getNormalizedName()?> = <?php echo $casting; ?> $data;
+        } else {
+            $this->_<?=$column->getNormalizedName()?> = $data;
+        }
 <?php
     endif;
 ?>
@@ -470,18 +512,18 @@ if($md5Column === true) {
     }
 
     /**
-     * Gets column <?=$column['field'] . "\n"?>
+     * Gets column <?=$column->getName() . "\n"?>
      *
-<?php if (in_array($column['type'], array('datetime', 'timestamp', 'date'))): ?>
+<?php if ($column->isAnyDateType()): ?>
      * @param boolean $returnZendDate
      * @return Zend_Date|null|string Zend_Date representation of this datetime if enabled, or ISO 8601 string if not
 <?php else: ?>
-     * @return <?=$column['phptype'] . "\n"?>
+     * @return <?=$column->getPhpType() . "\n"?>
 <?php endif; ?>
      */
-    public function get<?=$column['capital']?>(<?php
+    public function get<?=$column->getNormalizedName('upper')?>(<?php
 
-        if (in_array($column['type'], array('datetime', 'timestamp', 'date'))) {
+        if ($column->isAnyDateType()) {
             echo '$returnZendDate = false';
         }
         if ($multilang) {
@@ -490,41 +532,41 @@ if($md5Column === true) {
     ?>)
     {
     <?php
-        if (in_array($column['type'], array('datetime', 'timestamp', 'date'))):
+        if ($column->isAnyDateType()):
     ?>
 
-        if (is_null($this->_<?=$column['normalized']; ?>)) {
+        if (is_null($this->_<?=$column->getNormalizedName()?>)) {
 
             return null;
         }
 
         if ($returnZendDate) {
-            $zendDate = new \Zend_Date($this->_<?=$column['normalized']; ?>->getTimestamp(), \Zend_Date::TIMESTAMP);
+            $zendDate = new \Zend_Date($this->_<?=$column->getNormalizedName()?>->getTimestamp(), \Zend_Date::TIMESTAMP);
             $zendDate->setTimezone('<?=$this->_defaultTimeZone;?>');
             return $zendDate;
         }
 
 
-<?php if ($column['type'] =='date'): ?>
-        return $this->_<?=$column['normalized']; ?>->format('Y-m-d');
+<?php if ($column->getType() =='date'): ?>
+        return $this->_<?=$column->getNormalizedName()?>->format('Y-m-d');
 <?php else: ?>
-        return $this->_<?=$column['normalized']; ?>->format('Y-m-d H:i:s');
+        return $this->_<?=$column->getNormalizedName()?>->format('Y-m-d H:i:s');
 <?php endif; ?>
 
-<?php elseif ($column['phptype'] == 'boolean'): ?>
+<?php elseif ($column->getPhpType() == 'boolean'): ?>
 
-        return (int) $this->_<?=$column['normalized']?>;
+        return (int) $this->_<?=$column->getNormalizedName()?>;
 <?php
-elseif ($multilang):
+    elseif ($multilang):
 ?>
 
         $language = $this->_getCurrentLanguage($language);
 
-        $methodName = "get<?=$column['capital']?>". ucfirst(str_replace('_', '', $language));
+        $methodName = "get<?=$column->getNormalizedName('upper')?>". ucfirst(str_replace('_', '', $language));
         if (!method_exists($this, $methodName)) {
 
-            //Throw new \Exception('Unavailable language');
-            return $this->_<?=$column['normalized']?>;
+            // new \Exception('Unavailable language');
+            return $this->_<?=$column->getNormalizedName()?>;
         }
 
         return $this->$methodName();
@@ -532,10 +574,11 @@ elseif ($multilang):
     else:
 ?>
 
-        return $this->_<?=$column['normalized']?>;
+        return $this->_<?=$column->getNormalizedName()?>;
 <?php endif; ?>
     }
 <?php endforeach; ?>
+
 <?php foreach ($this->getForeignKeysInfo() as $key): ?>
 
     /**
@@ -722,7 +765,7 @@ else : ?>
 
             } else {
 
-                Throw new \Exception("Not a valid mapper class found");
+                 new \Exception("Not a valid mapper class found");
             }
 
             \Zend_Loader_Autoloader::getInstance()->suppressNotFoundWarnings(false);

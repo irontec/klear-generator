@@ -87,12 +87,12 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getModelName()
     {
-        return Generator_Yaml_StringUtils::getModelName($this->_table, $this->_namespace);
+        return Generator_StringUtils::getModelName($this->_table, $this->_namespace);
     }
 
     protected function _getFieldName(Generator_Db_Field $fieldDesc)
     {
-        $fieldName = Generator_Yaml_StringUtils::toCamelCase($fieldDesc->getName());
+        $fieldName = Generator_StringUtils::toCamelCase($fieldDesc->getName());
 
         if ($fieldDesc->isFso()) {
             if (preg_match('/(?P<fieldname>.*)FileSize$/', $fieldName, $matches)) {
@@ -109,14 +109,14 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
         $title = ucfirst($this->_getFieldName($fieldDesc));
         
-        $normalizedEntity = ucfirst(Generator_Yaml_StringUtils::toCamelCase($title));
+        $normalizedEntity = ucfirst(Generator_StringUtils::toCamelCase($title));
         
-        $pluralEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($normalizedEntity));
+        $pluralEntity = ucfirst(Generator_StringUtils::getSentenceFromCamelCase($normalizedEntity));
         
-        $pluralEntity = Generator_Yaml_StringUtils::getPlural($pluralEntity);
+        $pluralEntity = Generator_StringUtils::getPlural($pluralEntity);
         
-        $singularEntity = Generator_Yaml_StringUtils::getSingular($normalizedEntity);
-        $singularEntity = ucfirst(Generator_Yaml_StringUtils::getSentenceFromCamelCase($singularEntity));
+        $singularEntity = Generator_StringUtils::getSingular($normalizedEntity);
+        $singularEntity = ucfirst(Generator_StringUtils::getSentenceFromCamelCase($singularEntity));
         
         
         
@@ -258,7 +258,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
 
         $data['config'] = array(
-            'mapperName' => Generator_Yaml_StringUtils::getMapperName($fieldDesc->getRelatedTable(), $this->_namespace),
+            'mapperName' => Generator_StringUtils::getMapperName($fieldDesc->getRelatedTable(), $this->_namespace),
             'fieldName' => array(
                 'fields' => array(
                     $relatedFieldName,

@@ -91,7 +91,7 @@ class Generator_Yaml_Factory
     {
         $tables = $this->_getTables();
         foreach ($tables as $table) {
-            $modelFile = $this->_klearDirs['model'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . '.yaml';
+            $modelFile = $this->_klearDirs['model'] . '/' . ucfirst(Generator_StringUtils::toCamelCase($table)) . '.yaml';
             if (!file_exists($modelFile) || $this->_override) {
                 try {
                     $modelConfig = new Generator_Yaml_ModelConfig($table, $this->_namespace, $this->_klearConfig, $this->_enabledLanguages);
@@ -108,7 +108,7 @@ class Generator_Yaml_Factory
     {
         $entities = $this->_getEntities();
         foreach ($entities as $table) {
-            $listFile = $this->_klearDirs['root'] . '/' . ucfirst(Generator_Yaml_StringUtils::toCamelCase($table)) . 'List.yaml';
+            $listFile = $this->_klearDirs['root'] . '/' . ucfirst(Generator_StringUtils::toCamelCase($table)) . 'List.yaml';
             if (!file_exists($listFile) || $this->_override) {
                 $listConfig = new Generator_Yaml_ListConfig($table, $this->_klearConfig, $this->_enabledLanguages);
                 $this->_configWriter->write($listFile, $listConfig->getConfig());

@@ -28,6 +28,21 @@ class Generator_Db_Field implements \IteratorAggregate
         return $this->_description['TABLE_NAME'];
     }
 
+    public function getAcceptedValues()
+    {
+        $acceptedValues = array();
+        if ($this->isEnum()) {
+            if (preg_match('/enum\((?<acceptedValues>.*)\)$/i', $this->_description['DATA_TYPE'], $matches)) {
+                $acceptedValues = explode(',', $matches['acceptedValues']);
+                $acceptedValues = array_map(function($value) {
+                    return trim($value, '\'"');
+                }, $acceptedValues);
+            }
+        }
+
+        return $acceptedValues;
+    }
+
     public function getType()
     {
         return $this->_description['DATA_TYPE'];
@@ -49,6 +64,11 @@ class Generator_Db_Field implements \IteratorAggregate
     public function isNullable()
     {
         return $this->_description['NULLABLE'];
+    }
+
+    public function isRequired()
+    {
+        return !$this->isNullable();
     }
 
     public function hasDefaultValue()
@@ -122,6 +142,11 @@ class Generator_Db_Field implements \IteratorAggregate
             || $this->_checkTag('password');
     }
 
+    public function isAnyDateType()
+    {
+        return (bool) preg_match('/date|time/', $this->_description['DATA_TYPE']);
+    }
+
     public function isRelationship()
     {
         return isset($this->_description['RELATED']);
@@ -166,4 +191,23 @@ class Generator_Db_Field implements \IteratorAggregate
         return $this->_description['RELATED']['FIELD'];
     }
 
+    public function getPhpType()
+    {
+        $type = $this->getType();
+        if (preg_match('/(tinyint\(1\)|bit)/', $type)) {
+            $res = 'boolean';
+        } elseif(preg_match('/(datetime|timestamp|blob|char|enum|date|time)/', $type)) {
+            $res = 'string';
+        } elseif (preg_match('/(decimal|numeric|float)/', $type)) {
+            $res = 'float';
+        } elseif (preg_match('#^(?:tiny|small|medium|long|big|var)?(\w+)(?:\(\d+\))?(?:\s\w+)*$#', $type, $matches)) {
+            $res = $matches[1];
+        }
+        return $res;
+    }
+
+    public function getNormalizedName($type = 'lower')
+    {
+        return \Generator_StringUtils::toCamelCase($this->getName(), $type);
+    }
 }

@@ -219,7 +219,7 @@ class Generator_Db_Table
         }
     }
 
-    protected function _addField($field,$newFieldName, $newFieldData, $commentTag) {
+    protected function _addField($field, $newFieldName, $newFieldData, $commentTag) {
 
         $query = 'ALTER TABLE ' . $this->_db->quoteIdentifier($field->getTableName())
         . ' ADD ' . $this->_db->quoteIdentifier($newFieldName)
