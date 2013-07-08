@@ -2,7 +2,6 @@
 <?php
 $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 $tableName = $this->getTableName();
-$tableFields = $this->_columns[$tableName];
 $fields = Generator_Db::describeTable($tableName);
 
 $enumFields = array();
@@ -82,16 +81,16 @@ foreach ($enumFields as $field) :
 endforeach;
 ?>
 
-<?php foreach ($tableFields as $column): ?>
+<?php foreach ($fields as $column): ?>
     /**
-<?php if (!empty($column['comment'])) : ?>
-     * <?=$column['comment'] . "\n"?>
+<?php if ($column->hasComment()): ?>
+     * <?=$column->getComment() . "\n"?>
 <?php endif; ?>
-     * Database var type <?=$column['type'] . "\n"?>
+     * Database var type <?=$column->getType() . "\n"?>
      *
-     * @var <?=$column['phptype'] . "\n"?>
+     * @var <?=$column->getPhpType() . "\n"?>
      */
-    protected $_<?=$column['normalized']?>;
+    protected $_<?=$column->getNormalizedName()?>;
 
 <?php endforeach;?>
 
@@ -164,14 +163,14 @@ if (!empty($vars)) {
         $this->setMultiLangColumnsList(array(
 <?php
     $mlFields = array();
-    foreach ($tableFields as $column):
-        if(!stristr($column['comment'], '[ml]')) {
+    foreach ($fields as $column):
+        if(!$column->isMultilang()) {
             continue;
         }
 
-        $mlFields[] = $column['field'];
+        $mlFields[] = $column->getName();
 ?>
-            '<?=$column['normalized']?>'=>'<?=$column['capital']?>',
+            '<?=$column->getNormalizedName()?>'=>'<?=$column->getNormalizedName('upper')?>',
 <?php endforeach;?>
         ));
 
@@ -296,14 +295,12 @@ endforeach;
     {
 
 <?php
-    if (count($fsoFields) > 0) :
+    if ($fsoFields) :
 ?>
         return array('<?php echo implode("','", $fsoObjects); ?>');
-
 <?php
     else:
 ?>
-
         return array();
 <?php
     endif;
@@ -311,16 +308,11 @@ endforeach;
     }
 
 <?php
- if (count($fsoFields) > 0) {
-
-?>
-<?php
- $columns = $tableFields;
- foreach ($fsoObjects as $item) {
+ foreach ($fsoObjects as $item) :
 
     $md5Column = false;
-    foreach ($columns as $column) {
-        if ($column['normalized'] == $item .'Md5Sum') {
+    foreach ($fields as $column) {
+        if ($column->getNormalizedName() == $item .'Md5Sum') {
 
             $md5Column = true;
             break;
@@ -335,11 +327,11 @@ endforeach;
             'mimeName' => '<?php echo lcfirst($item); ?>MimeType',
             'baseNameName' => '<?php echo lcfirst($item); ?>BaseName',
 <?php
-if($md5Column === true) {
+    if($md5Column === true) :
 ?>
             'md5SumName' => '<?php echo lcfirst($item); ?>Md5Sum',
 <?php
-}
+    endif;
 ?>
         );
     }
@@ -374,10 +366,7 @@ if($md5Column === true) {
     }
 
 <?php
- } //endforeach
-?>
-<?php
- } //endif
+ endforeach; //endforeach
  echo "\n";
 ?>
 
@@ -396,7 +385,6 @@ foreach ($fields as $column):
         $setterParams = '$data, $language = \'\'';
         $getterParams = '$language = \'\'';
     }
-
 ?>
 
     /**
