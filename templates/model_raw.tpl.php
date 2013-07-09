@@ -241,7 +241,7 @@ if (!empty($vars)) {
 <?php endif ?>
 
 <?php
-    //TODO: Quitar o poner esto aquí, pero ese false && ...
+    //FIXME: Quitar o poner esto aquí, pero ese "false &&" APESTA  ...
     if (false && count($updateCascade) > 0) :
 ?>
         $this->setOnUpdateCascadeRelationships(array(
@@ -400,16 +400,6 @@ foreach ($fields as $column):
     public function set<?=$column->getNormalizedName('upper')?>(<?=$multilang ? $setterParams : '$data'; ?>)
     {
 <?php
-    if ($column->isRequired()) :
-?>
-        if (is_null($data)) {
-            throw new \Exception(_('Required values cannot be null'));
-        }
-<?php
-    endif;
-?>
-
-<?php
     $applyCasting = true;
 
     if ($column->isAnyDateType()):
@@ -439,6 +429,16 @@ foreach ($fields as $column):
             $data->setTimezone(new \DateTimeZone('<?=$this->_defaultTimeZone;?>'));
         }
 
+<?php
+    endif;
+?>
+
+<?php
+    if ($column->isRequired()) :
+?>
+        if (is_null($data)) {
+            throw new \Exception(_('Required values cannot be null'));
+        }
 <?php
     endif;
 
