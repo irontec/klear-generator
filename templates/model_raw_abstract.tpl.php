@@ -45,7 +45,6 @@ abstract class ModelAbstract implements \IteratorAggregate
      */
     protected $_validator;
 
-<?php if (!empty($this->_loggerName)):?>
     /**
      * $_logger - Zend_Log object
      *
@@ -53,7 +52,6 @@ abstract class ModelAbstract implements \IteratorAggregate
      */
     protected $_logger;
 
-<?php endif; ?>
     /**
      * Associative array of columns for this model
      *
@@ -161,8 +159,11 @@ abstract class ModelAbstract implements \IteratorAggregate
         }
 
 <?php if (!empty($this->_loggerName)):?>
-        $this->_logger = \Zend_Registry::get('<?=$this->_loggerName?>');
+        $this->_logger = \Zend_Registry::get('<?=$this->_loggerName ?>');
+<?php else:?>
+        $this->_logger = new \Zend_Log(new \Zend_Log_Writer_Null());
 <?php endif; ?>
+
 
         $this->init();
     }
@@ -548,9 +549,7 @@ abstract class ModelAbstract implements \IteratorAggregate
     public function columnNameToVar($column)
     {
         if (!isset($this->_columnsList[$column])) {
-<?php if (!empty($this->_loggerName)):?>
             $this->_logger->log("Column name to variable conversion failed for '$column' in columnNameToVar for " . get_class($this), \Zend_Log::ERR);
-<?php endif; ?>
             throw new \Exception("column '$column' not found!");
         }
 
@@ -625,9 +624,7 @@ abstract class ModelAbstract implements \IteratorAggregate
      */
     public function __call($method, array $args)
     {
-<?php if (!empty($this->_loggerName)):?>
         $this->_logger->log("Unrecoginized method requested in call for '$method' in " . get_class($this), \Zend_Log::ERR);
-<?php endif; ?>
         throw new \Exception("Unrecognized method '$method()'");
     }
 
@@ -665,9 +662,7 @@ abstract class ModelAbstract implements \IteratorAggregate
         $method = 'set' . ucfirst($name);
 
         if (('mapper' == $name) || !method_exists($this, $method)) {
-<?php if (!empty($this->_loggerName)):?>
             $this->_logger->log("Unable to find setter for '$name' in " . get_class($this), \Zend_Log::ERR);
-<?php endif; ?>
             throw new \Exception("name:$name value:$value - Invalid property");
         }
 
@@ -695,10 +690,8 @@ abstract class ModelAbstract implements \IteratorAggregate
             $name = $this->columnNameToVar($name);
             $method = 'get' . ucfirst($name);
             if (('mapper' == $name) || !method_exists($this, $method)) {
-<?php if (!empty($this->_loggerName)):?>
-                    $this->_logger->log("Unable to find getter for '$name' in " . get_class($this), \Zend_Log::ERR);
-<?php endif; ?>
-                    throw new \Exception("name:$name  - Invalid property");
+                $this->_logger->log("Unable to find getter for '$name' in " . get_class($this), \Zend_Log::ERR);
+                throw new \Exception("name:$name  - Invalid property");
             }
         }
 

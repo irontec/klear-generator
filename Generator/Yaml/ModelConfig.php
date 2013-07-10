@@ -68,15 +68,14 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             $fieldName = $field->getName();
 
             if ($field->isPrimaryKey() || $field->mustBeIgnored()) {
-                unset($fields[$fieldName]);
+                $fields->remove($fieldName);
             }
 
             if (isset($this->_klearConfig->klear->languages)) {
                 if ($field->isMultilang()) {
 
                     foreach ($this->_klearConfig->klear->languages as $language) {
-
-                        unset($fields[$fieldName . '_' . $language]);
+                        $fields->remove($fieldName . '_' . $language);
                     }
                 }
             }

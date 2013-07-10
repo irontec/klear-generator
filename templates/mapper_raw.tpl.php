@@ -1,6 +1,9 @@
 <?="<?php\n"?>
 <?php
 $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
+$tableName = $this->getTableName();
+$fields = Generator_Db::describeTable($tableName);
+$primaryKey = $fields->getPrimaryKey();
 ?>
 
 /**
@@ -27,30 +30,31 @@ class <?=$this->_className?> extends <?=$this->_includeMapper->getParentClass() 
     protected $_modelName = '<?=$namespace?>\Model\\<?=$this->_className?>';
 
 <?php
-    if ($this->_urlIdentifiers) :
+if ($this->_urlIdentifiers) :
 ?>
 
     protected $_urlIdentifiers = array(
 <?php
-        foreach ($this->_urlIdentifiers as $key => $value) :
+    foreach ($this->_urlIdentifiers as $key => $value) :
 ?>
         '<?php echo $key?>' => '<?php echo $value?>',
 <?php
-        endforeach;
+    endforeach;
 ?>
     );
 <?php
-    else:
+else:
 ?>
 
     protected $_urlIdentifiers = array();
 <?php
-    endif;
+endif;
 ?>
 
-<?php $vars = $this->_includeMapper->getVars();
+<?php
+$vars = $this->_includeMapper->getVars();
 if (!empty($vars)) {
-echo "\n$vars\n";
+    echo "\n$vars\n";
 }
 ?>
     /**
@@ -62,7 +66,6 @@ echo "\n$vars\n";
     public function toArray($model)
     {
         if (!$model instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
-<?php if (!empty($this->_loggerName)):?>
             if (is_object($model)) {
                 $message = get_class($model) . " is not a \<?=$namespace?>Model\<?=$this->_className?> object in toArray for " . get_class($this);
             } else {
@@ -70,20 +73,19 @@ echo "\n$vars\n";
             }
 
             $this->_logger->log($message, \Zend_Log::ERR);
-
-<?php endif; ?>
             throw new \Exception('Unable to create array: invalid model passed to mapper', 2000);
         }
 
-        $result = array(<?php echo "\n";
-foreach ($this->_columns[$this->getTableName()] as $column):
-
-    if (stristr($column['comment'], '[ml]')) {
-        continue;
-    }
-            ?>
-            '<?=$column['field']?>' => $model->get<?=$column['capital']?>(),
-<?php endforeach;?>
+        $result = array(<?php
+echo "\n";
+foreach ($fields as $column):
+    if (!$column->isMultilang()) :
+?>
+            '<?=$column->getName()?>' => $model->get<?=$column->getNormalizedName('upper')?>(),
+<?php
+    endif;
+endforeach;
+?>
         );
 
         return $result;
@@ -106,18 +108,20 @@ foreach ($this->_columns[$this->getTableName()] as $column):
     /**
      * Deletes the current model
      *
-     * @param <?=$namespace?>Model\<?=$this->_className?> $model The model to <?php if ($this->_softDeleteColumn != null): ?>mark as deleted
-<?php else: ?>delete
-<?php endif;?>
-<?php if ($this->_softDeleteColumn == null): ?>
+     * @param <?=$namespace?>Model\<?=$this->_className?> $model The model to <?=$fields->hasSoftDelete()? 'mark as deleted' : 'delete'?>
+<?php
+if (!$fields->hasSoftDelete()):
+?>
+
      * @see <?=$namespace?>Mapper\DbTable\TableAbstract::delete()
-<?php endif;?>
+<?php
+endif;
+?>
      * @return int
      */
     public function delete(\<?=$namespace?>Model\Raw\ModelAbstract $model)
     {
         if (!$model instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
-<?php if (!empty($this->_loggerName)):?>
             if (is_object($model)) {
                 $message = get_class($model) . " is not a \\<?=$namespace?>\Model\\<?=$this->_className?> object in delete for " . get_class($this);
             } else {
@@ -125,15 +129,13 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             }
 
             $this->_logger->log($message, \Zend_Log::ERR);
-
-<?php endif; ?>
             throw new \Exception('Unable to delete: invalid model passed to mapper', 2000);
         }
 
         $useTransaction = true;
 
-		$dbTable = $this->getDbTable();
-		$dbAdapter = $dbTable->getAdapter();
+        $dbTable = $this->getDbTable();
+        $dbAdapter = $dbTable->getAdapter();
 
         try {
 
@@ -154,26 +156,26 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
                 foreach ($deleteCascade as $fk) {
 
-                    $capitzalizedFk = '';
+                    $capitalizedFk = '';
                     foreach (explode("_", $fk) as $part) {
 
-                        $capitzalizedFk .= ucfirst($part);
+                        $capitalizedFk .= ucfirst($part);
                     }
 
-                    if (!isset($depList[$capitzalizedFk])) {
+                    if (!isset($depList[$capitalizedFk])) {
 
                         continue;
 
                     } else {
 
-                        $relDbAdapName = '<?=$namespace?>\Mapper\\Sql\\DbTable\\' . $depList[$capitzalizedFk]["table_name"];
-                        $depMapperName = '<?=$namespace?>\Mapper\\Sql\\' . $depList[$capitzalizedFk]["table_name"];
-                        $depModelName = '<?=$namespace?>\Model\\' . $depList[$capitzalizedFk]["table_name"];
+                        $relDbAdapName = '<?=$namespace?>\Mapper\\Sql\\DbTable\\' . $depList[$capitalizedFk]["table_name"];
+                        $depMapperName = '<?=$namespace?>\Mapper\\Sql\\' . $depList[$capitalizedFk]["table_name"];
+                        $depModelName = '<?=$namespace?>\Model\\' . $depList[$capitalizedFk]["table_name"];
 
                         if ( class_exists($relDbAdapName) && class_exists($depModelName) ) {
 
                             $relDbAdapter = new $relDbAdapName;
-                            $references = $relDbAdapter->getReference('<?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className?>', $capitzalizedFk);
+                            $references = $relDbAdapter->getReference('<?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className?>', $capitalizedFk);
 
                             $targetColumn = array_shift($references["columns"]);
                             $where = $relDbAdapter->getAdapter()->quoteInto($targetColumn . ' = ?', $model->getPrimaryKey());
@@ -202,26 +204,26 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
                 foreach ($deleteSetNull as $fk) {
 
-                    $capitzalizedFk = '';
+                    $capitalizedFk = '';
                     foreach (explode("_", $fk) as $part) {
 
-                        $capitzalizedFk .= ucfirst($part);
+                        $capitalizedFk .= ucfirst($part);
                     }
 
-                    if (!isset($depList[$capitzalizedFk])) {
+                    if (!isset($depList[$capitalizedFk])) {
 
                         continue;
 
                     } else {
 
-                        $relDbAdapName = '<?=$namespace?>\Mapper\\Sql\\DbTable\\' . $depList[$capitzalizedFk]["table_name"];
-                        $depMapperName = '<?=$namespace?>\Mapper\\Sql\\' . $depList[$capitzalizedFk]["table_name"];
-                        $depModelName = '<?=$namespace?>\Model\\' . $depList[$capitzalizedFk]["table_name"];
+                        $relDbAdapName = '<?=$namespace?>\Mapper\\Sql\\DbTable\\' . $depList[$capitalizedFk]["table_name"];
+                        $depMapperName = '<?=$namespace?>\Mapper\\Sql\\' . $depList[$capitalizedFk]["table_name"];
+                        $depModelName = '<?=$namespace?>\Model\\' . $depList[$capitalizedFk]["table_name"];
 
                         if ( class_exists($relDbAdapName) && class_exists($depModelName) ) {
 
                             $relDbAdapter = new $relDbAdapName;
-                            $references = $relDbAdapter->getReference('<?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className?>', $capitzalizedFk);
+                            $references = $relDbAdapter->getReference('<?=$namespace?>\Mapper\\Sql\\DbTable\\<?=$this->_className?>', $capitalizedFk);
 
                             $targetColumn = array_shift($references["columns"]);
                             $where = $relDbAdapter->getAdapter()->quoteInto($targetColumn . ' = ?', $model->getPrimaryKey());
@@ -247,76 +249,37 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 }//end foreach ($deleteSetNull as $fk)
             } //end if
 
-<?php if ($this->_softDeleteColumn != null):
-        foreach ($this->_columns[$this->getTableName()] as $column):
-            if ($column['field'] == $this->_softDeleteColumn) :
-
-                $param = 1;
-
-                if ($column['phptype'] == 'boolean') {
-                    $param = 'true';
-                } elseif (preg_match('/date/', $column['type'])) {
-                    $param = '\Zend_Date::now()';
-                }
-?>
-            $model->set<?=$column['capital']?>(<?=$param?>);
 <?php
-                break;
-            endif;
-        endforeach;
+if ($fields->hasSoftDelete()):
+    $column = $fields->getSoftDeleteField();
+?>
+            $model->set<?=$column->getNormalizedName('upper')?>(true);
+            $result = $model->save();
+<?php
+else: //$fields->hasSoftDelete()
+    if (is_array($primaryKey)):
+?>
+            $where = array();
+<?php
+        foreach ($primaryKey as $field) :
 ?>
 
-        } catch (\Exception $e) {
-<?php if (! empty($this->_loggerName)):?>
-            $message = 'Exception encountered while attempting to delete ' . get_class($this);
-            if (! empty($where)) {
-                $message .= ' Where: ';
-<?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
-                foreach ($where as $where_clause) {
-                    $message .= $where_clause;
-                }
-<?php else: ?>
-                $message .= $where;
-<?php endif; ?>
-            } else {
-                $message .= ' with an empty where';
-            }
-
-            $message .= ' Exception: ' . $e->getMessage();
-            $this->_logger->log($message, \Zend_Log::ERR);
-            $this->_logger->log($e->getTraceAsString(), \Zend_Log::DEBUG);
-
-<?php endif; ?>
-
-            if ($useTransaction) {
-
-                $dbAdapter->rollback();
-            }
-
-            $result = false;
-        }
-
-         $result = $model->save();
-
-<?php else: ?>
-<?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
-            $where = array();
-        <?php foreach ($this->_primaryKey[$this->getTablename()][$this->getTablename()]['fields'] as $key) : ?>
-
-            $pk_val = $model->get<?=$key['capital']?>();
+            $pk_val = $model->get<?=$field->getNormalizedName('upper')?>();
             if (is_null($pk_val)) {
-<?php if (!empty($this->_loggerName)):?>
-                $this->_logger->log('The value for <?=$key['capital']?> cannot be null in delete for ' . get_class($this), \Zend_Log::ERR);
 
-<?php endif; ?>
-                throw new \Exception('The value for <?=$key['capital']?> cannot be null', 2000);
+                $this->_logger->log('The value for <?=$field->getNormalizedName('upper')?> cannot be null in delete for ' . get_class($this), \Zend_Log::ERR);
+                throw new \Exception('The value for <?=$field->getNormalizedName('upper')?> cannot be null', 2000);
             } else {
-                $where[] = $dbAdapter->quoteInto($dbAdapter->quoteIdentifier('<?=$key['field']?> = ?'), $pk_val);
+                $where[] = $dbAdapter->quoteInto($dbAdapter->quoteIdentifier('<?=$field->getName()?> = ?'), $pk_val);
             }
-<?php endforeach; ?>
-<?php else :?>
-            $where = $dbAdapter->quoteInto($dbAdapter->quoteIdentifier('<?=$this->_primaryKey[$this->getTablename()]['field']?>') . ' = ?', $model->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>());
-<?php endif; ?>
+<?php
+        endforeach;
+    else:
+?>
+            $where = $dbAdapter->quoteInto($dbAdapter->quoteIdentifier('<?=$primaryKey->getName()?>') . ' = ?', $model->get<?=$primaryKey->getNormalizedName('upper')?>());
+<?php
+    endif; //is_array($primaryKey)
+?>
             $result = $dbTable->delete($where);
 
             if ($this->_cache) {
@@ -333,22 +296,31 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 $model->$removeMethod();
             }
 
+<?php
+endif;//$fields->hasSoftDelete()
+?>
+
             if ($useTransaction) {
                 $dbAdapter->commit();
             }
-
         } catch (\Exception $exception) {
-<?php if (!empty($this->_loggerName)):?>
+
             $message = 'Exception encountered while attempting to delete ' . get_class($this);
             if (!empty($where)) {
                 $message .= ' Where: ';
-<?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
+<?php
+    if (is_array($primaryKey)) :
+?>
                 foreach ($where as $where_clause) {
                     $message .= $where_clause;
                 }
-<?php else: ?>
+<?php
+    else:
+?>
                 $message .= $where;
-<?php endif; ?>
+<?php
+    endif;
+?>
             } else {
                 $message .= ' with an empty where';
             }
@@ -356,8 +328,6 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             $message .= ' Exception: ' . $exception->getMessage();
             $this->_logger->log($message, \Zend_Log::ERR);
             $this->_logger->log($exception->getTraceAsString(), \Zend_Log::DEBUG);
-
-<?php endif; ?>
 
             if ($useTransaction) {
 
@@ -368,7 +338,6 @@ foreach ($this->_columns[$this->getTableName()] as $column):
         }
 
         return $result;
-<?php endif; ?>
     }
 
     /**
@@ -426,20 +395,24 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
         $data = $model->sanitize()->toArray();
 
-<?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
+<?php
+if (is_array($primaryKey)):
+?>
         $primaryKey = array();
-<?php foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) : ?>
+<?php
+    foreach ($primaryKey as $field):
+?>
 
-        $pk_val = $model->get<?=$key['capital']?>();
+        $pk_val = $model->get<?=$field->getNormalizedName('upper')?>();
         if (is_null($pk_val)) {
-<?php if (!empty($this->_loggerName)):?>
-            $this->_logger->log('The value for <?=$key['capital']?> cannot be null in save for ' . get_class($this), \Zend_Log::ERR);
-<?php endif; ?>
-            Throw new \Exception("The value for <?=$key['capital']?> cannot be null", 2000);
+            $this->_logger->log('The value for <?=$field->getNormalizedName('upper')?> cannot be null in save for ' . get_class($this), \Zend_Log::ERR);
+            throw new \Exception("The value for <?=$field->getNormalizedName('upper')?> cannot be null", 2000);
         } else {
-            $primaryKey['<?=$key['field']?>'] = $pk_val;
+            $primaryKey['<?=$field->getName()?>'] = $pk_val;
         }
-<?php endforeach; ?>
+<?php
+    endforeach;
+?>
 
         $exists = $this->find($primaryKey);
         $success = true;
@@ -470,8 +443,10 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             // Check for current existence to know if needs to be inserted
             if (is_null($exists)) {
                 $this->getDbTable()->insert($data);
-<?php else :?>
-        $primaryKey = $model->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>();
+<?php
+else : //is_array($primaryKey)
+?>
+        $primaryKey = $model->get<?=$primaryKey->getNormalizedName('upper')?>();
         $success = true;
 
         if ($useTransaction) {
@@ -494,22 +469,28 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             $transactionTag = 't_' . rand(1, 999) . str_replace(array('.', ' '), '', microtime());
         }
 
-<?php if (!$this->_primaryKey[$this->getTablename()]['foreign_key']): ?>
-        unset($data['<?=$this->_primaryKey[$this->getTablename()]['field']?>']);
+<?php
+    if (!$primaryKey->isRelationship()):
+?>
+        unset($data['<?=$primaryKey->getName()?>']);
 
         try {
             if (is_null($primaryKey) || empty($primaryKey)) {
-<?php else: ?>
+<?php
+    else:
+?>
         $exists = $this->find($primaryKey);
 
         try {
             if (is_null($exists)) {
-<?php endif; ?>
+<?php
+    endif;
+?>
                 $primaryKey = $this->getDbTable()->insert($data);
                 if ($primaryKey) {
-                    $model->set<?=$this->_primaryKey[$this->getTablename()]['capital']?>($primaryKey);
+                    $model->set<?=$primaryKey->getNormalizedName('upper')?>($primaryKey);
                 } else {
-                    Throw new \Exception("Insert sentence did not return a valid primary key", 9000);
+                    throw new \Exception("Insert sentence did not return a valid primary key", 9000);
                 }
 
                 if ($this->_cache) {
@@ -541,26 +522,28 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                         }
                     }
                 }
-<?php endif;?>
+<?php
+endif; //is_array($primaryKey)
+?>
             } else {
                 $this->getDbTable()
                      ->update(
                          $data,
-                         array(<?php echo "\n                             ";
-            if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') {
-                $fields = count($this->_primaryKey[$this->getTablename()]['fields']);
-                $i = 0;
-                foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) {
-                    echo '\'' . $key['field'] . ' = ?\' => $primaryKey[\'' . $key['field'] . '\']';
-                    $i++;
-                    if ($i != $fields) {
-                        echo ",\n                                 ";
-                    }
-                }
-            } else {
-                echo '$this->getDbTable()->getAdapter()->quoteIdentifier(\'' . $this->_primaryKey[$this->getTablename()]['field'] . '\') .\' = ?\' => $primaryKey';
-            }
-            echo "\n";?>
+                         array(<?php
+if (is_array($primaryKey)):
+    foreach ($primaryKey as $field) :
+?>
+
+                             '<?=$field->getName()?> = ?' => $primaryKey['<?=$field->getName()?>'],
+<?php
+    endforeach;
+else:
+?>
+
+                             $this->getDbTable()->getAdapter()->quoteIdentifier('<?=$primaryKey->getName()?>') . ' = ?' => $primaryKey
+<?php
+endif;
+?>
                          )
                      );
             }
@@ -578,20 +561,30 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 }
             }
 
-<?php if (count($this->getDependentTables()) > 0) :?>
+<?php
+if (count($this->getDependentTables()) > 0):
+?>
 
             if ($recursive) {
-<?php foreach ($this->getDependentTables() as $key) : ?>
-                if ($model->get<?=$this->_getRelationName($key, 'dependent')?>(null, null, true) !== null) {
-<?php if ($key['type'] !== 'many') : ?>
-                    $model->get<?=$this->_getRelationName($key, 'dependent')?>()
-<?php if ($this->_primaryKey[$this->getTablename()]['phptype'] !== 'array') : ?>
-                          ->set<?=$this->_getCapital($key['column_name'])?>($primaryKey)
-<?php endif;?>
-                          ->saveRecursive(false, $transactionTag);
-<?php else: ?>
 <?php
-        $relatedModelVarName = lcfirst($this->_getClassName($key['foreign_tbl_name']));
+    foreach ($this->getDependentTables() as $key):
+?>
+                if ($model->get<?=$this->_getRelationName($key, 'dependent')?>(null, null, true) !== null) {
+<?php
+        if ($key['type'] !== 'many'):
+?>
+                    $model->get<?=$this->_getRelationName($key, 'dependent')?>()
+<?php
+            if (!is_array($primaryKey)) :
+?>
+                          ->set<?=$this->_getCapital($key['column_name'])?>($primaryKey)
+<?php
+            endif;
+?>
+                          ->saveRecursive(false, $transactionTag);
+<?php
+        else:
+            $relatedModelVarName = lcfirst($this->_getClassName($key['foreign_tbl_name']));
 ?>
                     $<?=$relatedModelVarName?> = $model->get<?=$this->_getRelationName($key, 'dependent')?>();
 
@@ -601,21 +594,34 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                     }
 
                     foreach ($<?=$relatedModelVarName?> as $value) {
-                        $value<?php if ($this->_primaryKey[$this->getTablename()]['phptype'] !== 'array') : ?>
+                        $value<?php
+            if ($this->_primaryKey[$this->getTablename()]['phptype'] !== 'array') :
+?>
 ->set<?=$this->_getCapital($key['column_name'])?>($primaryKey)
-<?php elseif (is_array($key['column_name'])) :
-    foreach ($key['column_name'] as $column) : ?>
+<?php
+
+            elseif (is_array($key['column_name'])):
+                foreach ($key['column_name'] as $column) :
+?>
 ->set<?=$this->_getCapital($column)?>($primaryKey['<?php echo $column ?>'])
-<?php endforeach; ?>
-<?php endif;?>
+<?php
+                endforeach;
+            endif;
+?>
                               ->saveRecursive(false, $transactionTag);
                     }
-<?php endif; ?>
+<?php
+        endif;
+?>
                 }
 
-<?php endforeach; ?>
+<?php
+    endforeach;
+?>
             }
-<?php endif; ?>
+<?php
+endif;
+?>
 
             if ($success === true) {
 
@@ -642,17 +648,26 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             }
 
         } catch (\Exception $e) {
-<?php if (!empty($this->_loggerName)):?>
             $message = 'Exception encountered while attempting to save ' . get_class($this);
             if (!empty($primaryKey)) {
-<?php if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') : ?>
+<?php
+    if ($this->_primaryKey[$this->getTablename()]['phptype'] == 'array') :
+?>
                 $message .= ' id:';
-<?php foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) : ?>
+<?php
+        foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key):
+?>
                 $message .= ' <?=$key['field']?> => ' . $primaryKey['<?=$key['field']?>'];
-<?php endforeach; ?>
-<?php else: ?>
+<?php
+        endforeach;
+?>
+<?php
+    else:
+?>
                 $message .= ' id: ' . $primaryKey;
-<?php endif; ?>
+<?php
+    endif;
+?>
             } else {
                 $message .= ' with an empty primary key ';
             }
@@ -661,7 +676,6 @@ foreach ($this->_columns[$this->getTableName()] as $column):
             $this->_logger->log($message, \Zend_Log::ERR);
             $this->_logger->log($e->getTraceAsString(), \Zend_Log::DEBUG);
 
-<?php endif; ?>
             if ($useTransaction) {
                 $this->getDbTable()->getAdapter()->rollback();
 
@@ -678,7 +692,7 @@ foreach ($this->_columns[$this->getTableName()] as $column):
                 }
             }
 
-            Throw $e;
+            throw $e;
         }
 
         if ($success && $this->_cache) {
@@ -764,8 +778,10 @@ foreach ($this->_columns[$this->getTableName()] as $column):
 
         return $entry;
     }
-<?php $functions = $this->_includeMapper->getFunctions();
+<?php
+$functions = $this->_includeMapper->getFunctions();
 if (!empty($functions)) {
-echo "\n$functions\n";
-} ?>
+    echo "\n$functions\n";
+}
+?>
 }

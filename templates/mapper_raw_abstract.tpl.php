@@ -38,15 +38,12 @@ abstract class MapperAbstract
      */
     protected $_cache = null;
 
-<?php if (!empty($this->_loggerName)):?>
     /**
      * $_logger - Zend_Log object
      *
      * @var Zend_Log
      */
     protected $_logger;
-
-<?php endif; ?>
 
     /**
      * Simulate on delete cascade / set null / cascade for thoose
@@ -77,8 +74,11 @@ abstract class MapperAbstract
 <?php else: ?>
         $this->_cache = null;
 <?php endif; ?>
+
 <?php if (!empty($this->_loggerName)):?>
         $this->_logger = \Zend_Registry::get('<?=$this->_loggerName ?>');
+<?php else:?>
+        $this->_logger = new \Zend_Log(new \Zend_Log_Writer_Null());
 <?php endif; ?>
 
         $bootstrap = \Zend_Controller_Front::getInstance()->getParam('bootstrap');
@@ -123,7 +123,7 @@ abstract class MapperAbstract
         }
 
         if (!$dbTable instanceof \Zend_Db_Table_Abstract) {
-<?php if (!empty($this->_loggerName)):?>
+
             if (is_object($dbTable)) {
                 $message = get_class($dbTable) . " is not a Zend_Db_Table_Abstract object in setDbTable for " . get_class($this);
             } else {
@@ -132,7 +132,6 @@ abstract class MapperAbstract
 
             $this->_logger->log($message, \Zend_Log::ERR);
 
-<?php endif; ?>
             throw new \Exception('Invalid table data gateway provided', 1006);
         }
 
@@ -229,10 +228,8 @@ abstract class MapperAbstract
             $ref_table_name = '<?=$namespace?>\Mapper\\Sql\\DbTable\\' . $object_table_name;
             $rule = $name;
         } else {
-<?php if (!empty($this->_loggerName)):?>
-            $this->_logger->log("$name is not a defined relationship in loadRelated for " . get_class($this), \Zend_Log::ERR);
 
-<?php endif; ?>
+            $this->_logger->log("$name is not a defined relationship in loadRelated for " . get_class($this), \Zend_Log::ERR);
             throw new \Exception(ucfirst($type) . " relationship $name not found", 1006);
         }
 
@@ -322,10 +319,8 @@ abstract class MapperAbstract
 
             $reference = $ref_table->getReference($table_name, $rule);
             if (empty($reference)) {
-    <?php if (!empty($this->_loggerName)):?>
-                $this->_logger->log("Could not find a reference for $rule in $table_name in loadRelated for " . get_class($this), \Zend_Log::ERR);
 
-    <?php endif; ?>
+                $this->_logger->log("Could not find a reference for $rule in $table_name in loadRelated for " . get_class($this), \Zend_Log::ERR);
                 throw new \Exception("Relationship not found: $table_name; rule: $rule", 1006);
             }
 

@@ -6,8 +6,8 @@ class Generator_Db_Table
     protected $_table;
     protected $_db;
 
-    public function __construct($table, $config, $dbWriter = null) {
-
+    public function __construct($table, $config, $dbWriter = null)
+    {
         $this->_table = $table;
         $this->_config = $config;
         $this->_db = Zend_Db_Table::getDefaultAdapter();
@@ -19,16 +19,16 @@ class Generator_Db_Table
         }
     }
 
-    public function generateAllFields() {
-
+    public function generateAllFields()
+    {
         $this->generateMultilangFields();
         $this->generateFileFields();
         $this->generateVideoFields();
         $this->generateMapFields();
     }
 
-    protected function _describeTable() {
-
+    protected function _describeTable()
+    {
         try {
 
             return Generator_Db::describeTable($this->_table);
@@ -45,20 +45,20 @@ class Generator_Db_Table
         }
     }
 
-    public function generateMultilangFields() {
-
-        $fieldsDescription = $this->_describeTable();
-        if (is_null($fieldsDescription)) {
+    public function generateMultilangFields()
+    {
+        $fieldCollection = $this->_describeTable();
+        if (is_null($fieldCollection)) {
             return null;
         }
-        foreach ($fieldsDescription as $field) {
+        foreach ($fieldCollection as $field) {
 
             if ($field->isMultilang()) {
 
                 foreach ($this->_config->klear->languages as $language) {
                     $newFieldName = $field->getName() . '_' . $language;
 
-                    if (!isset($fieldsDescription[$newFieldName])) {
+                    if (!$fieldCollection->hasField($newFieldName)) {
                         $query = 'ALTER TABLE ' . $this->_db->quoteIdentifier($field->getTableName())
                         . ' ADD ' . $this->_db->quoteIdentifier($newFieldName)
                         . ' ' . $field->getType() . $field->getLengthDefinition();
@@ -73,7 +73,7 @@ class Generator_Db_Table
 
                         $comment = str_ireplace('[ml]', '', $field->getComment());
 
-                        if ($field->isUrlIdentifier()){
+                        if ($field->isUrlIdentifier()) {
                             $identifiedField = $field->getIdentifiedFieldName();
                             if ($identifiedField) {
                                 $langIdentifiedField = $identifiedField . '_' . $language;
@@ -94,8 +94,8 @@ class Generator_Db_Table
         }
     }
 
-    public function generateFileFields() {
-
+    public function generateFileFields()
+    {
         $fsoFields = array(
             'BaseName' => array(
                 'type' => 'VARCHAR(255)',
@@ -115,21 +115,21 @@ class Generator_Db_Table
             ),
         );
 
-        $fieldsDescription = $this->_describeTable();
-        if (is_null($fieldsDescription)) {
+        $fieldCollection = $this->_describeTable();
+        if (is_null($fieldCollection)) {
             return null;
         }
 
-        foreach ($fieldsDescription as $field) {
+        foreach ($fieldCollection as $field) {
 
             if ($field->isFile()) {
 
                 foreach ($fsoFields as $fsoFieldName => $fsoFieldData) {
                     $newFieldName = $field->getName() . $fsoFieldName;
 
-                    if (!isset($fieldsDescription[$newFieldName])) {
+                    if (!$fieldCollection->hasField($newFieldName)) {
 
-                        $this->_addField($field,$newFieldName, $fsoFieldData, '[file]');
+                        $this->_addField($field, $newFieldName, $fsoFieldData, '[file]');
                     }
                 }
 
@@ -141,8 +141,8 @@ class Generator_Db_Table
         }
     }
 
-    public function generateVideoFields() {
-
+    public function generateVideoFields()
+    {
         $videoFields = array(
             'Thumbnail' => array(
                 'type' => "varchar(120) NOT NULL DEFAULT ''",
@@ -158,12 +158,12 @@ class Generator_Db_Table
             )
         );
 
-        $fieldsDescription = $this->_describeTable();
-        if (is_null($fieldsDescription)) {
+        $fieldCollection = $this->_describeTable();
+        if (is_null($fieldCollection)) {
             return null;
         }
 
-        foreach ($fieldsDescription as $field) {
+        foreach ($fieldCollection as $field) {
 
             if ($field->isVideo()) {
 
@@ -173,17 +173,16 @@ class Generator_Db_Table
 
                     $newFieldName = $fieldName . $videoFieldName;
 
-                    if (!isset($fieldsDescription[$newFieldName])) {
-
-                        $this->_addField($field,$newFieldName, $videoFieldData, '[video]');
+                    if (!$fieldCollection->hasField($newFieldName)) {
+                        $this->_addField($field, $newFieldName, $videoFieldData, '[video]');
                     }
                 }
             }
         }
     }
 
-    public function generateMapFields() {
-
+    public function generateMapFields()
+    {
         $mapFields = array(
             'Lng' => array(
                 'type' => "decimal(10,7)",
@@ -195,12 +194,12 @@ class Generator_Db_Table
             ),
         );
 
-        $fieldsDescription = $this->_describeTable();
-        if (is_null($fieldsDescription)) {
+        $fieldCollection = $this->_describeTable();
+        if (is_null($fieldCollection)) {
             return null;
         }
 
-        foreach ($fieldsDescription as $field) {
+        foreach ($fieldCollection as $field) {
 
             if ($field->isMap()) {
 
@@ -210,17 +209,16 @@ class Generator_Db_Table
 
                     $newFieldName = $fieldName . $mapFieldName;
 
-                    if (!isset($fieldsDescription[$newFieldName])) {
-
-                        $this->_addField($field,$newFieldName, $mapFieldData, '[map]');
+                    if (!$fieldCollection->hasField($newFieldName)) {
+                        $this->_addField($field, $newFieldName, $mapFieldData, '[map]');
                     }
                 }
             }
         }
     }
 
-    protected function _addField($field, $newFieldName, $newFieldData, $commentTag) {
-
+    protected function _addField($field, $newFieldName, $newFieldData, $commentTag)
+    {
         $query = 'ALTER TABLE ' . $this->_db->quoteIdentifier($field->getTableName())
         . ' ADD ' . $this->_db->quoteIdentifier($newFieldName)
         . ' ' . $newFieldData['type'];

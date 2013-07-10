@@ -115,6 +115,11 @@ class Generator_Db_Field implements \IteratorAggregate
         return (bool)preg_match('/enum\(.*\)$/', $this->_description['DATA_TYPE']);
     }
 
+    public function isSoftDelete()
+    {
+        return $this->_checkTag('deleted');
+    }
+
     public function isFile()
     {
         return $this->_checkTag('file');

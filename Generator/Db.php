@@ -34,9 +34,9 @@ class Generator_Db
             }
         }
 
-        $fieldsList = array();
+        $fieldsList = new \Generator_Db_FieldCollection();
         foreach ($description as $name => $fieldDesc) {
-            $fieldsList[$name] = new Generator_Db_Field($fieldDesc);
+            $fieldsList->add(new \Generator_Db_Field($fieldDesc));
         }
         return $fieldsList;
     }

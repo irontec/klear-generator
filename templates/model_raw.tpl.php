@@ -799,10 +799,7 @@ else : ?>
         $primaryKey = array();
 <?php foreach ($this->_primaryKey[$this->getTablename()]['fields'] as $key) { ?>
         if (!$this->get<?php echo $key['capital']; ?>()) {
-<?php if (!empty($this->_loggerName)):?>
             $this->_logger->log('The value for <?=$key['capital']?> cannot be empty in deleteRowByPrimaryKey for ' . get_class($this), \Zend_Log::ERR);
-
-<?php endif; ?>
             throw new \Exception('Primary Key <?php echo $key['capital']; ?> does not contain a value');
         } else {
             $primaryKey['<?php echo $key['field']?>'] = $this->get<?php echo $key['capital']?>();
@@ -824,10 +821,7 @@ else : ?>
         ?>);
 <?php } else { ?>
         if ($this->get<?=$this->_primaryKey[$this->getTablename()]['capital']?>() === null) {
-<?php if (!empty($this->_loggerName)):?>
             $this->_logger->log('The value for <?=$this->_primaryKey[$this->getTablename()]['capital']?> cannot be null in deleteRowByPrimaryKey for ' . get_class($this), \Zend_Log::ERR);
-
-<?php endif; ?>
             throw new \Exception('Primary Key does not contain a value');
         }
 
