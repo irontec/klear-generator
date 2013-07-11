@@ -5,10 +5,9 @@
  */
 include_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
-$currentPath = getcwd();
+$currentPath = __DIR__;
 $svnRevision = `svnversion $currentPath`;
 
-define('REVISION', $svnRevision);
 define('VERSION', '0.1');
 define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
 
@@ -27,7 +26,7 @@ try {
         'docs' => array(
             'author' => 'Irontec',
             'license' => 'http://framework.zend.com/license/new-bsd     New BSD License',
-            'copyright' => 'ZF model generator Rev. ' . REVISION
+            'copyright' => 'ZF model generator'
         ),
         'include' => array(
             'addrequire' => false,
@@ -106,6 +105,12 @@ try {
                 die("error: could not create directory $dir\n");
             }
         }
+
+        if ($name !== 'Model' && $name !== 'Mapper'  && $name !== 'Mapper/Sql') {
+            $svnData = '[' . date('r') . ']' . ' revision: ' . $svnRevision;
+            file_put_contents($dir . '/generator.log', $svnData, FILE_APPEND);
+        }
+
     }
 
     // Instanciamos el generador y creamos los modelos y mappers de las tablas
