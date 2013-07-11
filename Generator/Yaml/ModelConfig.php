@@ -346,17 +346,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
     {
         return array(
             'control' => 'tinymce',
-            'template' => 'simple',
-            'removeButtons' => array('italic'),
-            'addButtons' => array(
-                'method' => 'prepend',
-                'order' => '0',
-                'buttons' => array('media', '"|"', 'print'),
-            ),
-            'addBar' => array(
-                'order' => '1',
-                'buttons' => array('media', 'del', 'ins', '"|"', 'attribs', 'visualchars', 'nonbreaking'),
-            )
+            'template' => 'simple'
         );
     }
 
