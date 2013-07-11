@@ -717,26 +717,30 @@ abstract class MapperAbstract
             if (isset($field[0]) && is_array($value)) {
                 // If field and value are arrays, match them up
                 foreach ($field as $column) {
+                    $quotedColumn = $table->getAdapter()->quoteIdentifier($column);
                     if (isset($value[$column])) {
-                        $select->where("{$column} = ?", $value[$column]);
+                        $select->where("{$quotedColumn} = ?", $value[$column]);
                     } else {
-                        $select->where("{$column} = ?", array_shift($value));
+                        $select->where("{$quotedColumn} = ?", array_shift($value));
                     }
                 }
             } else {
                 // field is an associative array, use the values from the field
                 foreach ($field as $column => $value) {
-                    $select->where("{$column} = ?", $value);
+                    $quotedColumn = $table->getAdapter()->quoteIdentifier($column);
+                    $select->where("{$quotedColumn} = ?", $value);
                 }
             }
-        } else if (is_array($value)) {
-
-            $select->where("{$field} in (?)", $value);
-
-        } else if ($value == 'NULL'){
-            $select->where("{$field} IS NULL");
         } else {
-            $select->where("{$field} = ?", $value);
+            $field = $table->getAdapter()->quoteIdentifier($field);
+
+            if (is_array($value)) {
+                $select->where("{$field} in (?)", $value);
+            } else if ($value == 'NULL'){
+                $select->where("{$field} IS NULL");
+            } else {
+                $select->where("{$field} = ?", $value);
+            }
         }
         return $select;
     }
