@@ -60,14 +60,14 @@ if (!empty($vars)) {
     /**
      * Returns an array, keys are the field names.
      *
-     * @param <?=$namespace?>Model\<?=$this->_className?> $model
+     * @param <?=$namespace?>Model\Raw\<?=$this->_className?> $model
      * @return array
      */
     public function toArray($model)
     {
-        if (!$model instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
+        if (!$model instanceof \<?=$namespace?>Model\Raw\<?=$this->_className?>) {
             if (is_object($model)) {
-                $message = get_class($model) . " is not a \<?=$namespace?>Model\<?=$this->_className?> object in toArray for " . get_class($this);
+                $message = get_class($model) . " is not a \<?=$namespace?>Model\Raw\<?=$this->_className?> object in toArray for " . get_class($this);
             } else {
                 $message = "$model is not a \\<?=$namespace?>Model\\<?=$this->_className?> object in toArray for " . get_class($this);
             }
@@ -108,7 +108,7 @@ endforeach;
     /**
      * Deletes the current model
      *
-     * @param <?=$namespace?>Model\<?=$this->_className?> $model The model to <?=$fields->hasSoftDelete()? 'mark as deleted' : 'delete'?>
+     * @param <?=$namespace?>Model\Raw\<?=$this->_className?> $model The model to <?=$fields->hasSoftDelete()? 'mark as deleted' : 'delete'?>
 <?php
 if (!$fields->hasSoftDelete()):
 ?>
@@ -121,7 +121,7 @@ endif;
      */
     public function delete(\<?=$namespace?>Model\Raw\ModelAbstract $model)
     {
-        if (!$model instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
+        if (!$model instanceof \<?=$namespace?>Model\Raw\<?=$this->_className?>) {
             if (is_object($model)) {
                 $message = get_class($model) . " is not a \\<?=$namespace?>\Model\\<?=$this->_className?> object in delete for " . get_class($this);
             } else {
@@ -344,7 +344,7 @@ endif;//$fields->hasSoftDelete()
      * Saves current row
      * @return boolean If the save action was successful
      */
-    public function save(\<?=$namespace?>Model\<?=$this->_className?> $model)
+    public function save(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model)
     {
         return $this->_save($model, false, false);
     }
@@ -352,16 +352,16 @@ endif;//$fields->hasSoftDelete()
     /**
      * Saves current and all dependent rows
      *
-     * @param \<?=$namespace?>Model\<?=$this->_className?> $model
+     * @param \<?=$namespace?>Model\Raw\<?=$this->_className?> $model
      * @param boolean $useTransaction Flag to indicate if save should be done inside a database transaction
      * @return boolean If the save action was successful
      */
-    public function saveRecursive(\<?=$namespace?>Model\<?=$this->_className?> $model, $useTransaction = true, $transactionTag = null)
+    public function saveRecursive(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model, $useTransaction = true, $transactionTag = null)
     {
         return $this->_save($model, true, $useTransaction, $transactionTag);
     }
 
-    protected function _save(\<?=$namespace?>Model\<?=$this->_className?> $model,
+    protected function _save(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model,
         $recursive = false, $useTransaction = true, $transactionTag = null
     )
     {
@@ -719,8 +719,8 @@ endif;
      * Loads the model specific data into the model object
      *
      * @param \Zend_Db_Table_Row_Abstract|array $data The data as returned from a \Zend_Db query
-     * @param <?=$namespace?>Model\<?=$this->_className?>|null $entry The object to load the data into, or null to have one created
-     * @return <?=$namespace?>Model\<?=$this->_className?> The model with the data provided
+     * @param <?=$namespace?>Model\Raw\<?=$this->_className?>|null $entry The object to load the data into, or null to have one created
+     * @return <?=$namespace?>Model\Raw\<?=$this->_className?> The model with the data provided
      */
     public function loadModel($data, $entry = null)
     {
@@ -758,7 +758,7 @@ endif;
               ?>->set<?=$column['capital']?>($data->{'<?=$column['field']?>'})<?if ($count> 0) echo "\n                  ";
               endforeach; ?>;
 
-        } else if ($data instanceof \<?=$namespace?>Model\<?=$this->_className?>) {
+        } else if ($data instanceof \<?=$namespace?>Model\Raw\<?=$this->_className?>) {
             $entry<?php
                 $count = count($this->_columns[$this->getTableName()]);
                 foreach ($this->_columns[$this->getTableName()] as $column):

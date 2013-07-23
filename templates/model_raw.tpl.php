@@ -101,7 +101,7 @@ foreach ($foreignKeys as $key): ?>
     /**
      * Parent relation <?=$key['key_name'] . "\n"?>
      *
-     * @var \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
+     * @var \<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
     protected $_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>;
 
@@ -116,7 +116,7 @@ foreach ($this->getDependentTables() as $key):
      * Dependent relation <?=$key['key_name'] . "\n"?>
      * Type: <?=($key['type'] == 'one') ? 'One-to-One' : 'One-to-Many'?> relationship
      *
-     * @var \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name'])?><?=($key['type'] == 'one') ? '' : '[]'?><?="\n"?>
+     * @var \<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name'])?><?=($key['type'] == 'one') ? '' : '[]'?><?="\n"?>
      */
     protected $_<?=$this->_getRelationName($key, 'dependent')?>;
 
@@ -395,7 +395,7 @@ foreach ($fields as $column):
 <?php else: ?>
      * @param <?=$column->getPhpType()?> $data
 <?php endif; ?>
-     * @return \<?=$namespace?>Model\<?=$this->_className . "\n"?>
+     * @return \<?=$namespace?>Model\Raw\<?=$this->_className . "\n"?>
      */
     public function set<?=$column->getNormalizedName('upper')?>(<?=$multilang ? $setterParams : '$data'; ?>)
     {
@@ -574,10 +574,10 @@ foreach ($fields as $column):
     /**
      * Sets parent relation <?=$this->_getClassName($key['column_name']) . "\n"?>
      *
-     * @param \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data
-     * @return \<?=$namespace?>Model\<?=$this->_className . "\n"?>
+     * @param \<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data
+     * @return \<?=$namespace?>Model\Raw\<?=$this->_className . "\n"?>
      */
-    public function set<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>(\<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data)
+    public function set<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>(\<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data)
     {
         $this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> = $data;
 
@@ -592,7 +592,9 @@ else : ?>
             $primaryKey = $primaryKey['<?=$key['foreign_tbl_column_name']?>'];
         }
 
-        $this->set<?=$this->_getCapital($key['column_name'])?>($primaryKey);
+        if (!is_null($primaryKey)) {
+            $this->set<?=$this->_getCapital($key['column_name'])?>($primaryKey);
+        }
 <?php endif; ?>
 
         $this->_setLoaded('<?=$this->_getCapital($key['key_name'])?>');
@@ -602,7 +604,7 @@ else : ?>
     /**
      * Gets parent <?=$this->_getClassName($key['column_name']) . "\n"?>
      * TODO: Mejorar esto para los casos en que la relación no exista. Ahora mismo siempre se pediría el padre
-     * @return \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
+     * @return \<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
     public function get<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>($where = null, $orderBy = null, $avoidLoading = false)
     {
@@ -623,10 +625,10 @@ else : ?>
     /**
      * Sets dependent relation <?=$key['key_name'] . "\n"?>
      *
-     * @param \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data
-     * @return \<?=$namespace?>Model\<?=$this->_className . "\n"?>
+     * @param \<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data
+     * @return \<?=$namespace?>Model\Raw\<?=$this->_className . "\n"?>
      */
-    public function set<?=$this->_getRelationName($key, 'dependent')?>(\<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data)
+    public function set<?=$this->_getRelationName($key, 'dependent')?>(\<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data)
     {
         $this->_<?=$this->_getRelationName($key, 'dependent')?> = $data;
         $this->_setLoaded('<?=$this->_getCapital($key['key_name'])?>');
@@ -639,7 +641,7 @@ else : ?>
      * @param string or array $where
      * @param string or array $orderBy
      * @param boolean $avoidLoading skip data loading if it is not already
-     * @return \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
+     * @return \<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
     public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null, $avoidLoading = false)
     {
@@ -657,8 +659,8 @@ else : ?>
     /**
      * Sets dependent relations <?=$key['key_name'] . "\n"?>
      *
-     * @param array $data An array of \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
-     * @return \<?=$namespace?>Model\<?=$this->_className . "\n"?>
+     * @param array $data An array of \<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
+     * @return \<?=$namespace?>Model\Raw\<?=$this->_className . "\n"?>
      */
     public function set<?=$this->_getRelationName($key, 'dependent')?>(array $data, $deleteOrphans = false)
     {
@@ -705,10 +707,10 @@ else : ?>
     /**
      * Sets dependent relations <?=$key['key_name'] . "\n"?>
      *
-     * @param \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data
-     * @return \<?=$namespace?>Model\<?=$this->_className . "\n"?>
+     * @param \<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data
+     * @return \<?=$namespace?>Model\Raw\<?=$this->_className . "\n"?>
      */
-    public function add<?=$this->_getRelationName($key, 'dependent')?>(\<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data)
+    public function add<?=$this->_getRelationName($key, 'dependent')?>(\<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name'])?> $data)
     {
         $this->_<?=$this->_getRelationName($key, 'dependent')?>[] = $data;
         $this->_setLoaded('<?=$this->_getCapital($key['key_name'])?>');
@@ -721,7 +723,7 @@ else : ?>
      * @param string or array $where
      * @param string or array $orderBy
      * @param boolean $avoidLoading skip data loading if it is not already
-     * @return array The array of \<?=$namespace?>Model\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
+     * @return array The array of \<?=$namespace?>Model\Raw\<?=$this->_getClassName($key['foreign_tbl_name']) . "\n"?>
      */
     public function get<?=$this->_getRelationName($key, 'dependent')?>($where = null, $orderBy = null, $avoidLoading = false)
     {
