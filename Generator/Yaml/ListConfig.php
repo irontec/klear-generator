@@ -48,8 +48,8 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $deleteTitles = '_("Delete %s", ' . $titleSingular . ')';
         $askDeleteTitles = '_("Do you want to delete this %s?", ' . $titleSingular . ')';
         $options = '_("Options")';
-        
-        
+
+
         $listScreen = array(
             'controller' => 'list',
             'pagination' => array(
@@ -199,6 +199,12 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
                 '<<' => '*' . $this->_normalizedTable,
                 'controller' => 'File',
                 'action' => 'upload',
+                'mainColumn' =>  $fieldName
+            );
+            $data[ucfirst($fieldName) . 'Preview_command'] = array(
+                '<<' => '*' . $this->_normalizedTable,
+                'controller' => 'File',
+                'action' => 'preview',
                 'mainColumn' =>  $fieldName
             );
         }

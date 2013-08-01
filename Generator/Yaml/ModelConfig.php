@@ -376,6 +376,29 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     'class' => 'qq-uploader',
                     'onNull' => 'show'
                 ),
+                'preview' => array(
+                    'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Preview_command',
+                    'type' => 'command',
+                    'class' => 'filePreview',
+                    'external' => true,
+                    'props' => array(
+                        'width' => 150,
+                        'height' => 150),
+                    'crop' => true,
+                    'onNull' => 'hide'
+                ),
+                'previewList' => array(
+                    'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Preview_command',
+                    'type' => 'command',
+                    'class' => 'filePreview',
+                    'listController' => true,
+                    'external' => true,
+                    'props' => array(
+                        'width' => 30,
+                        'height' => 30),
+                    'crop' => true,
+                    'onNull' => 'hide'
+                )
             )
         );
     }

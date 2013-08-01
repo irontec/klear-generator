@@ -68,3 +68,13 @@ actions:
       height: 200
       crop: true
     onNull: hide
+  - &previewlistCommand
+    type: command
+    class: filePreview
+    listController: true
+    external: true
+    props:
+      width: 30
+      height: 30
+      crop: true
+    onNull: hide
