@@ -24,7 +24,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $editScreenName = lcfirst($normalizedTable) . 'Edit_screen';
         $delDialogName = lcfirst($normalizedTable) . 'Del_dialog';
 
-        $listTitles = $editTitles = $addTitles = $deleteTitles = $askDeleteTitles = array();
+        $listTitles = $editTitles = $addTitles = $deleteTitles = $askDeleteTitles = $messageDeleteTitles = array();
 
         $normalizedEntity = $normalizedTable;
 
@@ -47,6 +47,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $addTitles = '_("Add %s", ' . $titleSingular . ')';
         $deleteTitles = '_("Delete %s", ' . $titleSingular . ')';
         $askDeleteTitles = '_("Do you want to delete this %s?", ' . $titleSingular . ')';
+        $messageDeleteTitles =  '_("%s successfully deleted.", ' . $titleSingular . ')';
         $options = '_("Options")';
 
 
@@ -116,6 +117,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'labelOption' => 'false',
             'title' => $deleteTitles,
             'description' => $askDeleteTitles,
+            'message' => $messageDeleteTitles,
         );
 
 
