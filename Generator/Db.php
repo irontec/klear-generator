@@ -14,10 +14,12 @@ class Generator_Db
         $description = $db->describeTable($tablename);
         $data = self::_getCreateTableData($tablename);
 
+        $description = array_change_key_case($description, CASE_LOWER);
+
         foreach ($data as $dataRow) {
             // Related tables/fields
             if (preg_match('/FOREIGN KEY \(.(?P<fieldName>.*).\)\s+REFERENCES\s+.(?P<foreignTable>.*).\s+\(.(?P<foreignField>.*).\)/', $dataRow, $matches)) {
-                $description[$matches['fieldName']]['RELATED'] = array(
+                $description[strtolower($matches['fieldName'])]['RELATED'] = array(
                     'TABLE' => $matches['foreignTable'],
                     'FIELD' => $matches['foreignField']
                 );
@@ -25,12 +27,12 @@ class Generator_Db
 
             // TinyInt length for boolean detection
             if (preg_match("/`(?P<fieldName>.*)`\s+tinyint\((?P<length>\d+)\)/", $dataRow, $matches)) {
-                $description[$matches['fieldName']]['LENGTH'] = (int)$matches['length'];
+                $description[strtolower($matches['fieldName'])]['LENGTH'] = (int)$matches['length'];
             }
 
             // Comments
             if (preg_match("/`(?P<fieldName>.*)`.*COMMENT\s+'(?P<comment>.*)'/", $dataRow, $matches)) {
-                $description[$matches['fieldName']]['COMMENT'] = $matches['comment'];
+                $description[strtolower($matches['fieldName'])]['COMMENT'] = $matches['comment'];
             }
         }
 

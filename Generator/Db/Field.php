@@ -8,6 +8,11 @@ class Generator_Db_Field implements \IteratorAggregate
         $this->_description = $description;
     }
 
+    protected function _getDescriptionProperty($name)
+    {
+        return isset($this->_description[$name])? $this->_description[$name] : null;
+    }
+
     public function getIterator()
     {
         return new \ArrayIterator($this->_description);
@@ -15,24 +20,24 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function getName()
     {
-        return $this->_description['COLUMN_NAME'];
+        return $this->_getDescriptionProperty('COLUMN_NAME');
     }
 
     public function isPrimaryKey()
     {
-        return (bool)$this->_description['PRIMARY'];
+        return (bool)$this->_getDescriptionProperty('PRIMARY');
     }
 
     public function getTableName()
     {
-        return $this->_description['TABLE_NAME'];
+        return $this->_getDescriptionProperty('TABLE_NAME');
     }
 
     public function getAcceptedValues()
     {
         $acceptedValues = array();
         if ($this->_isRealEnum()) {
-            if (preg_match('/enum\((?<acceptedValues>.*)\)$/i', $this->_description['DATA_TYPE'], $matches)) {
+            if (preg_match('/enum\((?<acceptedValues>.*)\)$/i', $this->_getDescriptionProperty('DATA_TYPE'), $matches)) {
                 $acceptedValues = explode(',', $matches['acceptedValues']);
             }
         } else if ($this->_checkTag('enum')) {
@@ -49,12 +54,12 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function getType()
     {
-        return $this->_description['DATA_TYPE'];
+        return $this->_getDescriptionProperty('DATA_TYPE');
     }
 
     public function getLength()
     {
-        return $this->_description['LENGTH'];
+        return $this->_getDescriptionProperty('LENGTH');
     }
 
     public function getLengthDefinition()
@@ -67,7 +72,7 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function isNullable()
     {
-        return $this->_description['NULLABLE'];
+        return $this->_getDescriptionProperty('NULLABLE');
     }
 
     public function isRequired()
@@ -82,7 +87,7 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function getDefaultValue()
     {
-        return $this->_description['DEFAULT'];
+        return $this->_getDescriptionProperty('DEFAULT');
     }
 
     public function hasComment()
@@ -112,7 +117,7 @@ class Generator_Db_Field implements \IteratorAggregate
 
     protected function _isRealEnum()
     {
-        return (bool)preg_match('/enum\(.*\)$/', $this->_description['DATA_TYPE']);
+        return (bool)preg_match('/enum\(.*\)$/', $this->_getDescriptionProperty('DATA_TYPE'));
     }
 
     public function isSoftDelete()
@@ -152,13 +157,13 @@ class Generator_Db_Field implements \IteratorAggregate
     public function isPassword()
     {
         return
-            $this->_description['DATA_TYPE'] == 'varchar' && stristr($this->getName(), 'passw')
+            $this->_getDescriptionProperty('DATA_TYPE') == 'varchar' && stristr($this->getName(), 'passw')
             || $this->_checkTag('password');
     }
 
     public function isAnyDateType()
     {
-        return (bool) preg_match('/date|time/', $this->_description['DATA_TYPE']);
+        return (bool) preg_match('/date|time/', $this->_getDescriptionProperty('DATA_TYPE'));
     }
 
     public function isRelationship()
@@ -208,6 +213,7 @@ class Generator_Db_Field implements \IteratorAggregate
     public function getPhpType()
     {
         $type = $this->getType();
+
         if (preg_match('/(tinyint\(1\)|bit)/', $type)) {
             $res = 'boolean';
         } elseif(preg_match('/(datetime|timestamp|blob|char|enum|date|time)/', $type)) {
@@ -216,7 +222,10 @@ class Generator_Db_Field implements \IteratorAggregate
             $res = 'float';
         } elseif (preg_match('#^(?:tiny|small|medium|long|big|var)?(\w+)(?:\(\d+\))?(?:\s\w+)*$#', $type, $matches)) {
             $res = $matches[1];
+        } else {
+            return $type;
         }
+
         return $res;
     }
 
