@@ -12,16 +12,16 @@ try {
 
     $opts = new Generator_Getopt(
         array(
-            'generate-links|l' => 'Generate links for each screen/dialog'
+            'do-not-generate-links|d' => 'Generate links for each screen/dialog'
         )
     );
     $opts->parse();
     $opts->checkRequired();
     $env = $opts->getEnviroment();
 
-    $generateLinks = false;
-    if ($opts->getOption('generate-links')) {
-        $generateLinks = true;
+    $generateLinks = true;
+    if ($opts->getOption('do-not-generate-links')) {
+        $generateLinks = false;
     }
 
     //Init Db
