@@ -12,7 +12,7 @@ try {
 
     $opts = new Generator_Getopt(
         array(
-            'do-not-generate-links|d' => 'Generate links for each screen/dialog'
+            'do-not-generate-links|L' => 'Generate links for each screen/dialog'
         )
     );
     $opts->parse();
