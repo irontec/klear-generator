@@ -66,8 +66,8 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
         return $this->_name;
     }
 
-    public function addReferenceMapEntry($key, $value) {
-
+    public function addReferenceMapEntry($key, $value)
+    {
         $this->_referenceMap[$key] = $value;
     }
 
@@ -124,32 +124,69 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
     /**
      * Generates a query to fetch a list with the given parameters
      *
-     * @param $where string Where clause to use with the query
+     * @param $where string|array Where clause to use with the query.
+     *     If $where is a string it will be directly used on the where part
+     *     If $where is an associative array, an AND where will be created with
+     *         - keys being used as conditions
+     *         - values being used bindind values
+     *         - ex:
+     *             array(
+     *                 'field1 > ?' => 5,
+     *                 'field2 > ?' => 2
+     *             )
+     *             ---RESULT---
+     *             "field1 > 5 AND field2 > 2"
+     *
+     *     If $where is an non associative array,
+     *         - first position [0] will be the conditions string
+     *         - second position [1] will be an array with binding values.
+     *         - ex: array('field1 > ? AND field2 > ?)', array(5, 2) ----> "field1 > 5 AND field2 > 2"
+     *             array(
+     *                 'field1 > ? AND field2 > ?'
+     *                 array(5, 2)
+     *             )
+     *             ---RESULT---
+     *             "field1 > 5 AND field2 > 2"
+     *
      * @param $order string Order clause to use with the query
      * @param $limit int Maximum number of results
      * @param $offset int Offset for the limited number of results
      * @return Zend_Db_Select
      */
     public function fetchList($where = null, $order = null, $limit = null,
-        $offset = null
-    ) {
+        $offset = null)
+    {
         $select = $this->select()
                             ->order($order)
                             ->limit($limit, $offset);
 
         if (is_array($where)) {
+            if ($this->_isAssociative($where)) {
+                foreach ($where as $cond => $value) {
+                    $select->where($cond, $value);
+                }
+            } else {
+                list($where, $bind) = $where;
 
-            list($where, $bind) = $where;
-
-            $select->where($where);
-            $select->bind($bind);
-
+                $select->where($where);
+                $select->bind($bind);
+            }
         } else if (!empty($where)) {
 
             $select->where($where);
         }
 
         return $select;
+    }
+
+    protected function _isAssociative(array $array)
+    {
+        $keys = array_keys($array);
+        foreach ($keys as $key) {
+            if (is_string($key)) {
+                return true;
+            }
+        }
     }
 
     public function getReferenceMap($key)
@@ -209,7 +246,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
     /**
     * Deletes existing rows.
     *
-    
+
     * @return int          The number of rows deleted.
     */
     public function delete($where)
@@ -220,13 +257,13 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
             return $this->_delete12($where);
         }
     }
-    
+
     protected function _delete11($where)
     {
         $tableSpec = ($this->_schema ? $this->_schema . '.' : '') . $this->_name;
         return $this->_db->delete($tableSpec, $where);
     }
-    
+
     protected function _delete12($where)
     {
         $depTables = $this->getDependentTables();
@@ -248,7 +285,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
         $tableSpec = ($this->_schema ? $this->_schema . '.' : '') . $this->_name;
         return $this->_db->delete($tableSpec, $where);
     }
-    
+
     /**
      * Called by parent table's class during delete() method.
      *
@@ -264,7 +301,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
             return $this->_cascadeDelete12($parentTableClassname, $primaryKey);
         }
     }
-    
+
     protected function _cascadeDelete11($parentTableClassname, array $primaryKey)
     {
         $this->_setupMetadata();
@@ -279,8 +316,10 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
                             $refCol = $this->_db->foldCase($map[self::REF_COLUMNS][$i]);
                             $type = $this->_metadata[$col]['DATA_TYPE'];
                             $where[] = $this->_db->quoteInto(
-                                    $this->_db->quoteIdentifier($col, true) . ' = ?',
-                                    $primaryKey[$refCol], $type);
+                                $this->_db->quoteIdentifier($col, true) . ' = ?',
+                                $primaryKey[$refCol],
+                                $type
+                            );
                         }
                         $rowsAffected += $this->delete($where);
                         break;
@@ -319,7 +358,9 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
                         $type = $this->_metadata[$col]['DATA_TYPE'];
                         $where[] = $this->_db->quoteInto(
                             $this->_db->quoteIdentifier($col, true) . ' = ?',
-                            $primaryKey[$refCol], $type);
+                            $primaryKey[$refCol],
+                            $type
+                        );
                     }
                 }
 
@@ -349,7 +390,7 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
         }
         return $rowsAffected;
     }
-    
+
     protected function _oldZend()
     {
         return \Zend_Version::compareVersion("1.12") !== -1;
