@@ -90,9 +90,16 @@ class Generator_Db_Field implements \IteratorAggregate
         return $this->_getDescriptionProperty('DEFAULT');
     }
 
-    public function hasComment()
+    public function hasComment($commentNeedle = null)
     {
-        return isset($this->_description['COMMENT']) && !empty($this->_description['COMMENT']);
+        $hasComment = isset($this->_description['COMMENT']) && !empty($this->_description['COMMENT']);
+
+        if (!$hasComment || is_null($commentNeedle)) {
+
+            return $hasComment;
+        }
+
+        return stristr($this->_description['COMMENT'], $commentNeedle) !== false;
     }
 
     public function getComment()

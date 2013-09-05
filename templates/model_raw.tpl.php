@@ -560,11 +560,22 @@ foreach ($fields as $column):
         }
 
         return $this->$methodName();
+
 <?php
     else:
+
+        if ($column->hasComment('[html]')):
 ?>
 
+        $pathFixer = new \Iron_Model_PathFixer;
+        return $pathFixer->fix($this->_<?=$column->getNormalizedName()?>);
+<?php
+        else:
+?>
         return $this->_<?=$column->getNormalizedName()?>;
+<?php
+        endif;
+?>
 <?php endif; ?>
     }
 <?php endforeach; ?>
