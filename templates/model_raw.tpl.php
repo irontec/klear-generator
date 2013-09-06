@@ -567,7 +567,7 @@ foreach ($fields as $column):
         if ($column->hasComment('[html]')):
 ?>
 
-        $pathFixer = new \Iron_Model_PathFixer;
+        $pathFixer = new \Iron_Filter_PathFixer;
         return $pathFixer->fix($this->_<?=$column->getNormalizedName()?>);
 <?php
         else:
