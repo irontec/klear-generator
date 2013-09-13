@@ -80,6 +80,14 @@ class Generator_Db_Field implements \IteratorAggregate
         return !$this->isNullable();
     }
 
+    public function throwExceptionOnNull()
+    {
+        return
+            $this->isRequired() &&
+            is_null($this->getDefaultValue()) &&
+            !$this->isPrimaryKey();
+    }
+
     public function hasDefaultValue()
     {
         return isset($this->_description['DEFAULT']) && !is_null($this->_description['DEFAULT']);

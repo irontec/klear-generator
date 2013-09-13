@@ -3,7 +3,6 @@
 $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 $tableName = $this->getTableName();
 $fields = Generator_Db::describeTable($tableName);
-
 $enumFields = array();
 $fsoFields = array();
 foreach ($fields as $field) {
@@ -434,8 +433,10 @@ foreach ($fields as $column):
 ?>
 
 <?php
-    if ($column->isRequired()) :
+
+    if ($column->throwExceptionOnNull()) :
 ?>
+
         if (is_null($data)) {
             throw new \InvalidArgumentException(_('Required values cannot be null'));
         }
@@ -478,6 +479,9 @@ foreach ($fields as $column):
         if ($this->_<?=$column->getNormalizedName()?> != $data) {
             $this->_logChange('<?=$column->getNormalizedName()?>');
         }
+<?php
+    if (!empty($casting)) :
+?>
 
         if (!is_null($data)) {
 <?php
@@ -494,6 +498,12 @@ foreach ($fields as $column):
             $this->_<?=$column->getNormalizedName()?> = $data;
         }
 <?php
+    else :
+?>
+
+        $this->_<?=$column->getNormalizedName()?> = $data;
+<?php
+    endif; // !empty($casting)
     endif;
 ?>
         return $this;
