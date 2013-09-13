@@ -406,11 +406,16 @@ foreach ($fields as $column):
 ?>
 
         if ($data == '0000-00-00 00:00:00') {
-
             $data = null;
         }
 
-        if ($data === 'CURRENT_TIMESTAMP') {
+        if ($data === 'CURRENT_TIMESTAMP'<?php
+        // Si un timestamp es obligatorio -no nullable- y se le settea NULL
+        // MySQL setea now(); mejor lo forzamos nosotros a now con TZ.
+        if ($column->isRequired()):
+            echo  ' || is_null($data)';
+        endif;
+        ?>) {
             $data = \Zend_Date::now()->setTimezone('<?=$this->_defaultTimeZone;?>');
         }
 
