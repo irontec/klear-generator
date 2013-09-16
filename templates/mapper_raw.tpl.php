@@ -742,7 +742,7 @@ endif;
                     continue;
                 }
 
-              ?>->set<?=$column['capital']?>($data['<?=$column['field']?>'])<?if ($count> 0) echo "\n                  ";
+              ?>->set<?=$column['capital']?>($data['<?=$column['field']?>'])<?php if ($count> 0) echo "\n                  ";
               endforeach; ?>;
         } else if ($data instanceof \Zend_Db_Table_Row_Abstract || $data instanceof \stdClass) {
             $entry<?php
@@ -755,7 +755,7 @@ endif;
                     continue;
                 }
 
-              ?>->set<?=$column['capital']?>($data->{'<?=$column['field']?>'})<?if ($count> 0) echo "\n                  ";
+              ?>->set<?=$column['capital']?>($data->{'<?=$column['field']?>'})<?php if ($count> 0) echo "\n                  ";
               endforeach; ?>;
 
         } else if ($data instanceof \<?=$namespace?>Model\Raw\<?=$this->_className?>) {
@@ -769,7 +769,7 @@ endif;
                     continue;
                 }
 
-              ?>->set<?=$column['capital']?>($data->get<?=$column['capital']?>())<?if ($count> 0) echo "\n                  ";
+              ?>->set<?=$column['capital']?>($data->get<?=$column['capital']?>())<?php if ($count> 0) echo "\n                  ";
               endforeach; ?>;
 
         }

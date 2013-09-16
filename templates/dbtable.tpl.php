@@ -12,14 +12,14 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
  * @copyright <?=$this->_copyright."\n"?>
  * @license <?=$this->_license."\n"?>
  */
-<? if ($this->_addRequire): ?>
+<?php if ($this->_addRequire): ?>
 
 /**
  * Abstract class for <?=$namespace?>Mapper\Sql\DbTable
  * @see <?=$this->_includeTable->getParentClass() . "\n"?>
  */
 require_once 'TableAbstract.php';
-<? endif; ?>
+<?php endif; ?>
 
 /**
  * Table definition for <?=$this->getTableName()."\n"?>
