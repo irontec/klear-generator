@@ -54,6 +54,11 @@ foreach ($fsoFields as $field) {
 
 $fsoObjects = array_unique($fsoObjects);
 
+// Indicamos a cada campo que "hermanos" FSO existen
+foreach ($fields as $field) {
+    $field->setFSOSiblings($fsoObjects);
+}
+
 foreach ($fsoObjects as $item) :
 ?>
     /*
@@ -438,8 +443,9 @@ foreach ($fields as $column):
 ?>
 
 <?php
-
-    if ($column->throwExceptionOnNull()) :
+    // es necesario indicarle a la columna que fsoObjects están disponibles en el modelo.
+    // Si se trata de un campo auxiliar de fso, no se lanzará exception on NULL
+    if ($column->throwExceptionOnNull($fsoObjects)) :
 ?>
 
         if (is_null($data)) {

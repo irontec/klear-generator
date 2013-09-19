@@ -2,10 +2,16 @@
 class Generator_Db_Field implements \IteratorAggregate
 {
     protected $_description;
+    protected $_fsoObjects = array();
 
     public function __construct(array $description)
     {
         $this->_description = $description;
+    }
+
+    public function setFSOSiblings($fsoObjects)
+    {
+        $this->_fsoObjects = $fsoObjects;
     }
 
     protected function _getDescriptionProperty($name)
@@ -80,9 +86,31 @@ class Generator_Db_Field implements \IteratorAggregate
         return !$this->isNullable();
     }
 
+    protected function _isFSOField()
+    {
+        $fsoSufixes = array(
+            '',
+            'FileSize',
+            'MimeType',
+            'BaseName',
+            'Md5Sum'
+        );
+        $curName = $this->getNormalizedName();
+        foreach ($this->_fsoObjects as $fso) {
+            foreach ($fsoSufixes as $sufix) {
+                if ($curName == $fso . $sufix) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     public function throwExceptionOnNull()
     {
         return
+            !$this->_isFSOField() &&
             $this->isRequired() &&
             is_null($this->getDefaultValue()) &&
             !$this->isPrimaryKey();
