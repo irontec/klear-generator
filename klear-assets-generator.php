@@ -11,7 +11,8 @@ try {
         array(
             'poblate-countries|c' => 'Poblate Country Tables',
             'poblate-timezones|t' => 'Poblate Timezones',
-            'verbose|v' => 'Verbose Mode On'
+            'verbose|v' => 'Verbose Mode On',
+            'namespace|n-s' => 'Application namespace if none set the appnamespace is used'
         )
     );
     
@@ -33,8 +34,12 @@ try {
     $application->bootstrap('db');
 
     // Get Application Namespace
-    $zendConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/application.ini', $env);
-    $namespace = $zendConfig->appnamespace;
+    $namespace = $opts->getOption('namespace');
+    if (!$namespace) {
+        $zendConfig = new Zend_Config_Ini($applicationIni, $env);
+        $namespace = $zendConfig->appnamespace;
+    }
+    
     if (substr($namespace, -1) == '_') {
         $namespace = substr($namespace, 0, -1);
     }

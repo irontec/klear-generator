@@ -12,7 +12,8 @@ try {
 
     $opts = new Generator_Getopt(
         array(
-            'do-not-generate-links|L' => 'Generate links for each screen/dialog'
+            'do-not-generate-links|L' => 'Generate links for each screen/dialog',
+            'namespace|n-s' => 'Application namespace if none set the appnamespace is used'
         )
     );
     $opts->parse();
@@ -29,8 +30,12 @@ try {
     $application->bootstrap('db');
 
     //Get namespace
-    $zendConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/application.ini', $env);
-    $namespace = $zendConfig->appnamespace;
+    $namespace = $opts->getOption('namespace');
+    if (!$namespace) {
+        $zendConfig = new Zend_Config_Ini($applicationIni, $env);
+        $namespace = $zendConfig->appnamespace;
+    }
+    
     if (substr($namespace, -1) == '_') {
         $namespace = substr($namespace, 0, -1);
     }
