@@ -25,8 +25,10 @@ try {
         $generateLinks = false;
     }
 
+    $applicationIni = APPLICATION_PATH . '/configs/application.ini';
+
     //Init Db
-    $application = new Zend_Application($env, APPLICATION_PATH . '/configs/application.ini');
+    $application = new Zend_Application($env, $applicationIni);
     $application->bootstrap('db');
 
     //Get namespace
@@ -35,7 +37,7 @@ try {
         $zendConfig = new Zend_Config_Ini($applicationIni, $env);
         $namespace = $zendConfig->appnamespace;
     }
-    
+
     if (substr($namespace, -1) == '_') {
         $namespace = substr($namespace, 0, -1);
     }

@@ -15,22 +15,25 @@ try {
             'namespace|n-s' => 'Application namespace if none set the appnamespace is used'
         )
     );
-    
+
     $opts->parse();
     $opts->checkRequired();
     $env = $opts->getEnviroment();
     $verbose = $opts->getOption('verbose');
 
-    $enviroment = $opts->getOption('enviroment') || APPLICATION_ENV; 
-    
-    $klearConfig = new Zend_Config_Ini(APPLICATION_PATH . '/configs/klear.ini', $env);
+    $enviroment = $opts->getOption('enviroment') || APPLICATION_ENV;
+
+    $applicationIni = APPLICATION_PATH . '/configs/application.ini';
+    $klearIni = APPLICATION_PATH . '/configs/klear.ini';
+
+    $klearConfig = new Zend_Config_Ini($klearIni, $env);
 
     if (!isset($klearConfig->klear->languages)) {
         throw new Exception('No languages found in klear.ini');
     }
 
     //Init Application && Db Connection
-    $application = new Zend_Application($env, APPLICATION_PATH . '/configs/application.ini');
+    $application = new Zend_Application($env, $applicationIni);
     $application->bootstrap('db');
 
     // Get Application Namespace
@@ -39,7 +42,7 @@ try {
         $zendConfig = new Zend_Config_Ini($applicationIni, $env);
         $namespace = $zendConfig->appnamespace;
     }
-    
+
     if (substr($namespace, -1) == '_') {
         $namespace = substr($namespace, 0, -1);
     }
@@ -66,30 +69,30 @@ try {
         }
     }
 
-    
+
     if ($opts->getOption('poblate-timezones')) {
         if (!$klearConfig->klear->timezones) {
             throw new Exception("No configuration found for timezones in klear.ini\n\tklear.timezones.table\n\tklear.timezones.tz\n\tklear.timezones.comment\n");
         }
-        
-    
+
+
         $tzParser = new Generator_Assets_TimezoneImporter();
         $tzParser->setNamespace($namespace);
         if ($verbose) {
             $tzParser->setVerbosed();
         }
         $tzParser->setConfig($klearConfig->klear);
-        
+
         $totalProcessed = $tzParser->parseAll();
-    
+
         if ($verbose) {
             echo $totalProcessed . " timezones added/updated.\n";
         }
     }
-    
-    
-    
-    
+
+
+
+
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";
     echo $e->getMessage() . "\n";
