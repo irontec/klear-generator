@@ -18,6 +18,10 @@ abstract class Generator_Yaml_AbstractConfig
                 '_extends' => 'production'
             );
 
+            $data['staging'] = array(
+                    '_extends' => 'production'
+            );
+            
             $data['development'] = array(
                 '_extends' => 'production'
             );
