@@ -11,7 +11,7 @@ class Generator_Languages_Config
                     'language' => 'es',
                     'locale' => 'es_ES'),
             'eu' => array(
-                    'title' => 'Euskera',
+                    'title' => 'Euskara',
                     'language' => 'eu',
                     'locale' => 'eu_ES'),
             'ca' => array(
@@ -27,9 +27,13 @@ class Generator_Languages_Config
                     'language' => 'en',
                     'locale' => 'en_US'),
             'fr' => array(
-                    'title' => 'français',
+                    'title' => 'Français',
                     'language' => 'fr',
-                    'locale' => 'fr_FR')
+                    'locale' => 'fr_FR'),
+            'pt' => array(
+                    'title' => 'Português',
+                    'language' => 'pt',
+                    'locale' => 'pt_PT')
     );
     
     protected $_enabledLanguages = array();
