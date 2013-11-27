@@ -226,6 +226,11 @@ abstract class ModelAbstract implements \IteratorAggregate
         return $this->getDefaultUserLanguage();
     }
 
+    public function getCurrentLanguage()
+    {
+        return $this->_getCurrentLanguage();
+    }
+
     public function initChangeLog()
     {
         $this->_logChanges = true;

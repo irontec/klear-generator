@@ -674,6 +674,7 @@ abstract class MapperAbstract
      */
     public function findByField($field, $value = null)
     {
+        $field = $this->_prepareMultilangFields($field);
         $table = $this->getDbTable();
         $select = $this->_getFindByFieldSelect($field, $value);
 
@@ -697,6 +698,7 @@ abstract class MapperAbstract
      */
     public function findOneByField($field, $value = null, $model = null)
     {
+        $field = $this->_prepareMultilangFields($field);
         $table = $this->getDbTable();
         $select = $this->_getFindByFieldSelect($field, $value);
 
@@ -706,6 +708,35 @@ abstract class MapperAbstract
         }
 
         return $row;
+    }
+
+    /**
+     * @param string|array $fields The field or fields to search by
+     */
+    protected function _prepareMultilangFields($fields)
+    {
+        $isArray = is_array($fields);
+        if (!$isArray) {
+            $fields = array($fields);
+        }
+
+        $model = $this->loadModel(null);
+        foreach ($fields as $key => $field) {
+
+            $isMultilangFld = false;
+            foreach ($model->getMultiLangColumnsList() as $mlFld) {
+                if (strtolower($field) == strtolower($mlFld)) {
+                    $fields[$key] = $field . '_' . $model->getCurrentLanguage();
+                    break;
+                }
+            }
+        }
+
+        if (!$isArray) {
+            return array_shift($fields);
+        }
+
+        return $fields;
     }
 
     protected function _getFindByFieldSelect($field, $value = null)
