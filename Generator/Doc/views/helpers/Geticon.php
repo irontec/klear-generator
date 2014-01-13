@@ -1,32 +1,46 @@
 <?php
 class Zend_View_Helper_Geticon extends Zend_View_Helper_Abstract
 {
-    public function geticon($class)
+    public function geticon($class,$path)
     {
-        return self::cpIcon($class);
-    }
-    protected function cpIcon($class) {
-        
         $iconName = str_replace('ui-silk-', "", $class);
         
         $iconName = str_replace('-', "_", $iconName);
         
         $iconSource = dirname(__FILE__).'/../../icons/'.$iconName.'.png';
-        $iconDestiny = APPLICATION_PATH.'/configs/klear/doc/icons/'.$class.'.png';
-        
-        if(file_exists($iconDestiny)) {
-             return 'icons/'.$class.'.png';
-        }
+        $iconDestiny = $path.'/doc/icons/'.$class.'.png';
         
         if(file_exists($iconSource)) {
             $copyIcon = copy($iconSource,$iconDestiny);
+        }
             
-            if ($copyIcon) {
+        $yamlImporter = new Generator_Doc_YamlImporter();
+        
+        $yaml = $yamlImporter->getYaml('klear.yaml');
+        
+        $dirSource =  APPLICATION_PATH.'/../public'.$yaml['main']['cssExtended']['silkExtendedIconPath'];
+        
+        if (is_dir($dirSource)) {
+            $iconName = str_replace('ui-silk-', "", $class);
+            
+            
+            $iconSource = $dirSource.'/'.$iconName.'.png';
+            
+            if (file_exists($iconSource)) {
+                $copyIcon = copy($iconSource,$iconDestiny);
+            }
+        }
+        
+        if(file_exists($iconDestiny)) {
+            if (filesize($iconSource) == filesize($iconDestiny)) {
                 return 'icons/'.$class.'.png';
             }
-            
-        } else {
-            return false;
         }
+        
+        if ($copyIcon) {
+            return 'icons/'.$class.'.png';
+        }
+        
+        return 'icons/ui-silk-accept.png';
     }
 }

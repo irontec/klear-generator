@@ -3,6 +3,8 @@
 
 include_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php');
 include_once(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'Iron' . DIRECTORY_SEPARATOR . 'Translate' . DIRECTORY_SEPARATOR . 'Adapter' . DIRECTORY_SEPARATOR . 'GettextKlear.php');
+include_once(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'klear' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'YamlStream.php');
+
 define('VERSION', '0.1');
 define('AUTHOR',  'Victor Vargas <victor@irontec.com>');
 
@@ -23,7 +25,9 @@ define('AUTHOR',  'Victor Vargas <victor@irontec.com>');
     $applicationIni = APPLICATION_PATH . '/configs/application.ini';
     $klearIni = APPLICATION_PATH . '/configs/klear.ini';
     $klearYaml = APPLICATION_PATH. '/configs/klear/klear.yaml';
-
+    
+    stream_wrapper_register("klear.yaml", "Klear_Model_YamlStream");
+    
     if (file_exists($klearYaml)) {
         Generator_Doc_YamlImporter::index();
         Generator_Doc_YamlImporter::index(true);

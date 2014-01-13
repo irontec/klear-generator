@@ -1,32 +1,17 @@
 <?php
 class Zend_View_Helper_Nogettext extends Zend_View_Helper_Abstract
 {
-    public function nogettext($string)
+    public function nogettext($text,$list = false)
     {
-       return self::gettextCheck($string);
-//         echo self::gettextCheck("List of %s");
-//         exit;
-//         return Generator_Doc_Gettex::gettextCheck($string);
-        
-//         exit;
-//         $stringCompuesto = explode("%s", $string);
-        
-//         if (count($stringCompuesto) > 1) {
-//             $string = str_replace("_(", "sprintf(", $string);
+        if (!is_array($text)) {
             
-//             $nogettext = '$string = '.$string.';';
+            $string = self::gettextCheck($text);
             
-//             eval($nogettext);
+            return self::detectParent($string,$list);
             
-//             return $string;
-//         } else {
-//             $nogettext = '$string = '.$string.';';
-            
-//             eval($nogettext);
-            
-//             return $string;
-//         }
-        
+        } else {
+            return self::inArray($text);
+        }
     }
     
     protected function gettextCheck($string)
@@ -129,18 +114,16 @@ class Zend_View_Helper_Nogettext extends Zend_View_Helper_Abstract
             }
     
         }
-        
+
         if (class_exists('Iron_Translate_Adapter_GettextKlear')) {
             $translator = new Iron_Translate_Adapter_GettextKlear;
+            
         } else {
             echo 'No se encontró la clase Iron_Translate_Adapter_GettextKlear';
         }
         
         switch($curFunction) {
             case "_":
-    
-                $arguments[0] = $translator->translate($arguments[0],'es_ES');
-    
                 if (sizeof($arguments) > 1) {
                     return call_user_func_array("sprintf", $arguments);
                 } else {
@@ -155,5 +138,30 @@ class Zend_View_Helper_Nogettext extends Zend_View_Helper_Abstract
         }
     
         Throw Exception("Invalid function in gettext");
+    }
+    
+    protected function inArray($arrayText) {
+        
+        if ($arrayText['i18n']) {
+            return self::gettextCheck(current($arrayText['i18n']));
+        } else {
+            return 'false';
+        }
+        
+    }
+    
+    protected function detectParent($string,$list) {
+        $pos = strpos($string,'%parent%');
+        
+        if ($list && is_int($pos)) {
+            $principal = $list['main']['defaultScreen'];
+            
+            $parent = self::gettextCheck('_("'.$list['screens'][$principal]['modelFile'].'")');
+            
+            $string = str_replace('%parent%', $parent, $string);
+            
+        }
+        
+        return $string;
     }
 }

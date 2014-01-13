@@ -13,34 +13,42 @@ class Generator_Doc_YamlImporter
         $folderDocPath = self::createPath($folderKlearYaml);
         
         //Coge todas las opciones del klear.yaml
-        $klearYaml = self::getYaml($folderKlearYaml.'/klear.yaml');
+        if (!$klearRaw) {
+            $klearYaml = self::getYaml('klear.yaml');
+        } else {
+            $klearYaml = self::getYamlRaw('klear.yaml');
+        }
+        
+//         var_dump($klearYaml);
+//         exit;
+        
+        //Copia iconos, img y css
+        $fileIcon = self::full_copy(dirname(__FILE__).'/copy', $folderKlearYaml . '/doc');
         
         //Copia el logo del proyecto al klear y RETURN Nombre del logo
         $fileLogo = self::cpLogo($klearYaml,$folderDocPath);
         
-        //Copia iconos
-        //$fileIcon = self::cpIcon($klearYaml,$folderDocPath);
-        
         //Coger todos los list de los yaml klear.yaml
-        $list = self::projectYaml($klearYaml,$folderKlearYaml);
+        $list = self::projectYaml($klearYaml,$klearRaw);
         
         //Coger todas las entidades de los list
-        $entities = self::getEntitiesYaml($list, $folderKlearYaml);
+        $entities = self::getEntitiesYaml($list, $folderKlearYaml, $klearRaw);
         
         $view = new Zend_View();
         $view->assign('klear', $klearYaml);
         $view->assign('logo',$fileLogo);
         $view->assign('list',$list);
         $view->assign('entity',$entities);
+        $view->assign('path',$folderKlearYaml);
         $view->setBasePath(dirname(__FILE__) . '/views');
         
         $html = fopen( $folderDocPath .'/tutorial.html',"w+") or die("Problemas en la creacion");
         fputs($html, $view->render('tutorial.phtml'));
         fclose($html);
         
-        var_dump($klearYaml['main']['sitename']);
+//         var_dump($klearYaml['main']['sitename']);
         
-        exit;
+//         exit;
         return $klearYaml['main'];
     }
     
@@ -56,14 +64,18 @@ class Generator_Doc_YamlImporter
             
             //Creación de la carpeta IMG
             mkdir($folderDocPath.'/img');
+            
+            //Creación de la carpeta css
+            mkdir($folderDocPath.'/css');
         }
         
         return $folderDocPath;
     }
     
-    protected function getYaml($filePath) {
+    public function getYaml($filePath) {
+        
         $yaml = new Zend_Config_Yaml(
-                $filePath,
+                'klear.yaml://' . $filePath,
                 APPLICATION_ENV,
                 array(
                         "yamldecoder" => "yaml_parse"
@@ -73,70 +85,100 @@ class Generator_Doc_YamlImporter
         return $yaml->toArray();
     }
     
-    protected function cpLogo($klearYaml,$folderDocPath) {
-        $publicImg = $klearYaml['main']['logo'];
-        
-        $pieces = explode("/", $publicImg);
-        
-        if (count($pieces) > 1) {
-            $nameFile = end($pieces);
-        } else {
-            $nameFile = $publicImg;
-        }
-        if (file_exists(APPLICATION_PATH.'/../public/'.$publicImg)) {
-            
-            $copy = copy(APPLICATION_PATH.'/../public/'.$publicImg,$folderDocPath.'/img/'.$nameFile);
-        
-            if (!$copy) {
-                echo 'Falta permisos en la carpeta doc/img';
-                exit;
-            }
-        }
-        
-        return $nameFile;
+    public function getYamlRaw($filePath) {
+    
+        $yaml = new Zend_Config_Yaml(
+                'klear.yaml:///../klearRaw/' . $filePath,
+                APPLICATION_ENV,
+                array(
+                        "yamldecoder" => "yaml_parse"
+                )
+        );
+    
+        return $yaml->toArray();
     }
     
-    protected function cpIcon($klearYaml,$folderDocPath) {
-        foreach ($klearYaml['menu'] as $menu) {
-            foreach ($menu['submenus'] as $submenu) {
-                if ($submenu['class']) {
-                    $iconName = str_replace('ui-silk-', "", $submenu['class']);
-                    
-                    $iconName = str_replace('-', "_", $iconName);
-                    
-                    $iconSource = dirname(__FILE__).'/icons/'.$iconName.'.png';
-                    $iconDestiny = $folderDocPath.'/icons/'.$submenu['class'].'.png';
-                    
-                    if(file_exists($iconSource)) {
-                        $copyIcon = copy($iconSource,$iconDestiny);
-                        
-                        if (!$copyIcon) {
-                            echo 'No se puede copiar iconos en la carpeta';
-                            exit;
-                        }
-                    } else {
-                        var_dump($iconSource);
+    protected function cpLogo($klearYaml,$folderDocPath) {
+        if ($klearYaml['main']['logo'] != 'klear/images/klear.png') {
+            
+            $publicImg = $klearYaml['main']['logo'];
+            
+            $pieces = explode("/", $publicImg);
+            
+            if (count($pieces) > 1) {
+                $nameFile = end($pieces);
+            } else {
+                $nameFile = $publicImg;
+            }
+            if (file_exists(APPLICATION_PATH.'/../public/'.$publicImg)) {
+                
+                if (!file_exists($folderDocPath.'/img/'.$nameFile)) {
+                    $copy = copy(APPLICATION_PATH.'/../public/'.$publicImg,$folderDocPath.'/img/'.$nameFile);
+                
+                    if (!$copy) {
+                        echo 'Falta permisos en la carpeta doc/img';
+                        exit;
                     }
                 }
             }
+            
+            return $nameFile;
+            
+        } else {
+            
+            $logoSource = dirname(__FILE__).'/logo/klear.png';
+            $logoDestiny = $folderDocPath.'/img/klear.png';
+            
+            if (!file_exists($logoDestiny) && file_exists($logoSource)) {
+                $copyLogo = copy($logoSource,$logoDestiny);
+                
+                if (!$copyLogo) {
+                    echo 'No se pudo copiar el logo';
+                    exit;
+                }
+            }
+            
+            return 'klear.png';
         }
         
-        return true;
+        return false;
     }
     
-    protected function projectYaml($klearYaml,$folderKlear) {
+    protected function full_copy( $source, $target ) {
+        if ( is_dir( $source ) ) {
+            @mkdir( $target );
+            $d = dir( $source );
+            
+            while ( FALSE !== ( $entry = $d->read() ) ) {
+                if ( $entry == '.' || $entry == '..' ) {
+                    continue;
+                }
+                $Entry = $source . '/' . $entry;
+                if ( is_dir( $Entry ) ) {
+                    self::full_copy( $Entry, $target . '/' . $entry );
+                    continue;
+                }
+                
+                $pos = strpos($entry,'.svn-base');
+                
+                if (!is_int($pos)) {
+                    copy( $Entry, $target . '/' . $entry );
+                }
+            }
+            $d->close();
+        } else {
+            copy( $source, $target );
+        }
+    }
+    
+    protected function projectYaml($klearYaml,$klearRaw) {
         $entity = array();
         foreach ($klearYaml['menu'] as $menu) {
             foreach ($menu['submenus'] as $yamlName => $submenu) {
-                $yamlFilePath = $folderKlear.'/'.$yamlName.'.yaml';
-                
-                if(file_exists($yamlFilePath)) {
-                    $fileTempPath = self::createYamlTemp($yamlFilePath, $yamlName, $folderKlear);
-                    $entity[$yamlName] = self::getYaml($fileTempPath);
-                    
-                    unlink($fileTempPath); //Borrado del archivo temporal
+                if (!$klearRaw) {
+                    $entity[$yamlName] = self::getYaml($yamlName.'.yaml');
                 } else {
-                    var_dump($yamlFilePath);
+                    $entity[$yamlName] = self::getYamlRaw($yamlName.'.yaml');
                 }
             }
         }
@@ -144,74 +186,39 @@ class Generator_Doc_YamlImporter
         return $entity;
     }
     
-    protected function createYamlTemp($yamlFilePath,$yamlName,$folderKlear) {
+    protected function getEntitiesYaml($list,$folderKlear,$klearRaw) {
         
-        $newYamlFile = array();
-        
-        foreach (file($yamlFilePath) as $line) {
-            $line = str_replace('<<: *', '# <<: *', $line);
-            $newYamlFile[] = $line;
-        }
-        
-        $destinyFile = sys_get_temp_dir().'/'.$yamlName.'.yaml';
-        
-        $fh = fopen($destinyFile, 'w');
-        fwrite($fh, implode($newYamlFile));
-        fclose($fh);
-        
-        return ($destinyFile);
-    }
-    
-    protected function getInclude($array,$folderKlear) {
-        //Include
-        $a = array();
-        $b = array();
-        $c = array();
-        
-        foreach ($array as $line) {
-            $line = str_replace("\n", "", $line);
-            $mystring = $line;
-            $findme   = '#include';
-            $pos = strpos($mystring, $findme);
-            
-            if (is_int($pos)) {
-                $pieces = explode(" ", $line);
-                
-                $a[] = $line;
-                
-                $c = array();
-                
-                if ($pieces[1] == 'conf.d/mapperList.yaml#include') {
-                    echo $line;
-                    exit;
-                }
-                
-                foreach (file($folderKlear.'/'.$pieces[1]) as $noInclude) {
-                    $c[] = str_replace("<<: *", "#<<: *", $noInclude);
-                }
-                
-                $b[] = implode($c);
-                
-            }
-        }
-        return array($a,$b);
-    }
-    
-    protected function getEntitiesYaml($list,$folderKlear) {
+        $directory = opendir($folderKlear); //ruta actual
         $model = array();
         
-        foreach ($list as $yaml=>$array) {
-            $yamlModel = str_replace("List", "", $yaml);
+        while ($file = readdir($directory)) {
             
-            $yamlSource = $folderKlear.'/model/'.$yamlModel.'.yaml';
+            $pos = strpos($file,'List.yaml');
             
-            if (file_exists($yamlSource)) {
-                $fileTempPath = self::createYamlTemp($yamlSource, $yamlModel, $folderKlear);
-                $model[$yaml] = self::getYaml($fileTempPath);
+            if (!is_dir($folderKlear.'/'.$file) && is_int($pos)) {
                 
-                unlink($fileTempPath); //Borrado del archivo temporal
+                $pieces = explode(".", $file);
+                
+                $yaml = $pieces[0];
+                
+                if (!$klearRaw) {
+                    $array = self::getYaml($file);
+                } else {
+                    $array = self::getYamlRaw($file);
+                }
+                
+                $principal = $array['main']['defaultScreen'];
+                
+                if ($array['screens'][$principal]['controller'] == 'list') {
+                    $yamlModel = $array['screens'][$principal]["modelFile"];
+                    
+                    if (!$klearRaw) {
+                        $model[$yaml] = self::getYaml('/model/'.$yamlModel.'.yaml');
+                    } else {
+                        $model[$yaml] = self::getYamlRaw('/model/'.$yamlModel.'.yaml');
+                    }
+                }
             }
-            
         }
         
         return $model;
