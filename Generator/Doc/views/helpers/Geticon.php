@@ -8,12 +8,7 @@ class Zend_View_Helper_Geticon extends Zend_View_Helper_Abstract
         $iconName = str_replace('-', "_", $iconName);
         
         $iconSource = dirname(__FILE__).'/../../icons/'.$iconName.'.png';
-        $iconDestiny = $path.'/doc/icons/'.$class.'.png';
         
-        if(file_exists($iconSource)) {
-            $copyIcon = copy($iconSource,$iconDestiny);
-        }
-            
         $yamlImporter = new Generator_Doc_YamlImporter();
         
         $yaml = $yamlImporter->getYaml('klear.yaml');
@@ -23,24 +18,26 @@ class Zend_View_Helper_Geticon extends Zend_View_Helper_Abstract
         if (is_dir($dirSource)) {
             $iconName = str_replace('ui-silk-', "", $class);
             
+            $iconSourcePublic = $dirSource.'/'.$iconName.'.png';
             
-            $iconSource = $dirSource.'/'.$iconName.'.png';
-            
-            if (file_exists($iconSource)) {
-                $copyIcon = copy($iconSource,$iconDestiny);
+            if (file_exists($iconSourcePublic)) {
+                $iconSource = $iconSourcePublic;
             }
         }
         
-        if(file_exists($iconDestiny)) {
-            if (filesize($iconSource) == filesize($iconDestiny)) {
-                return 'icons/'.$class.'.png';
-            }
+        if (file_exists($iconSource)) {
+            return self::base64($iconSource);
         }
         
-        if ($copyIcon) {
-            return 'icons/'.$class.'.png';
-        }
+        return self::base64(dirname(__FILE__).'/../../icons/accept.png');
+    }
+    
+    protected function base64($path) {
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         
-        return 'icons/ui-silk-accept.png';
+        
+        return $base64;
     }
 }

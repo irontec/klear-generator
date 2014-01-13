@@ -1,96 +1,42 @@
 <html lang="es">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="css/bootstrap.css" media="screen" rel="stylesheet" type="text/css">
 <style type="text/css">
-      body {
-        padding-top: 20px;
-        padding-bottom: 40px;
-      }
-
-      /* Custom container */
-      .container-narrow {
-        margin: 0 auto;
-        max-width: 700px;
-      }
-      .container-narrow > hr {
-        margin: 30px 0;
-      }
-
-      /* Main marketing message and sign up button */
-      .jumbotron {
-        margin: 60px 0;
-        text-align: center;
-      }
-      .jumbotron h1 {
-        font-size: 72px;
-        line-height: 1;
-      }
-      .jumbotron .btn {
-        font-size: 21px;
-        padding: 14px 24px;
-      }
-
-      /* Supporting marketing content */
-      .marketing {
-        margin: 60px 0;
-      }
-      .marketing p + h4 {
-        margin-top: 28px;
-      }
+    body {
+        font-family: "Zap";
+    }
+    
+    h1 {
+        font-style:italic;
+    }
 </style>
 </head>
 <body>
-<div class="container-narrow">
+<div>
 
-<div class="jumbotron">
-    <img src="img/<?php echo $this->logo;?>">
-    <h1><?php echo $this->klear['main']['sitename'];?></h1>
-</div>
-
-<div id="indice" class="well">
-<h1>Índice</h1>
-<ol>
 <?php foreach ($this->klear['menu'] as $menu):?>
-    <li><?php echo $this->nogettext($menu['title']);?></li>
-    <ul>
-    <?php foreach ($menu['submenus'] as $key => $submenu):?>
-        <li><a href="<?php echo '#'.$key;?>">
-        <?php if ($submenu['class']):?>
-            <img src="<?php echo $this->geticon($submenu['class'],$this->path);?>"> <?php echo $this->nogettext($submenu['title']);?>
-        <?php else:?>
-            <?php echo $this->nogettext($submenu['title']);?>
-        <?php endif;?>
-        </a></li>
-    <?php endforeach;?>
-    </ul>
-<?php endforeach;?>
-</ol>
-</div>
-
-<ol>
-<?php foreach ($this->klear['menu'] as $menu):?>
-<hr />
-<h2><li><?php echo $this->nogettext($menu['title']);?></li></h2>
+<h1><?php echo $this->nogettext($menu['title']);?></h1>
+    <?php if (isset($menu['description'])):?>
       <p><?php echo $this->nogettext($menu['description']);?></p>
-    
+    <?php endif;?>
     <?php foreach ($menu['submenus'] as $key => $submenu):?>
-        <h4 id="<?php echo $key;?>">
+        <h2 id="<?php echo $key;?>">
         <?php if ($submenu['class']):?>
-            <img src="<?php echo $this->geticon($submenu['class'],$this->path);?>"> <?php echo $this->nogettext($submenu['title']);?>
+            <img alt="<?php echo $submenu['class'];?>" src="<?php echo $this->geticon($submenu['class'],$this->path);?>" /> <?php echo $this->nogettext($submenu['title']);?>
         <?php else:?>
             <?php echo $this->nogettext($submenu['title']);?>
         <?php endif;?>
-        </h4>
-            <p><?php echo $this->nogettext($submenu['description']);?></p>
-        
+        </h2>
+        <?php if (isset($submenu['description'])):?>
+        <p><?php echo $this->nogettext($submenu['description']);?></p>
+        <?php endif;?>
         <?php if (isset($this->entity[$key]['fields'])):?>
-            <ul>
-            <h4>Listado</h4>
+            <h3>Listado</h3>
             
             <!-- Campos de las entidades -->
-            <ul>
             <h4>Campos</h4>
+            
+            <ul>
             <?php 
             foreach ($this->entity[$key]['fields'] as $campoKey => $campo) {
                 foreach ($this->list[$key]['screens'] as $list) {
@@ -105,41 +51,46 @@
                         }
                         
                         if (!$black) {
-                            if ($campo['type'] != 'select') {
-                            echo '<li>'.$this->nogettext($campo['title']).' ('.$campo['type'].')</li>';
-                            } else {
-                                echo '<li>'.$this->nogettext($campo['title']).' ('.$campo['type'].': ';
-                                if ($campo['source']['data'] == 'inline') {
-                                    $valueSelect = array();
-                                    foreach ($campo['source']['values'] as $value) {
-                                        if (!is_array($value)) {
-                                        $valueSelect[] = $this->nogettext($value);
-                                        } else {
-                                        $valueSelect[] = $this->nogettext($value['title']);
-                                        }
-                                    }
-                                    
-                                    echo implode(' / ',$valueSelect);
-                                    
+                            if (isset($campo['type'])) {
+                                if ($campo['type'] != 'select') {
+                                    echo '<li>'.$this->nogettext($campo['title']).' ('.$campo['type'].')</li>';
                                 } else {
-                                    
-                                    $yamlModel = end(explode("\\",$campo['source']['config']['mapperName']));
-                                    
-                                    $a = array();
-                                    $b = array();
-                                    
-                                    foreach ($campo['source']['config']['fieldName']['fields'] as $subCampo) {
-                                        if (isset($this->entity[$yamlModel.'List'])) {
-                                            $a[] = '%'.$subCampo.'%';
-                                            $b[] = $this->nogettext($this->entity[$yamlModel.'List']['fields'][$subCampo]['title']);
+                                    echo '<li>'.$this->nogettext($campo['title']).' ('.$campo['type'].': ';
+                                    if ($campo['source']['data'] == 'inline') {
+                                        $valueSelect = array();
+                                        foreach ($campo['source']['values'] as $value) {
+                                            if (!is_array($value)) {
+                                            $valueSelect[] = $this->nogettext($value);
+                                            } else {
+                                            $valueSelect[] = $this->nogettext($value['title']);
+                                            }
                                         }
+                                        
+                                        echo implode(' / ',$valueSelect);
+                                        
+                                    } else {
+                                        
+                                        
+                                        $yamlModel = end(explode("\\",$campo['source']['config']['mapperName']));
+                                        
+                                        $a = array();
+                                        $b = array();
+                                        
+                                        $yamlClass = Generator_Doc_YamlImporter::getYaml('/model/'.$yamlModel);
+                                        
+                                        foreach ($campo['source']['config']['fieldName']['fields'] as $subCampo) {
+                                            if (isset($yamlClass) && isset($yamlClass['fields'][$subCampo])) {
+                                                $a[] = '%'.$subCampo.'%';
+                                                $b[] = $this->nogettext($yamlClass['fields'][$subCampo]['title']);
+                                            }
+                                        }
+                                        
+                                        $bodytag = str_replace($a, $b, $campo['source']['config']['fieldName']['template']);
+                                        
+                                        echo $bodytag;
                                     }
-                                    
-                                    $bodytag = str_replace($a, $b, $campo['source']['config']['fieldName']['template']);
-                                    
-                                    echo $bodytag;
+                                    echo ')</li>';
                                 }
-                            echo ')</li>';
                             }
                         }
                         break;
@@ -148,70 +99,71 @@
             }
             ?>
             </ul>
-            <hr>
             <?php foreach ($this->list[$key]['screens'] as $list):?>
             
                 <?php if ($list['controller'] == 'list'):?>
-                    <?php if ($list['options']['screens']):?>
+                    <?php if (isset($list['options']['screens'])):?>
                         <!-- Las pantallas disponibles -->
                         <?php if (isset($list['info'])):?>
                         <ul>
-                            <h4><?php echo $this->nogettext($list['info']['label']);?></h4>
+                            <strong><?php echo $this->nogettext($list['info']['label']);?></strong>
                             <p><?php echo $this->nogettext($list['info']['text']);?></p>
                         </ul>
-                        <hr>
                         <?php endif;?>
                         
+                        <!-- Screens -->
+                        <h4><?php echo $this->nogettext($list['options']['title']);?></h4>
                         <ul>
-                            <h4><?php echo $this->nogettext($list['options']['title']);?></h4>
-                            <!-- Screens -->
-                            <?php foreach ($list['options']['screens'] as $keyScreen => $value):?>
-                                <li>
-                                    <img src="<?php echo $this->geticon($this->list[$key]['screens'][$keyScreen]['class'],$this->path);?>">
-                                    <?php echo $this->nogettext($this->list[$key]['screens'][$keyScreen]['title']);?>
-                                    <?php if (isset($this->list[$key]['screens'][$keyScreen]['info'])):?>
-                                    <ul>
-                                        <h4><?php echo $this->nogettext($this->list[$key]['screens'][$keyScreen]['info']['label']);?></h4>
-                                        <p><?php echo $this->nogettext($this->list[$key]['screens'][$keyScreen]['info']['text']);?></p>
-                                    </ul>
-                                    <?php endif;?>
-                                </li>
-                            <?php endforeach;?>
-                            
-                            <!-- Dialogs -->
-                            <?php if (isset($list['options']['dialogs'])): ?>
-                            <?php foreach ($list['options']['dialogs'] as $keyDialog => $value):?>
-                                <li>
-                                    <img src="<?php echo $this->geticon($this->list[$key]['dialogs'][$keyDialog]['class'],$this->path);?>">
-                                    <?php echo $this->nogettext($this->list[$key]['dialogs'][$keyDialog]['title']);?>
-                                </li>
-                            <?php endforeach;?>
-                            <?php endif;?>
+                        <?php foreach ($list['options']['screens'] as $keyScreen => $value):?>
+                            <li>
+                                <img src="<?php echo $this->geticon($this->list[$key]['screens'][$keyScreen]['class'],$this->path);?>" />
+                                <?php echo $this->nogettext($this->list[$key]['screens'][$keyScreen]['title']);?>
+                                <?php if (isset($this->list[$key]['screens'][$keyScreen]['info'])):?>
+                                <ul>
+                                    <strong><?php echo $this->nogettext($this->list[$key]['screens'][$keyScreen]['info']['label']);?></strong>
+                                    <p><?php echo $this->nogettext($this->list[$key]['screens'][$keyScreen]['info']['text']);?></p>
+                                </ul>
+                                <?php endif;?>
+                            </li>
+                        <?php endforeach;?>
+                        
+                        <!-- Dialogs -->
+                        <?php if (isset($list['options']['dialogs'])): ?>
+                        <?php foreach ($list['options']['dialogs'] as $keyDialog => $value):?>
+                            <li>
+                                <img src="<?php echo $this->geticon($this->list[$key]['dialogs'][$keyDialog]['class'],$this->path);?>" />
+                                <?php echo $this->nogettext($this->list[$key]['dialogs'][$keyDialog]['title']);?>
+                            </li>
+                        <?php endforeach;?>
+                        <?php endif;?>
                         </ul>
                     <?php endif;?>
                     
-                    <?php if ($list['fields']['options']['screens']):?>
-                        <hr>
+                    <?php if (isset($list['fields']['options']['screens'])):?>
                         <!-- Las opciones disponibles -->
+                        <h4><?php echo $this->nogettext($list['fields']['options']['title']);?></h4>
                         <ul>
-                            <h4><?php echo $this->nogettext($list['fields']['options']['title']);?></h4>
-                            <!-- Screens -->
-                            <?php foreach ($list['fields']['options']['screens'] as $keyScreen => $value):?>
-                                <li>
-                                    <img src="<?php echo $this->geticon($this->list[$key]['screens'][$keyScreen]['class'],$this->path);?>">
-                                    <?php echo $this->nogettext($this->list[$key]['screens'][$keyScreen]['title'],$this->list[$key]);?>
-                                </li>
-                            <?php endforeach;?>
-                            
-                            <!-- Dialogs -->
-                            <?php foreach ($list['fields']['options']['dialogs'] as $keyDialog => $value):?>
-                                <li>
-                                    <img src="<?php echo $this->geticon($this->list[$key]['dialogs'][$keyDialog]['class'],$this->path);?>">
-                                    <?php echo $this->nogettext($this->list[$key]['dialogs'][$keyDialog]['title'],$this->list[$key]);?>
-                                </li>
-                            <?php endforeach;?>
+                        <!-- Screens -->
+                        <?php foreach ($list['fields']['options']['screens'] as $keyScreen => $value):?>
+                        <li>
+                            <?php if (isset($this->list[$key]['screens'][$keyScreen]['class'])):?>
+                                <img src="<?php echo $this->geticon($this->list[$key]['screens'][$keyScreen]['class'],$this->path);?>" />
+                            <?php endif;?>
+                            <?php echo $this->nogettext($this->list[$key]['screens'][$keyScreen]['title'],$this->list[$key]);?>
+                        </li>
+                        <?php endforeach;?>
+                        
+                        <!-- Dialogs -->
+                        <?php if (isset($list['fields']['options']['dialogs'])):?>
+                        <?php foreach ($list['fields']['options']['dialogs'] as $keyDialog => $value):?>
+                        <li>
+                            <img src="<?php echo $this->geticon($this->list[$key]['dialogs'][$keyDialog]['class'],$this->path);?>" />
+                            <?php echo $this->nogettext($this->list[$key]['dialogs'][$keyDialog]['title'],$this->list[$key]);?>
+                        </li>
+                        
+                        <?php endforeach;?>
+                        <?php endif;?>
                         </ul>
-                        <br />
                     <?php endif;?>
                     
                     <?php break;?>
@@ -219,12 +171,9 @@
                 <?php endif;?>
                 
             <?php endforeach;?>
-            
-            </ul>
         <?php endif;?>
     <?php endforeach;?>
 <?php endforeach;?>
-</ol>
 </div>
 </body>
 </html>

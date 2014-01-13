@@ -1,7 +1,7 @@
 <?php
 class Generator_Doc_YamlImporter
 {
-    public function index($klearRaw = false)
+    public function index($klearRaw = false, $pdf = false)
     {
         if (!$klearRaw) {
             $folderKlearYaml = APPLICATION_PATH. '/configs/klear';
@@ -19,25 +19,18 @@ class Generator_Doc_YamlImporter
             $klearYaml = self::getYamlRaw('klear.yaml');
         }
         
-//         var_dump($klearYaml);
-//         exit;
-        
-        //Copia iconos, img y css
-        $fileIcon = self::full_copy(dirname(__FILE__).'/copy', $folderKlearYaml . '/doc');
-        
-        //Copia el logo del proyecto al klear y RETURN Nombre del logo
-        $fileLogo = self::cpLogo($klearYaml,$folderDocPath);
-        
         //Coger todos los list de los yaml klear.yaml
-        $list = self::projectYaml($klearYaml,$klearRaw);
+        $lists = self::projectYaml($klearYaml,$klearRaw);
         
         //Coger todas las entidades de los list
-        $entities = self::getEntitiesYaml($list, $folderKlearYaml, $klearRaw);
+        $entities = self::getEntitiesYaml($lists, $folderKlearYaml, $klearRaw);
+        
+        $fileLogo = self::cpLogo($klearYaml);
         
         $view = new Zend_View();
         $view->assign('klear', $klearYaml);
         $view->assign('logo',$fileLogo);
-        $view->assign('list',$list);
+        $view->assign('list',$lists);
         $view->assign('entity',$entities);
         $view->assign('path',$folderKlearYaml);
         $view->setBasePath(dirname(__FILE__) . '/views');
@@ -46,9 +39,6 @@ class Generator_Doc_YamlImporter
         fputs($html, $view->render('tutorial.phtml'));
         fclose($html);
         
-//         var_dump($klearYaml['main']['sitename']);
-        
-//         exit;
         return $klearYaml['main'];
     }
     
@@ -98,28 +88,17 @@ class Generator_Doc_YamlImporter
         return $yaml->toArray();
     }
     
-    protected function cpLogo($klearYaml,$folderDocPath) {
+    protected function cpLogo($klearYaml) {
         if ($klearYaml['main']['logo'] != 'klear/images/klear.png') {
             
             $publicImg = $klearYaml['main']['logo'];
             
-            $pieces = explode("/", $publicImg);
+            $logo = APPLICATION_PATH.'/../public/'.$publicImg;
             
-            if (count($pieces) > 1) {
-                $nameFile = end($pieces);
-            } else {
-                $nameFile = $publicImg;
-            }
-            if (file_exists(APPLICATION_PATH.'/../public/'.$publicImg)) {
+            if (file_exists($logo)) {
                 
-                if (!file_exists($folderDocPath.'/img/'.$nameFile)) {
-                    $copy = copy(APPLICATION_PATH.'/../public/'.$publicImg,$folderDocPath.'/img/'.$nameFile);
+                return self::base64($logo);
                 
-                    if (!$copy) {
-                        echo 'Falta permisos en la carpeta doc/img';
-                        exit;
-                    }
-                }
             }
             
             return $nameFile;
@@ -127,21 +106,19 @@ class Generator_Doc_YamlImporter
         } else {
             
             $logoSource = dirname(__FILE__).'/logo/klear.png';
-            $logoDestiny = $folderDocPath.'/img/klear.png';
             
-            if (!file_exists($logoDestiny) && file_exists($logoSource)) {
-                $copyLogo = copy($logoSource,$logoDestiny);
-                
-                if (!$copyLogo) {
-                    echo 'No se pudo copiar el logo';
-                    exit;
-                }
-            }
-            
-            return 'klear.png';
+            return self::base64($logoSource);
         }
         
         return false;
+    }
+    
+    protected function base64($path) {
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    
+        return $base64;
     }
     
     protected function full_copy( $source, $target ) {
@@ -186,41 +163,60 @@ class Generator_Doc_YamlImporter
         return $entity;
     }
     
-    protected function getEntitiesYaml($list,$folderKlear,$klearRaw) {
+    protected function getEntitiesYaml($lists,$folderKlear,$klearRaw) {
         
-        $directory = opendir($folderKlear); //ruta actual
         $model = array();
         
-        while ($file = readdir($directory)) {
+        foreach($lists as $key => $list) {
+            $principal = @$list['main']['defaultScreen'];
             
-            $pos = strpos($file,'List.yaml');
-            
-            if (!is_dir($folderKlear.'/'.$file) && is_int($pos)) {
-                
-                $pieces = explode(".", $file);
-                
-                $yaml = $pieces[0];
-                
+            if (isset($principal) && ($list['screens'][$principal]["controller"] != 'dashboard')) {
+                $yamlModel = $list['screens'][$principal]["modelFile"];
+    
                 if (!$klearRaw) {
-                    $array = self::getYaml($file);
+                    $model[$key] = self::getYaml('/model/'.$yamlModel.'.yaml');
                 } else {
-                    $array = self::getYamlRaw($file);
-                }
-                
-                $principal = $array['main']['defaultScreen'];
-                
-                if ($array['screens'][$principal]['controller'] == 'list') {
-                    $yamlModel = $array['screens'][$principal]["modelFile"];
-                    
-                    if (!$klearRaw) {
-                        $model[$yaml] = self::getYaml('/model/'.$yamlModel.'.yaml');
-                    } else {
-                        $model[$yaml] = self::getYamlRaw('/model/'.$yamlModel.'.yaml');
-                    }
+                    $model[$key] = self::getYamlRaw('/model/'.$yamlModel.'.yaml');
                 }
             }
         }
         
         return $model;
+        
+        
+//         $directory = opendir($folderKlear); //ruta actual
+//         $model = array();
+        
+//         while ($file = readdir($directory)) {
+            
+//             $pos = strpos($file,'List.yaml');
+            
+//             if (!is_dir($folderKlear.'/'.$file) && is_int($pos)) {
+                
+//                 $pieces = explode(".", $file);
+                
+//                 $yaml = $pieces[0];
+                
+//                 if (!$klearRaw) {
+//                     $array = self::getYaml($file);
+//                 } else {
+//                     $array = self::getYamlRaw($file);
+//                 }
+                
+//                 $principal = $array['main']['defaultScreen'];
+                
+//                 if ($array['screens'][$principal]['controller'] == 'list') {
+//                     $yamlModel = $array['screens'][$principal]["modelFile"];
+                    
+//                     if (!$klearRaw) {
+//                         $model[$yaml] = self::getYaml('/model/'.$yamlModel.'.yaml');
+//                     } else {
+//                         $model[$yaml] = self::getYamlRaw('/model/'.$yamlModel.'.yaml');
+//                     }
+//                 }
+//             }
+//         }
+        
+//         return $model;
     }
 }

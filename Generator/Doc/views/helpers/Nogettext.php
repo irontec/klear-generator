@@ -5,6 +5,10 @@ class Zend_View_Helper_Nogettext extends Zend_View_Helper_Abstract
     {
         if (!is_array($text)) {
             
+            if (!isset($text)) {
+                return '';
+            }
+            
             $string = self::gettextCheck($text);
             
             return self::detectParent($string,$list);
@@ -115,25 +119,37 @@ class Zend_View_Helper_Nogettext extends Zend_View_Helper_Abstract
     
         }
 
-        if (class_exists('Iron_Translate_Adapter_GettextKlear')) {
-            $translator = new Iron_Translate_Adapter_GettextKlear;
+//         if (class_exists('Iron_Translate_Adapter_GettextKlear')) {
+//             $translator = new Iron_Translate_Adapter_GettextKlear;
             
-        } else {
-            echo 'No se encontró la clase Iron_Translate_Adapter_GettextKlear';
-        }
+//         } else {
+//             echo 'No se encontró la clase Iron_Translate_Adapter_GettextKlear';
+//         }
+        $locale = self::langDefault();
         
+        $translate = new Zend_Translate(
+                array(
+                        'adapter'=>'gettext',
+                        'content' => APPLICATION_PATH.'/languages/'.$locale.'/'.$locale.'.mo',
+                        'locale' => $locale,
+                        'disableNotices' => true,
+                        'clear' =>true,
+                        'reload'=>true,
+                )
+        );
+
         switch($curFunction) {
             case "_":
                 if (sizeof($arguments) > 1) {
-                    return call_user_func_array("sprintf", $arguments);
+                    return @sprintf($translate->getAdapter()->_($arguments[0]), $translate->getAdapter()->_($arguments[1]));
+//                     return call_user_func_array("sprintf", $arguments);
                 } else {
                     return $arguments[0];
                 }
                 break;
     
             case "ngettext":
-                
-                return call_user_func_array(array($translator, 'plural'), $arguments);
+                return call_user_func_array(array($translate, 'plural'), $arguments);
                 break;
         }
     
@@ -164,4 +180,13 @@ class Zend_View_Helper_Nogettext extends Zend_View_Helper_Abstract
         
         return $string;
     }
+    
+    protected function langDefault() {
+        $klearYaml = Generator_Doc_YamlImporter::getYaml('klear.yaml');
+        
+        $lang = $klearYaml['main']['lang'];
+        
+        return $klearYaml['main']['langs'][$lang]['locale'];
+    }
+    
 }
