@@ -87,7 +87,13 @@ try {
         throw new Exception("Specified Database type is not supported\n");
     }
 
-    $path = realpath(APPLICATION_PATH . '/../library') . DIRECTORY_SEPARATOR;
+    //Si existe includePaths.modelsMappersLibrary en application.ini, generamos los models y mappers en ese path. Sino, en library por defecto
+    $includePaths = $application->getOption('includePaths');
+    if (array_key_exists('modelsMappersLibrary', $includePaths)) {
+        $path = realpath($includePaths['modelsMappersLibrary']) . DIRECTORY_SEPARATOR;
+    } else {
+        $path = realpath(APPLICATION_PATH . '/../library') . DIRECTORY_SEPARATOR;
+    }
 
     $folderList = array(
             'Mapper',
