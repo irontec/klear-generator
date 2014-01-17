@@ -204,9 +204,6 @@ abstract class MapperAbstract
      */
     public function loadRelated($type, $name, $model, $conditions = null, $orderBy = null)
     {
-        // Create a Zend_Db_Table_Row from the data in $model
-        $row = $this->getDbTable()->createRow($this->toArray($model));
-
         $parents = $model->getParentList();
         $dependents = $model->getDependentList();
 
@@ -356,9 +353,9 @@ abstract class MapperAbstract
 
                         $fieldName = $reference["columns"][$pos];
 
-                        if (isset($row->$fieldName)) {
+                        if (isset($model->$fieldName)) {
 
-                            $where[$val] =  $row->$fieldName;
+                            $where[$val] =  $model->$fieldName;
                         }
                     }
 
@@ -374,9 +371,9 @@ abstract class MapperAbstract
 
                         $fieldName = $reference["refColumns"][$pos];
 
-                        if (isset($row->$fieldName)) {
+                        if (isset($model->$fieldName)) {
 
-                            $where[$val] = $row->$fieldName;
+                            $where[$val] = $model->$fieldName;
                         }
                     }
 
