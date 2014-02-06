@@ -8,8 +8,8 @@ class Generator_Assets_CountryImporter
      * First we download from ISO the list of coutnries (so we get rid of Canary Islands and the other "Exceptional Reservations" 
      * http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
      */
-    const ISO_URL = 'http://www.iso.org/iso/home/standards/country_codes/country_names_and_code_elements_txt.htm';
-    
+//     const ISO_URL = 'http://www.iso.org/iso/home/standards/country_codes/country_names_and_code_elements_txt.htm';
+    const ISO_URL = 'http://www.iso.org/iso/home/standards/country_codes/country_names_and_code_elements_txt-temp.htm';
     protected $_countries = array();
     
     /**
