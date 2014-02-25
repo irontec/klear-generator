@@ -33,6 +33,9 @@ ngettext('Province', 'Provinces', 1);
 ngettext('City', 'Cities', 1);
 ngettext('State', 'States', 1);
 ngettext('Country', 'Countries', 1);
+ngettext('Account', 'Accounts', 1);
+
+ngettext('Role', 'Roles', 1);
 
 /*
  * Ficheros
@@ -125,12 +128,19 @@ _('On');
 _('Unasigned');
 ngettext('Error', 'Errors', 1);
 _('Success');
+_('Fail');
 _('OK');
+_('Open');
+_('Close');
+_('Allow');
+_('Deny');
 
 ngettext('Public', 'Publics', 1);
 ngettext('Private', 'Privates', 1);
 ngettext('Visibility', 'Visibilities', 1);
 
+_('Available');
+_('Unavailable');
 
 /*
  * YAML
@@ -140,13 +150,18 @@ ngettext('Download', 'Downloads', 1);
 ngettext('Download file', 'Download files', 1);
 _('List of %s');
 _('Edit %s');
+_('List of %s %2s');
+_('Edit %s');
+_('Edit %s %2s');
 _('Add %s');
 _('Delete %s');
 ngettext('Do you want to delete this %s?', 'Do you want to delete these %s?', 1);
 ngettext('Option', 'Options', 1);
 ngettext('Setting', 'Settings', 1);
+ngettext('Permission', 'Permissions', 1);
 _('Main management');
 
+_('Help');
 
 ngettext('Test', 'Tests', 1);
 
@@ -160,3 +175,7 @@ _('src-line');
 _('Access denied');
 _('Insert your username');
 _('Insert your username or email address');
+_('Dashboard');
+_('Cancel');
+_('Accept');
+ngettext('Device', 'Devices', 1);
