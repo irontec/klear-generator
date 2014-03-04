@@ -13,6 +13,7 @@ try {
     $opts = new Generator_Getopt(
         array(
             'do-not-generate-links|L' => 'Generate links for each screen/dialog',
+            'do-not-generate-klear|K' => 'Generate klear yaml configuration directory',
             'namespace|n-s' => 'Application namespace if none set the appnamespace is used'
         )
     );
@@ -23,6 +24,11 @@ try {
     $generateLinks = true;
     if ($opts->getOption('do-not-generate-links')) {
         $generateLinks = false;
+    }
+
+    $generateKlear = true;
+    if ($opts->getOption('do-not-generate-klear')) {
+        $generateKlear = false;
     }
 
     $applicationIni = APPLICATION_PATH . '/configs/application.ini';
@@ -43,9 +49,11 @@ try {
     }
 
     // Sistema actual en uso, no sobreescribe ficheros existentes
-    $klearDir = APPLICATION_PATH . '/configs/klear';
-    $yamlFactory = new Generator_Yaml_Factory($klearDir, $namespace);
-    $yamlFactory->createAllFiles($generateLinks);
+    if ($generateKlear === true) {
+        $klearDir = APPLICATION_PATH . '/configs/klear';
+        $yamlFactory = new Generator_Yaml_Factory($klearDir, $namespace);
+        $yamlFactory->createAllFiles($generateLinks);
+    }
 
     // Sistema base en raw, siempre se sobreescribe
     $klearDirRaw = APPLICATION_PATH . '/configs/klearRaw';
@@ -56,13 +64,13 @@ try {
     $langs = new Generator_Languages_Config();
     $langs->createAllFiles();
 
-
-
     //Guardamos la revisión del svn actual
-
     $svnData = '[' . date('r') . ']' . ' revision: ' . $svnRevision;
-    file_put_contents($klearDir . '/generator.log', $svnData, FILE_APPEND);
+    if ($generateKlear === true) {
+        file_put_contents($klearDir . '/generator.log', $svnData, FILE_APPEND);
+    }
     file_put_contents($klearDirRaw . '/generator.log', $svnData, FILE_APPEND);
+
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";
     echo $e->getMessage() . "\n";
