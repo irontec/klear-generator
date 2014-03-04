@@ -383,8 +383,8 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     'external' => true,
                     'props' => array(
                         'width' => 150,
-                        'height' => 150),
-                    'crop' => true,
+                        'height' => 150,
+                        'crop' => 'false'),
                     'onNull' => 'hide'
                 ),
                 'previewList' => array(
@@ -395,8 +395,8 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     'external' => true,
                     'props' => array(
                         'width' => 30,
-                        'height' => 30),
-                    'crop' => true,
+                        'height' => 30,
+                        'crop' => 'false'),
                     'onNull' => 'hide'
                 )
             )
