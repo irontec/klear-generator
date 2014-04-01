@@ -78,7 +78,6 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
                 'dialogs' => array(
                     $delDialogName => 'true',
                 )
-        )
             ),
         );
 
