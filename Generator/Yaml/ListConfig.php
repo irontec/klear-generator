@@ -111,7 +111,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'label' => 'true',
             'multiInstance' => 'true',
             'title' => $addTitles,
-            'shortcut' => 'N'
+            'shortcutOption' => 'N'
         );
 
         $delDialog = array(
