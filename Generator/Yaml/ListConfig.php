@@ -111,7 +111,8 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'class' =>  'ui-silk-add',
             'label' => 'true',
             'multiInstance' => 'true',
-            'title' => $addTitles
+            'title' => $addTitles,
+            'shortcut' => 'N'
         );
 
         $delDialog = array(
@@ -123,8 +124,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'description' => $askDeleteTitles,
             'message' => $messageDeleteTitles,
             'multiItems' => true,
-            'labelOnList' => true,
-
+            'labelOnList' => true
         );
 
 
