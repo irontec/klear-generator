@@ -155,6 +155,7 @@ _('Edit %s');
 _('Edit %s %2s');
 _('Add %s');
 _('Delete %s');
+_('%s successfully deleted.');
 ngettext('Do you want to delete this %s?', 'Do you want to delete these %s?', 1);
 ngettext('Option', 'Options', 1);
 ngettext('Setting', 'Settings', 1);

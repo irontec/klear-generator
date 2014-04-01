@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Klear-Public\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 13:06+0100\n"
-"PO-Revision-Date: 2014-02-25 13:10+0100\n"
+"POT-Creation-Date: 2014-04-01 12:35+0100\n"
+"PO-Revision-Date: 2014-04-01 12:35+0100\n"
 "Last-Translator: Lander Ontoria Gardeazabal <lander@irontec.com>\n"
 "Language-Team: Irontec-Klear <lander+klear@irontec.com>\n"
 "Language: eu_ES\n"
@@ -692,92 +692,97 @@ msgstr "%s ezabatu"
 
 #: languages/common-strings.php:158
 #, php-format
+msgid "%s successfully deleted."
+msgstr "%s ezabatu da."
+
+#: languages/common-strings.php:159
+#, php-format
 msgid "Do you want to delete this %s?"
 msgid_plural "Do you want to delete these %s?"
 msgstr[0] "%s ezabatu nahi duzu?"
 msgstr[1] "%s ezabatu nahi dituzu?"
 
-#: languages/common-strings.php:159
+#: languages/common-strings.php:160
 msgid "Option"
 msgid_plural "Options"
 msgstr[0] "Aukera"
 msgstr[1] "Aukerak"
 
-#: languages/common-strings.php:160
+#: languages/common-strings.php:161
 msgid "Setting"
 msgid_plural "Settings"
 msgstr[0] "Konfigurazioa"
 msgstr[1] "Konfigurazioak"
 
-#: languages/common-strings.php:161
+#: languages/common-strings.php:162
 msgid "Permission"
 msgid_plural "Permissions"
 msgstr[0] "Baimena"
 msgstr[1] "Baimenak"
 
-#: languages/common-strings.php:162
+#: languages/common-strings.php:163
 msgid "Main management"
 msgstr "Kudeaketa orokorra"
 
-#: languages/common-strings.php:164
+#: languages/common-strings.php:165
 msgid "Help"
 msgstr "Laguntza"
 
-#: languages/common-strings.php:166
+#: languages/common-strings.php:167
 msgid "Test"
 msgid_plural "Tests"
 msgstr[0] "Test"
 msgstr[1] "Testak"
 
-#: languages/common-strings.php:171 doc/elementindex_default.html:536
+#: languages/common-strings.php:172 doc/elementindex_default.html:536
 #: doc/elementindex.html:264
 msgid "field"
 msgid_plural "fields"
 msgstr[0] "Eremua"
 msgstr[1] "Eremuak"
 
-#: languages/common-strings.php:172
+#: languages/common-strings.php:173
 msgid "note"
 msgid_plural "notes"
 msgstr[0] "Oharra"
 msgstr[1] "Oharrak"
 
-#: languages/common-strings.php:173
+#: languages/common-strings.php:174
 msgid "tag"
 msgid_plural "tags"
 msgstr[0] "etiketa"
 msgstr[1] "etiketak"
 
-#: languages/common-strings.php:174
+#: languages/common-strings.php:175
 #: doc/__filesource/fsource_default__IncludeAbstract.php.html:18
 msgid "src-line"
 msgstr "src-line"
 
-#: languages/common-strings.php:175 Generator/Yaml/klear/klear.yaml:22
+#: languages/common-strings.php:176 Generator/Yaml/klear/klear.yaml:22
 msgid "Access denied"
 msgstr "Sarbide ukatua"
 
-#: languages/common-strings.php:176 Generator/Yaml/klear/klear.yaml:23
+#: languages/common-strings.php:177 Generator/Yaml/klear/klear.yaml:23
 msgid "Insert your username"
 msgstr "Zure erabiltzaile izena sartu"
 
-#: languages/common-strings.php:177
+#: languages/common-strings.php:178
 msgid "Insert your username or email address"
 msgstr "Zure erabiltzaile izena edo emaila sartu"
 
-#: languages/common-strings.php:178
+#: languages/common-strings.php:179
 msgid "Dashboard"
 msgstr "Mahaigaina"
 
-#: languages/common-strings.php:179
+#: languages/common-strings.php:180
 msgid "Cancel"
 msgstr "Ezeztatu"
 
-#: languages/common-strings.php:180
+#: languages/common-strings.php:181
 msgid "Accept"
 msgstr "Baieztatu"
 
-#: languages/common-strings.php:181
+#: languages/common-strings.php:182
 msgid "Device"
 msgid_plural "Devices"
 msgstr[0] "Gailua"
