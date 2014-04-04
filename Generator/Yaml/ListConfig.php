@@ -122,7 +122,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'title' => $deleteTitles,
             'description' => $askDeleteTitles,
             'message' => $messageDeleteTitles,
-            'multiItems' => true,
+            'multiItem' => true,
             'labelOnList' => true
         );
 
