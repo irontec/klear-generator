@@ -234,10 +234,6 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             'data' => 'mapper'
         );
 
-        if ($fieldDesc->isNullable()) {
-            $data["'null'"] = '_("Unasigned")';
-        }
-
         $relatedTableFields = Generator_Db::describeTable($fieldDesc->getRelatedTable());
         foreach ($relatedTableFields as $field) {
             if ($field->isPrimaryKey()) {
@@ -266,6 +262,10 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
             ),
             'order' => $orderField
         );
+
+        if ($fieldDesc->isNullable()) {
+            $data['config']["'null'"] = '_("Unasigned")';
+        }
 
         return $data;
     }
