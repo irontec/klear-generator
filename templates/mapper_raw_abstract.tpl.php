@@ -570,9 +570,9 @@ abstract class MapperAbstract
      */
     public function fetchAllToPaginator($pageNumber = 1, $itemCountPerPage = 10)
     {
-        return $this->selectToPaginator($this->getDbTable()
-                    ->select()
-                    ->from($this->getDbTable()->getTableName()), $pageNumber, $itemCountPerPage);
+        $dbTable = $this->getDbTable();
+        $select = $dbTable()->select()->from($dbTable()->getTableName());
+        return $this->selectToPaginator($select, $pageNumber, $itemCountPerPage);
     }
 
     /**
@@ -582,36 +582,7 @@ abstract class MapperAbstract
      */
     public function fetchAllToArray()
     {
-        $resultSet = $this->getDbTable()->fetchAll()->toArray();
-        return $resultSet;
-    }
-
-    /**
-     * Fetches all rows optionally filtered by where, order, limit, and offset
-     *
-     * @param string $where Where clause
-     * @param string $order Fields to order by
-     * @param int $limit Number to limit
-     * @param int $offset Initial offset for query
-     * @return array All rows with the given parameters as objects
-     */
-    public function fetchList($where = null, $order = null, $limit = null, $offset = null)
-    {
-        $resultSet = $this->getDbTable()
-                          ->fetchAll(
-                                $this->getDbTable()
-                                     ->fetchList($where, $order, $limit, $offset));
-        $entries   = array();
-        foreach ($resultSet as $row) {
-            $entries[] = $row;
-        }
-
-        if ($limit == 1) {
-
-            return array_shift($entries);
-        }
-
-        return $entries;
+        return $this->getDbTable()->fetchAll()->toArray();
     }
 
     /**
@@ -627,6 +598,32 @@ abstract class MapperAbstract
     }
 
     /**
+     * Fetches all rows optionally filtered by where, order, limit, and offset
+     *
+     * @param string $where Where clause
+     * @param string $order Fields to order by
+     * @param int $limit Number to limit
+     * @param int $offset Initial offset for query
+     * @return array All rows with the given parameters as objects
+     */
+    public function fetchList($where = null, $order = null, $limit = null, $offset = null)
+    {
+        $resultSet  = $this->_fetchListResultSet($where, $order, $limit, $offset);
+        
+        $entries   = array();
+        foreach ($resultSet as $row) {
+            $entries[] = $row;
+        }
+
+        if ($limit == 1) {
+
+            return array_shift($entries);
+        }
+
+        return $entries;
+    }
+
+    /**
      * Fetches all rows
      * optionally filtered by where, order, limit and offset
      * returns a 3d-array of the result
@@ -636,10 +633,20 @@ abstract class MapperAbstract
     public function fetchListToArray($where = null, $order = null,
         $limit = null, $offset = null
     ) {
-        return $this->getDbTable()
-                    ->fetchAll($this->getDbTable()
-                                    ->fetchList($where, $order, $limit, $offset))
-                    ->toArray();
+        $resultSet = $this->_fetchListResultSet($where, $order, $limit, $offset);
+        return $resultSet->toArray();
+    }
+
+    /**
+     * Helper method that return the resultSet filtered by where, order, limit and offset
+     * @return \Zend_Db_ResultSet_Abstract
+     *
+     */
+    protected function _fetchListResultSet($where = null, $order = null, 
+        $limit = null, $offset = null
+    ) {
+        $list = $this->getDbTable()->fetchList($where, $order, $limit, $offset);
+        return $this->getDbTable()->fetchAll($list);
     }
 
     /**
@@ -656,7 +663,7 @@ abstract class MapperAbstract
                  ->fetchList($where, $order, $limit, $offset)
         );
     }
-
+    
     /**
      * Finds rows where $field equals $value.
      *

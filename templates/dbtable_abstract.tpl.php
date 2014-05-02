@@ -105,20 +105,8 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
 
     public function _getCountQuery($where = null)
     {
-        $query = $this->select()->from($this->_name, 'count(*) AS all_count');
-
-        if (is_array($where)) {
-
-            list($where, $bind) = $where;
-
-            $query->where($where);
-            $query->bind($bind);
-
-        } else if (!empty($where)) {
-
-            $query->where($where);
-        }
-        return $query;
+        $select = $this->select()->from($this->_name, 'count(*) AS all_count');
+        return $this->_applyWhere($select, $where);
     }
 
     /**
@@ -156,11 +144,18 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
     public function fetchList($where = null, $order = null, $limit = null,
         $offset = null)
     {
-        $select = $this->select()
-                            ->order($order)
-                            ->limit($limit, $offset);
+        $select = $this->select()->order($order)->limit($limit, $offset);
+        return $this->_applyWhere($select, $where);
+    }
 
-        if (is_array($where)) {
+    /**
+     * Applies where part to a Zend_Db_Select object
+     * @param \Zend_Db_Select $query
+     * @param type $where
+     */
+    protected function _applyWhere(\Zend_Db_Select $select, $where)
+    {
+        if (is_array($where) && sizeof($where)) {
             if ($this->_isAssociative($where)) {
                 foreach ($where as $cond => $value) {
                     $select->where($cond, $value);
@@ -175,7 +170,6 @@ abstract class TableAbstract extends \Zend_Db_Table_Abstract
 
             $select->where($where);
         }
-
         return $select;
     }
 
