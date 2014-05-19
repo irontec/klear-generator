@@ -62,7 +62,7 @@ foreach ($fields as $field) {
 foreach ($fsoObjects as $item) :
 ?>
     /*
-     * @var \KlearMatrix_Model_Fso
+     * @var \Iron_Model_Fso
      */
     protected $_<?php echo lcfirst($item); ?>Fso;
 <?php
@@ -287,7 +287,7 @@ if (!empty($vars)) {
 <?php
 foreach ($fsoObjects as $fsoObject):
 ?>
-        $this->_<?php echo lcfirst($fsoObject); ?>Fso = new \KlearMatrix_Model_Fso($this, $this->get<?php echo ucfirst($fsoObject); ?>Specs());
+        $this->_<?php echo lcfirst($fsoObject); ?>Fso = new \Iron_Model_Fso($this, $this->get<?php echo ucfirst($fsoObject); ?>Specs());
 <?php
 endforeach;
 ?>
