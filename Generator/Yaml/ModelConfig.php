@@ -264,9 +264,9 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         );
 
         if ($fieldDesc->isNullable()) {
-            $data['config']["'null'"] = '_("Unasigned")';
+            $data["'null'"] = '_("Unasigned")';
         }
-
+        
         return $data;
     }
 
