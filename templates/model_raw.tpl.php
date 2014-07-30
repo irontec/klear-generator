@@ -192,7 +192,7 @@ if (!empty($vars)) {
 <?php foreach ($this->getForeignKeysInfo() as $key): ?>
             '<?=$this->_getCapital($key['key_name'])?>'=> array(
                     'property' => '<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>',
-                    'table_name' => '<?=$this->_getClassName($key['foreign_tbl_name'])?>',
+                    'table_name' => '<?=$key['foreign_tbl_name']?>',
                 ),
 <?php endforeach;?>
         ));
@@ -227,7 +227,7 @@ if (!empty($vars)) {
             ?>
             '<?=$this->_getCapital($key['key_name'])?>' => array(
                     'property' => '<?=$this->_getRelationName($key, 'dependent')?>',
-                    'table_name' => '<?=$this->_getClassName($key['foreign_tbl_name'])?>',
+                    'table_name' => '<?=$key['foreign_tbl_name']?>',
                 ),
 <?php endforeach;?>
         ));
