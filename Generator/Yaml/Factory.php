@@ -128,7 +128,7 @@ class Generator_Yaml_Factory
 
     protected function _insertLinks($contents)
     {
-        return preg_replace('/\n\s{4}(\S+_(screen)|(dialog)):/', '$0 &$1Link', $contents);
+        return preg_replace('/\n\s{4}(\S+_(screen|dialog)):/', '$0 &$1Link', $contents);
     }
 
     public function createMainConfigFile()
