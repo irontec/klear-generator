@@ -173,7 +173,16 @@ class Generator_Yaml_Factory
         }
 
         $dbAdapter = Zend_Db_Table::getDefaultAdapter();
-        $this->_tables = $dbAdapter->listTables();
+        $tables = $dbAdapter->listTables();
+
+        foreach ($tables as $table) {
+
+            $tableComment = Generator_Db::tableComment($table);
+            if (!stristr($tableComment, '[ignore]')) {
+                $this->_tables[] = $table;
+            }
+        }
+
         return $this->_tables;
     }
 
