@@ -27,21 +27,40 @@ class Generator_Getopt extends Zend_Console_Getopt
             throw new Exception('klear.ini not found, should exist on application (config)  dir');
         }
     }
-    
+
     public function getEnviroment()
     {
-        
+
         $argumentEnv = $this->getOption('enviroment');
-        $availableEnvs = array('testing','production','development');
-        
-        if (in_array($argumentEnv, $availableEnvs)) {
-            return $argumentEnv;   
+        $availableEnvs = $this->_getEnviroments();
+
+        if (!in_array($argumentEnv, $availableEnvs)) {
+            if (!empty($argumentEnv)) {
+
+                throw new Exception(
+                    "Unexpected environment " . $argumentEnv. ". Available environments are: " .
+                    var_export($availableEnvs, true)
+                );
+            }
+
+            // As defined @ bootstrap.php
+            return APPLICATION_ENV;
         }
-        
-        
-        // As defined @ bootstrap.php
-        return APPLICATION_ENV;
-        
+
+        return $argumentEnv;
     }
-    
+
+    protected function _getEnviroments()
+    {
+        $enviroments = array();
+        $enviromentRawData = array_keys(parse_ini_file(APPLICATION_PATH. '/configs/application.ini', true));
+
+        foreach ($enviromentRawData as $enviromentAndInheritance) {
+            $item = explode(":", $enviromentAndInheritance);
+            $enviroments[] = trim($item[0]);
+        }
+
+        return $enviroments;
+    }
+
 }

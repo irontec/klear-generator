@@ -2,29 +2,27 @@
 abstract class Generator_Yaml_AbstractConfig
 {
     const DEFAULT_REGISTRY_KEY = 'Klear_Generator_Translate';
-    
+
     protected $_data;
-    
+
     protected $_translate;
-    
-    protected $_enabledLanguages;
-    
+
+    protected $_enabledLanguages = array();
+
+    /**
+     * @var array
+     */
+    protected $_environments;
+
     public function getConfig()
     {
         $data = $this->_data;
-
         if (isset($data['production'])) {
-            $data['testing'] = array(
-                '_extends' => 'production'
-            );
-
-            $data['staging'] = array(
-                    '_extends' => 'production'
-            );
-            
-            $data['development'] = array(
-                '_extends' => 'production'
-            );
+            foreach ($this->_getEnviroments() as $enviroment => $parentEnvironment) {
+                $data[$enviroment] = array(
+                    '_extends' => $parentEnvironment
+                );
+            }
         }
 
         if (is_null($data)) {
@@ -33,7 +31,22 @@ abstract class Generator_Yaml_AbstractConfig
 
         return new Zend_Config($data);
     }
-    
+
+    protected function _getEnviroments()
+    {
+        $enviroments = array();
+        $enviromentRawData = array_keys(parse_ini_file(APPLICATION_PATH. '/configs/application.ini', true));
+
+        foreach ($enviromentRawData as $enviromentAndInheritance) {
+            $item = explode(":", $enviromentAndInheritance);
+            if (count($item) > 1) {
+                $enviroments[trim($item[0])] = trim($item[1]);
+            }
+        }
+
+        return $enviroments;
+    }
+
     protected function _loadTranslator()
     {
         if (!Zend_Registry::isRegistered(self::DEFAULT_REGISTRY_KEY)) {
@@ -60,7 +73,7 @@ abstract class Generator_Yaml_AbstractConfig
                             'locale' => $languageData['locale'],
                             'content' => $file
                     ));
-                } 
+                }
             }
             Zend_Registry::set(self::DEFAULT_REGISTRY_KEY, $this->_translate);
         } else {
