@@ -36,7 +36,7 @@ class Generator_Yaml_Factory
     protected function _getLanguages()
     {
         $languages = new Generator_Languages_Config();
-        $this->_enabledLanguages = $languages->getEnabledLanguages(); 
+        $this->_enabledLanguages = $languages->getEnabledLanguages();
     }
 
     protected function _createDirStructure()
@@ -89,8 +89,8 @@ class Generator_Yaml_Factory
 
     public function createModelFiles()
     {
-        $tables = $this->_getTables();
-        foreach ($tables as $table) {
+        $entities = $this->_getEntities();
+        foreach ($entities as $table) {
             $modelFile = $this->_klearDirs['model'] . '/' . ucfirst(Generator_StringUtils::toCamelCase($table)) . '.yaml';
             if (!file_exists($modelFile) || $this->_override) {
                 try {
