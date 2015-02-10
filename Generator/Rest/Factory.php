@@ -195,6 +195,31 @@ class Generator_Rest_Factory
             }
         }
 
+        $apidocController = APPLICATION_PATH . '/controllers/ApidocController.php';
+
+        if (!file_exists($apidocController)) {
+            try {
+
+                $data = $this->getParsedTplContents(
+                    'ApidocController.tpl.php',
+                    array(
+                        'restNamespace' => $this->_restNamespace
+                    )
+                );
+
+                if (!file_put_contents($apidocController, $data)) {
+                    die("could not write file $apidocController\n");
+                } else {
+                    echo " * Creado el contrller ApidocController.php. \n";
+                }
+
+            } catch (Exception $e) {
+
+                echo 'Error: ' . $e->getMessage() . "\n";
+
+            }
+        }
+
     }
 
     protected function _getEntities()
