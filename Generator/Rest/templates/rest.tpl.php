@@ -12,38 +12,26 @@ $fsoFields = array();
 
 echo "/**\n";
 echo " * $tableName\n";
-echo " *\n";
 echo " */\n\n";
 ?>
 use <?=$namespace?>Model as Models;
 use <?=$namespace?>Mapper\Sql as Mappers;
 
-class <?=$apiNamespace?>_<?=$tableName?>Controller extends Zend_Rest_Controller
+class <?=$apiNamespace?>_<?=$tableName?>Controller extends Iron_Controller_Rest_BaseController
 {
 
     public function init()
     {
-
-    }
-
-    public function headAction()
-    {
-        $this->_response->setHttpResponseCode(200);
+        parent::init();
     }
 
     public function optionsAction()
     {
 
         $options = array(
-            'GET' => array(
-
-            ),
-            'POST' => array(
-
-            ),
-            'PUT' => array(
-
-            ),
+            'GET' => array(),
+            'POST' => array(),
+            'PUT' => array(),
             'DELETE' => array(
                 'description' => '',
                 'params' => array(
@@ -55,23 +43,32 @@ class <?=$apiNamespace?>_<?=$tableName?>Controller extends Zend_Rest_Controller
             )
         );
 
-        $this->_response->setHttpResponseCode(200);
-        $this->_helper->json($options);
+        $this->status->setCode(200);
+        $this->view->options = options;
 
     }
 
     public function indexAction()
     {
 
+        $mapper = new Mappers\<?=$tableName?>();
+        $items = $mapper->fetchAllToArray();
+
+        $this->status->setCode(200);
+
+        $this->view->message = 'Ok';
+        $this->view->total = sizeof($items);
+        $this->view-><?=strtolower($tableName)?> = $items;
+
     }
 
     /**
-     * @ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
-     * @ApiMethod(type="get")
-     * @ApiRoute(name="/<?=strtolower($apiNamespace)?>/<?=strtolower($tableName)?>/")
-<?php echo '     * @ApiParams(name="' . $primaryKey->getName() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', type="' . $primaryKey->getType() . '", sample="", description="")' . "\n";?>
-     * @ApiReturnHeaders(sample="HTTP 200 OK")
-     * @ApiReturn(type="object", sample="{
+     * [disabled]ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
+     * [disabled]ApiMethod(type="get")
+     * [disabled]ApiRoute(name="/<?=strtolower($apiNamespace)?>/<?=strtolower($tableName)?>/")
+<?php echo '     * [disabled]ApiParams(name="' . $primaryKey->getName() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', type="' . $primaryKey->getType() . '", sample="", description="")' . "\n";?>
+     * [disabled]ApiReturnHeaders(sample="HTTP 200 OK")
+     * [disabled]ApiReturn(type="object", sample="{
      *     '<?=strtolower($tableName)?>': [
      *         {
 <?php
@@ -94,41 +91,37 @@ echo "     *            '" . $field->getName() ."': '', \n";
             $mapper = new Mappers\<?=$tableName?>();
             $item = $mapper->find($primaryKey);
 
-            $result = array(
-                'message' => 'Ok'
-            );
+            $this->view->message = 'Ok';
 
             if (empty($item)) {
-                $result['<?=strtolower($tableName)?>'] = array();
+                $this->view-><?=strtolower($tableName)?> = array();
             } else {
-                $result['<?=strtolower($tableName)?>'] = $item->toArray();
+                $this->view-><?=strtolower($tableName)?> = $item->toArray();
             }
 
-            $this->_response->setHttpResponseCode(200);
-            $this->_helper->json($result);
+            $this->status->setCode(200);
 
         } else {
 
-            $this->_response->setHttpResponseCode(204);
-            $this->_helper->json(array());
+            $this->status->setCode(204);
 
         }
 
     }
 
     /**
-     * @ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
-     * @ApiMethod(type="post")
-     * @ApiRoute(name="/<?=strtolower($apiNamespace)?>/<?=strtolower($tableName)?>/")
+     * [disabled]ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
+     * [disabled]ApiMethod(type="post")
+     * [disabled]ApiRoute(name="/<?=strtolower($apiNamespace)?>/<?=strtolower($tableName)?>/")
 <?php
 foreach ($fields as $field) {
     if ($field->getName() != $primaryKey->getName()) {
-        echo '     * @ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="")' . "\n";
+        echo '     * [disabled]ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="")' . "\n";
     }
 }
 ?>
-     * @ApiReturnHeaders(sample="HTTP 201 OK")
-     * @ApiReturn(type="object", sample="{
+     * [disabled]ApiReturnHeaders(sample="HTTP 201 OK")
+     * [disabled]ApiReturn(type="object", sample="{
      *     '<?=strtolower($tableName)?>': [
      *         {
 <?php
@@ -143,21 +136,20 @@ echo "     *            '" . $field->getName() ."': '', \n";
      */
     public function postAction()
     {
-        $this->_response->setHttpResponseCode(201);
-        $this->_helper->json(array('action' => 'post'));
+        $this->status->setCode(200);
     }
 
     /**
-     * @ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
-     * @ApiMethod(type="put")
-     * @ApiRoute(name="/<?=strtolower($apiNamespace)?>/<?=strtolower($tableName)?>/")
+     * [disabled]ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
+     * [disabled]ApiMethod(type="put")
+     * [disabled]ApiRoute(name="/<?=strtolower($apiNamespace)?>/<?=strtolower($tableName)?>/")
 <?php
 foreach ($fields as $field) {
-    echo '     * @ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="")' . "\n";
+    echo '     * [disabled]ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="")' . "\n";
 }
 ?>
-     * @ApiReturnHeaders(sample="HTTP 200 OK")
-     * @ApiReturn(type="object", sample="{
+     * [disabled]ApiReturnHeaders(sample="HTTP 200 OK")
+     * [disabled]ApiReturn(type="object", sample="{
      *     '<?=strtolower($tableName)?>': [
      *         {
 <?php
@@ -172,17 +164,16 @@ echo "     *            '" . $field->getName() ."': '', \n";
      */
     public function putAction()
     {
-        $this->_response->setHttpResponseCode(200);
-        $this->_helper->json(array('action' => 'put'));
+        $this->status->setCode(200);
     }
 
     /**
-     * @ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
-     * @ApiMethod(type="delete")
-     * @ApiRoute(name="/<?=strtolower($apiNamespace)?>/<?=strtolower($tableName)?>/")
-<?php echo '     * @ApiParams(name="' . $primaryKey->getName() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', type="' . $primaryKey->getType() . '", sample="", description="")' . "\n";?>
-     * @ApiReturnHeaders(sample="HTTP 200 OK")
-     * @ApiReturn(type="object", sample="{
+     * [disabled]ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
+     * [disabled]ApiMethod(type="delete")
+     * [disabled]ApiRoute(name="/<?=strtolower($apiNamespace)?>/<?=strtolower($tableName)?>/")
+<?php echo '     * [disabled]ApiParams(name="' . $primaryKey->getName() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', type="' . $primaryKey->getType() . '", sample="", description="")' . "\n";?>
+     * [disabled]ApiReturnHeaders(sample="HTTP 200 OK")
+     * [disabled]ApiReturn(type="object", sample="{
      *     '<?=strtolower($tableName)?>': '',
      *     'message': 'Ok'
      * }")
@@ -198,34 +189,23 @@ echo "     *            '" . $field->getName() ."': '', \n";
             $model = $mapper->find($primaryKey);
 
             if (empty($model)) {
-                $this->_response->setHttpResponseCode(400);
-                $this->_helper->json(
-                    array(
-                        'message' => '<?=$primaryKey->getName()?> not exist'
-                    )
-                );
+
+                $this->status->setCode(400);
+                $this->view->message = '<?=$primaryKey->getName()?> not exist';
+
             } else {
 
                 $model->delete();
 
-                $this->_response->setHttpResponseCode(200);
-                $this->_helper->json(
-                    array(
-                        '<?=strtolower($tableName)?>' => '',
-                        'message' => 'Ok'
-                    )
-                );
+                $this->status->setCode(200);
+                $this->view->message = 'Ok';
 
             }
 
         } else {
 
-            $this->_response->setHttpResponseCode(400);
-            $this->_helper->json(
-                array(
-                    'message' => '<?=$primaryKey->getName()?> is required'
-                )
-            );
+            $this->status->setCode(400);
+            $this->view->message = '<?=$primaryKey->getName()?> is required';
 
         }
 
