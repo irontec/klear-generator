@@ -28,23 +28,20 @@ class <?=$apiNamespace?>_<?=$tableName?>Controller extends Iron_Controller_Rest_
     public function optionsAction()
     {
 
-        $options = array(
-            'GET' => array(),
-            'POST' => array(),
-            'PUT' => array(),
-            'DELETE' => array(
-                'description' => '',
-                'params' => array(
-                    '<?=$primaryKey->getName()?>' => array(
-                        'type' => '<?=$primaryKey->getType()?>',
-                        'required' => true
-                    )
+        $this->view->GET = array();
+        $this->view->POST = array();
+        $this->view->PUT = array();
+        $this->view->DELETE = array(
+            'description' => '',
+            'params' => array(
+                '<?=$primaryKey->getName()?>' => array(
+                    'type' => '<?=$primaryKey->getType()?>',
+                    'required' => true
                 )
             )
         );
 
         $this->status->setCode(200);
-        $this->view->options = options;
 
     }
 
