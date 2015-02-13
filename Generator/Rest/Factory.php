@@ -48,9 +48,75 @@ class Generator_Rest_Factory
     public function start()
     {
         echo " * klear-rest Start.\n";
+        $this->createDepsAuth();
         $this->createFiles();
         $this->createSystemDoc();
         echo " * klear-rest Done.\n";
+    }
+
+    public function createDepsAuth()
+    {
+
+        $library = APPLICATION_PATH . '/../library/';
+        $config = APPLICATION_PATH . '/configs/';
+        $pathPlugin = $library . $this->_namespace . '/Controller/Plugin/';
+
+        if (!file_exists($pathPlugin)) {
+            if (!mkdir($pathPlugin, 0755, true)) {
+                throw new Exception(
+                    'No se puede crear el directorio: ' . $pathPlugin
+                );
+            };
+        }
+
+        $authFile = $pathPlugin . 'Auth.php';
+
+        if (!file_exists($authFile)) {
+
+            try {
+                $authData = $this->getParsedTplContents(
+                    'Auth.tpl.php',
+                    array()
+                );
+
+                if (!file_put_contents($authFile, $authData)) {
+                    die("could not write file $authFile\n");
+                } else {
+                    echo " * Creado el plugin de Auth $authFile \n";
+                    echo " * Pendiente inicializar. " . $this->_namespace . "_Controller_Plugin_Auth \n";
+                }
+
+            } catch (Exception $e) {
+
+                echo 'Error: ' . $e->getMessage() . "\n";
+
+            }
+        }
+
+        $restApliFile = $config . 'restApi.ini';
+
+        if (!file_exists($restApliFile)) {
+
+            try {
+
+                $restApiData = $this->getParsedTplContents(
+                    'restApi.tpl.ini',
+                    array()
+                );
+
+                if (!file_put_contents($restApliFile, $restApiData)) {
+                    die("could not write .ini file $restApliFile\n");
+                } else {
+                    echo " * Creado el .ini de Auth $restApliFile \n";
+                }
+
+            } catch (Exception $e) {
+
+                echo 'Error: ' . $e->getMessage() . "\n";
+
+            }
+        }
+
     }
 
     public function createFiles()
@@ -72,7 +138,8 @@ class Generator_Rest_Factory
                     );
 
                     $controllerData = $this->getParsedTplContents(
-                        'rest.tpl.php', $data
+                        'rest.tpl.php',
+                        $data
                     );
 
                     if (!file_put_contents($controllerFile, $controllerData)) {
