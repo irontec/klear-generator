@@ -447,16 +447,15 @@ foreach ($fields as $column):
     // Si se trata de un campo auxiliar de fso, no se lanzará exception on NULL
     if ($column->throwExceptionOnNull($fsoObjects)) :
 ?>
-
         if (is_null($data)) {
             throw new \InvalidArgumentException(_('Required values cannot be null'));
         }
+
 <?php
     endif;
 
     if ($multilang):
 ?>
-
         $language = $this->_getCurrentLanguage($language);
 
         $methodName = "set<?=$column->getNormalizedName('upper')?>". ucfirst(str_replace('_', '', $language));
@@ -490,11 +489,13 @@ foreach ($fields as $column):
         if ($this->_<?=$column->getNormalizedName()?> != $data) {
             $this->_logChange('<?=$column->getNormalizedName()?>');
         }
+
 <?php
     if (!empty($casting)) :
 ?>
-
-        if (!is_null($data)) {
+        if ($data instanceof \Zend_Db_Expr) {
+            $this->_<?=$column->getNormalizedName()?> = $data;
+        } else if (!is_null($data)) {
 <?php
             if ($column->isEnum()) :
 ?>
@@ -642,10 +643,20 @@ else : ?>
     {
         $fkName = '<?=$this->_getCapital($key['key_name'])?>';
 
-        if (!$avoidLoading && !$this->_isLoaded($fkName)) {
+        $usingDefaultArguments = is_null($where) && is_null($orderBy);
+        if (!$usingDefaultArguments) {
+            $this->setNotLoaded($fkName);
+        }
+
+        $dontSkipLoading = !($avoidLoading);
+        $notLoadedYet = !($this->_isLoaded($fkName));
+
+        if ($dontSkipLoading && $notLoadedYet) {
             $related = $this->getMapper()->loadRelated('parent', $fkName, $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?> = array_shift($related);
-            $this->_setLoaded($fkName);
+            if ($usingDefaultArguments) {
+                $this->_setLoaded($fkName);
+            }
         }
 
         return $this->_<?=$this->_getRelationName($key, 'parent', $foreignKeys)?>;
@@ -679,7 +690,15 @@ else : ?>
     {
         $fkName = '<?=$this->_getCapital($key['key_name'])?>';
 
-        if (!$avoidLoading && !$this->_isLoaded($fkName)) {
+        $usingDefaultArguments = is_null($where) && is_null($orderBy);
+        if (!$usingDefaultArguments) {
+            $this->setNotLoaded($fkName);
+        }
+
+        $dontSkipLoading = !($avoidLoading);
+        $notLoadedYet = !($this->_isLoaded($fkName));
+
+        if ($dontSkipLoading && $notLoadedYet) {
             $related = $this->getMapper()->loadRelated('dependent', $fkName, $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'dependent')?> = $related;
             $this->_setLoaded($fkName);
@@ -761,7 +780,15 @@ else : ?>
     {
         $fkName = '<?=$this->_getCapital($key['key_name'])?>';
 
-        if (!$avoidLoading && !$this->_isLoaded($fkName)) {
+        $usingDefaultArguments = is_null($where) && is_null($orderBy);
+        if (!$usingDefaultArguments) {
+            $this->setNotLoaded($fkName);
+        }
+
+        $dontSkipLoading = !($avoidLoading);
+        $notLoadedYet = !($this->_isLoaded($fkName));
+
+        if ($dontSkipLoading && $notLoadedYet) {
             $related = $this->getMapper()->loadRelated('dependent', $fkName, $this, $where, $orderBy);
             $this->_<?=$this->_getRelationName($key, 'dependent')?> = $related;
             $this->_setLoaded($fkName);
