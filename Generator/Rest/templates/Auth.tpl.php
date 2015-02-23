@@ -1,6 +1,6 @@
 <?="<?php\n"?>
 <?php
-$namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
+$namespace = $this->_namespace;
 ?>
 
 use <?=$namespace?>Model as Models;

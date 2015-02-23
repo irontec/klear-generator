@@ -252,7 +252,7 @@ class Generator_Rest_Factory
                 if (!file_put_contents($composerJson, $composerJsonData)) {
                     die("could not write file $composerJson\n");
                 } else {
-                    echo " * En el directorio " . $composerFolder . " genera un composer install. \n";
+                    echo " * En el directorio " . $composerFolder . " ejecuta un composer install. \n";
                 }
 
             } catch (Exception $e) {
