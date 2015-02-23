@@ -91,7 +91,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
     protected function _getFieldName(Generator_Db_Field $fieldDesc)
     {
-        $fieldName = Generator_StringUtils::toCamelCase($fieldDesc->getName());
+        $fieldName = $fieldDesc->getName(); //Generator_StringUtils::toCamelCase($fieldDesc->getName());
 
         if ($fieldDesc->isFso()) {
             if (preg_match('/(?P<fieldname>.*)FileSize$/', $fieldName, $matches)) {

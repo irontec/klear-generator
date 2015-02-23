@@ -342,7 +342,7 @@ endif;//$fields->hasSoftDelete()
 
     /**
      * Saves current row
-     * @return boolean If the save action was successful
+     * @return integer primary key for autoincrement fields if the save action was successful
      */
     public function save(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model)
     {
@@ -354,7 +354,7 @@ endif;//$fields->hasSoftDelete()
      *
      * @param \<?=$namespace?>Model\Raw\<?=$this->_className?> $model
      * @param boolean $useTransaction Flag to indicate if save should be done inside a database transaction
-     * @return boolean If the save action was successful
+     * @return integer primary key for autoincrement fields if the save action was successful
      */
     public function saveRecursive(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model, $useTransaction = true, $transactionTag = null)
     {
