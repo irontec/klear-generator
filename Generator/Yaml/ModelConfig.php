@@ -140,9 +140,8 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         $data = array(
             'title' => $titles,
             'type' => $this->_getFieldDataType($fieldDesc),
-//             'readonly' => '${auth.readOnly}'
+            //'readonly' => '${auth.readOnly}'
         );
-
 
         $isRequired = $fieldDesc->isNullable()? false : true;
 
@@ -155,6 +154,11 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         }
 
         switch ($data['type']) {
+            case 'text':
+                if ($fieldDesc->getLength()) {
+                    $data['maxLength'] = $fieldDesc->getLength();
+                }
+                break;
             case 'picker':
                 $data['source'] = $this->_getTimeSource($fieldDesc);
                 break;
