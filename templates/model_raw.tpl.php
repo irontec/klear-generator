@@ -730,8 +730,8 @@ else : ?>
 
                 foreach ($data as $newItem) {
 
-                    if (is_numeric($pk = $newItem->getPrimaryKey())) {
-
+                    $pk = $newItem->getPrimaryKey();
+                    if (!empty($pk)) {
                         $dataPKs[] = $pk;
                     }
                 }
