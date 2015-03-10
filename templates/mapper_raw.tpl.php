@@ -558,18 +558,12 @@ endif;
                      );
             }
 
-            <?php if ($primaryKey->getComment() === '[uuid:php]' || $primaryKey->getComment() === '[uuid]') { ?>
             if (!empty($primaryKey) && !empty($fileObjects)) {
-            <?php } else { ?>
-            if (is_numeric($primaryKey) && !empty($fileObjects)) {
-            <?php } ?>
 
                 foreach ($fileObjects as $key => $fso) {
 
                     $baseName = $fso->getBaseName();
-
                     if (!empty($baseName)) {
-
                         $fso->flush($primaryKey);
                     }
                 }
