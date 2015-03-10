@@ -6,7 +6,7 @@
 include_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php');
 
 $currentPath = __DIR__;
-$svnRevision = `svnversion $currentPath`;
+$gitRevision = `git log --oneline | head -n1`;
 
 define('VERSION', '0.1');
 define('AUTHOR',  'Alayn Gortazar <alayn@irontec.com>');
@@ -113,7 +113,7 @@ try {
         }
 
         if ($name !== 'Model' && $name !== 'Mapper'  && $name !== 'Mapper/Sql') {
-            $svnData = '[' . date('r') . ']' . ' revision: ' . $svnRevision;
+            $svnData = '[' . date('r') . ']' . ' revision: ' . $gitRevision;
             file_put_contents($dir . '/generator.log', $svnData, FILE_APPEND);
         }
 
