@@ -266,7 +266,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         if ($fieldDesc->isNullable()) {
             $data["'null'"] = '_("Unasigned")';
         }
-        
+
         return $data;
     }
 
@@ -356,6 +356,8 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
         $download = '_("Download file")';
         $upload = '_("Upload file")';
 
+        $table = lcfirst($this->_table);
+
         return array(
             'data' => 'fso',
             'size_limit' => '20M',
@@ -364,20 +366,20 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                 'download' => array(
                     'external' => 'true',
                     'type' => 'command',
-                    'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Download_command',
+                    'target' => $table . ucfirst($this->_getFieldName($fieldDesc)) . 'Download_command',
                     'icon' => 'ui-silk-bullet-disk',
                     'title' => $download,
                     'onNull' => 'hide'
                 ),
                 'upload' => array(
                     'type' => 'command',
-                    'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Upload_command',
+                    'target' => $table . ucfirst($this->_getFieldName($fieldDesc)) . 'Upload_command',
                     'title' => $upload,
                     'class' => 'qq-uploader',
                     'onNull' => 'show'
                 ),
                 'preview' => array(
-                    'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Preview_command',
+                    'target' => $table . ucfirst($this->_getFieldName($fieldDesc)) . 'Preview_command',
                     'type' => 'command',
                     'class' => 'filePreview',
                     'external' => true,
@@ -388,7 +390,7 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                     'onNull' => 'hide'
                 ),
                 'previewList' => array(
-                    'target' => ucfirst($this->_getFieldName($fieldDesc)) . 'Preview_command',
+                    'target' => $table . ucfirst($this->_getFieldName($fieldDesc)) . 'Preview_command',
                     'type' => 'command',
                     'class' => 'filePreview',
                     'listController' => true,

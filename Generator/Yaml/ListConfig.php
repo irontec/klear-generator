@@ -2,15 +2,16 @@
 class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 {
     protected $_namespace;
+    protected $_dependantTables = array();
     protected $_klearConfig;
     protected $_db;
     protected $_tableDescription;
     protected $_normalizedTable;
 
-    public function __construct($table, $klearConfig, $enabledLanguages = array())
+    public function __construct($table, $dependantTables, $klearConfig, $enabledLanguages = array())
     {
         $this->_enabledLanguages = $enabledLanguages;
-
+        $this->_dependantTables = $dependantTables;
         $this->_loadTranslator();
 
         $this->_klearConfig = $klearConfig;
@@ -44,7 +45,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 
         $listTitles = '_("List of %s %2s", ' . $titlePlural . ', "[format| (%parent%)]")';
         $editTitles = '_("Edit %s %2s", ' . $titleSingular . ', "[format| (%item%)]")';
-        $addTitles = '_("Add %s", ' . $titleSingular . ')';
+        $addTitles = '_("Add %s", ' . $titleSingular . ', "[format| (%parent%)]")';
         $deleteTitles = '_("Delete %s", ' . $titleSingular . ')';
         $askDeleteTitles = '_("Do you want to delete this %s?", ' . $titleSingular . ')';
         $messageDeleteTitles =  '_("%s successfully deleted.", ' . $titleSingular . ')';
@@ -52,13 +53,16 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
 
 
         $listScreen = array(
+            '&' => lcfirst($this->_normalizedTable) . 'List_screenLink',
             'controller' => 'list',
             'pagination' => array(
                     'items' => '25'
                             ),
             '<<' => '*' . $normalizedTable,
+            'class' => 'ui-silk-text-list-bullets',
             'title' => $listTitles,
             'fields' => array(
+                '&' => lcfirst($this->_normalizedTable) . '_fieldsLink',
                 'options' => array(
                     'title' => $options,
                     'screens' => array(
@@ -96,6 +100,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         }
 
         $editScreen = array(
+            '&' => lcfirst($this->_normalizedTable) . 'Edit_screenLink', 
             '<<' => '*' . $normalizedTable,
             'controller' => 'edit',
             'class' =>  'ui-silk-pencil',
@@ -103,8 +108,8 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'title' => $editTitles
         );
 
-
         $newScreen = array(
+            '&' => lcfirst($this->_normalizedTable) . 'New_screenLink', 
             '<<' => '*' . $normalizedTable,
             'controller' => 'new',
             'class' =>  'ui-silk-add',
@@ -115,6 +120,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         );
 
         $delDialog = array(
+            '&' => lcfirst($this->_normalizedTable) . 'Del_dialogLink',
             '<<' => '*' . $normalizedTable,
             'controller' => 'delete',
             'class' => 'ui-silk-bin',
@@ -125,7 +131,6 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             'multiItem' => true,
             'labelOnList' => true
         );
-
 
         // Add blacklists
         $newBlackList = $this->_getNewBlackList();
@@ -144,21 +149,88 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $data['main']['module'] = 'klearMatrix';
         $data['main']['defaultScreen'] = $listScreenName;
 
-        $data['screens'] = array(
+        foreach ($this->_dependantTables as $relatedTableName => $relationFld) {
+            $screenName = lcfirst($relatedTableName) . 'List_screen'; 
+            $listScreen['fields']['options']['screens'][$screenName] = 'true'; 
+        }
+
+        $screens = array(
+            '&' => lcfirst($this->_normalizedTable) . '_screensLink',
             $listScreenName => $listScreen,
             $newScreenName => $newScreen,
             $editScreenName => $editScreen
         );
+        $data['screens'] = $screens + $this->_getDependantScreens();
 
-        $data['dialogs'] = array(
+        $dialogs = array(
+            '&' => lcfirst($this->_normalizedTable) . '_dialogsLink',
             $delDialogName => $delDialog
         );
+        $data['dialogs'] = $dialogs;
+        $data +=  $this->_getDependantDialogs();
 
         if ($this->_hasFsoFields()) {
-            $data['commands'] = $this->_getFsoFieldCommands();
+
+            $commandslink = array(
+                '&' => lcfirst($this->_normalizedTable) . '_commandsLink'
+            );
+            
+            $commands = $commandslink + $this->_getFsoFieldCommands($table);
+            $data['commands'] = $commands;
         }
 
         $this->_data['production'] = $data;
+    }
+
+    protected function _getDependantScreens() {
+        
+        $screens = array();
+        foreach ($this->_dependantTables as $table => $filterFld) {
+            
+            $lcTableName = lcfirst($table);
+
+            $screens += array(
+                $lcTableName => '',
+                '<<' => '*'. $lcTableName .'_screensLink',
+                //List
+                $lcTableName . 'List_screen' => array(
+                    '<<' => '*'. $lcTableName .'List_screenLink',
+                    'filterField' => $filterFld,
+                    'parentOptionCustomizer'=> array(
+                       'recordCount'
+                   )
+                ),
+                //New
+                $lcTableName . 'New_screen' => array(
+                    '<<' => '*'. $lcTableName .'New_screenLink',
+                    'filterField' => $filterFld,
+                ),
+                //Edit
+                $lcTableName . 'Edit_screen' => array(
+                    '<<' => '*'. $lcTableName .'Edit_screenLink',
+                    'filterField' => $filterFld . "\n",
+                ),                
+            );
+        }
+        
+        return $screens;
+    }
+
+    protected function _getDependantDialogs() 
+    {
+        $dialogs = array();
+        foreach ($this->_dependantTables as $table => $fld) {
+
+            $lcTableName = lcfirst($table);
+
+            $dialogs += array(
+                '# ' . $lcTableName . ' dialogs'=> array(
+                    '<<' => '*'. $lcTableName .'_dialogsLink',
+                )
+            );
+        }
+
+        return $dialogs;
     }
 
     protected function _getNewBlackList()
@@ -192,24 +264,27 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         }
     }
 
-    protected function _getFsoFieldCommands()
+    protected function _getFsoFieldCommands($table)
     {
         $fsoFields = $this->_getFsoFields();
         $data = array();
         foreach ($fsoFields as $fieldName) {
-            $data[ucfirst($fieldName) . 'Download_command'] = array(
+            $data[lcfirst($table) . ucfirst($fieldName) . 'Download_command'] = array(
+                '&' => lcfirst($table) . ucfirst($fieldName) . 'Download_commandLink',
                 '<<' => '*' . $this->_normalizedTable,
                 'controller' => 'File',
                 'action' => 'force-download',
                 'mainColumn' =>  $fieldName
             );
-            $data[ucfirst($fieldName) . 'Upload_command'] = array(
+            $data[lcfirst($table) . ucfirst($fieldName) . 'Upload_command'] = array(
+                '&' => lcfirst($table) . ucfirst($fieldName) . 'Upload_commandLink',
                 '<<' => '*' . $this->_normalizedTable,
                 'controller' => 'File',
                 'action' => 'upload',
                 'mainColumn' =>  $fieldName
             );
-            $data[ucfirst($fieldName) . 'Preview_command'] = array(
+            $data[lcfirst($table) . ucfirst($fieldName) . 'Preview_command'] = array(
+                '&' => lcfirst($table) . ucfirst($fieldName) . 'Preview_commandLink',
                 '<<' => '*' . $this->_normalizedTable,
                 'controller' => 'File',
                 'action' => 'preview',
