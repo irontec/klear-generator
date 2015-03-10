@@ -164,60 +164,9 @@ class Make_mysql extends MakeDbTable {
 
     public function parseDependentTables() {
         $tbname = $this->getTableName();
-        $tables = $this->getTableList();
-        $this->_dbAdapter->query("SET NAMES UTF8");
+        $tableList = $this->getTableList();
 
-        $dependents = array();
-
-        foreach ($tables as $table) {
-            $qry=$this->_dbAdapter->query("show create table `$table`");
-
-            if (!$qry) {
-                throw new Exception("`show create table $table` returned false!");
-            }
-
-            $res = $qry->fetchAll();
-            if (isset($res[0]['Create View'])) {
-                continue;
-            }
-
-            if (!isset($res[0]['Create Table'])) {
-                throw new Exception("`show create table $table` did not provide known output");
-            }
-
-            $query = $res[0]['Create Table'];
-            $lines = explode("\n",$query);
-            $tblinfo = array();
-            $pk = '';
-            foreach ($lines as $line) {
-                if (preg_match('/^\s*PRIMARY KEY \(`(.+)`\)/', $line, $matches)) {
-                    $pk_string = $matches[1];
-                } elseif (preg_match("/^\s*CONSTRAINT `(\w+)` FOREIGN KEY \(`(.+)`\) REFERENCES `$tbname` \(`(.+)`\)/", $line, $tblinfo)) {
-                    if (strpos($tblinfo[2], ',') !== false) {
-                        $column_name = explode('`,`', $tblinfo[2]);
-                    } else {
-                        $column_name = $tblinfo[2];
-                    }
-
-                    if (strpos($tblinfo[3], ',') !== false) {
-                        $foreign_column_name = explode(',', $tblinfo[3]);
-                    } else {
-                        $foreign_column_name = $tblinfo[3];
-                    }
-
-                    $dependents[] = array(
-                        'key_name' => $tblinfo[1],
-                        'tbl_name' => $this->_namespace . '\\Model\\DbTable\\' . $this->_getClassName($table),
-                        'type' => ($pk_string == $tblinfo[2] ? 'one' : 'many'),
-                          'column_name' => $column_name,
-                        'foreign_tbl_name' => $table,
-                          'foreign_tbl_column_name' => $foreign_column_name
-                    );
-                }
-
-            }
-        }
-
+        $dependents = Generator_Db::getDependantTables($this->_namespace, $tbname, $tableList);
         $this->setDependentTables($dependents);
     }
 

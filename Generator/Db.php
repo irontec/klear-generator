@@ -64,6 +64,68 @@ class Generator_Db
         return '';
 
     }
+    
+    public static function getDependantTables($namespace, $tbname, $tableList) 
+    {
+        $tables = $tableList;
+        $dbAdapter = Zend_Db_Table::getDefaultAdapter();
+        $dbAdapter->query("SET NAMES UTF8");
+
+        $dependents = array();
+
+        foreach ($tables as $table) {
+            
+            $normalizedTableName = ucfirst(Generator_StringUtils::toCamelCase($table));
+            $qry = $dbAdapter->query("show create table `$table`");
+
+            if (!$qry) {
+                throw new Exception("`show create table $table` returned false!");
+            }
+
+            $res = $qry->fetchAll();
+            if (isset($res[0]['Create View'])) {
+                continue;
+            }
+
+            if (!isset($res[0]['Create Table'])) {
+                throw new Exception("`show create table $table` did not provide known output");
+            }
+
+            $query = $res[0]['Create Table'];
+            $lines = explode("\n",$query);
+            $tblinfo = array();
+            $pk = '';
+            foreach ($lines as $line) {
+                if (preg_match('/^\s*PRIMARY KEY \(`(.+)`\)/', $line, $matches)) {
+                    $pk_string = $matches[1];
+                } elseif (preg_match("/^\s*CONSTRAINT `(\w+)` FOREIGN KEY \(`(.+)`\) REFERENCES `$tbname` \(`(.+)`\)/", $line, $tblinfo)) {
+                    if (strpos($tblinfo[2], ',') !== false) {
+                        $column_name = explode('`,`', $tblinfo[2]);
+                    } else {
+                        $column_name = $tblinfo[2];
+                    }
+
+                    if (strpos($tblinfo[3], ',') !== false) {
+                        $foreign_column_name = explode(',', $tblinfo[3]);
+                    } else {
+                        $foreign_column_name = $tblinfo[3];
+                    }
+
+                    $dependents[] = array(
+                        'key_name' => $tblinfo[1],
+                        'tbl_name' => $namespace . '\\Model\\DbTable\\' . $normalizedTableName,
+                        'type' => ($pk_string == $tblinfo[2] ? 'one' : 'many'),
+                          'column_name' => $column_name,
+                        'foreign_tbl_name' => $table,
+                          'foreign_tbl_column_name' => $foreign_column_name
+                    );
+                }
+
+            }
+        }
+
+        return $dependents;
+    }
 
     protected static function _getCreateTableData($tablename)
     {

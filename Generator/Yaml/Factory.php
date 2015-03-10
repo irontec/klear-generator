@@ -9,7 +9,7 @@ class Generator_Yaml_Factory
     protected $_configWriter;
 
     protected $_tables = null;
-
+    protected $_dependantTables = null;
 
     protected $_enabledLanguages = array();
 
@@ -110,10 +110,21 @@ class Generator_Yaml_Factory
         foreach ($entities as $table) {
             $listFile = $this->_klearDirs['root'] . '/' . ucfirst(Generator_StringUtils::toCamelCase($table)) . 'List.yaml';
             if (!file_exists($listFile) || $this->_override) {
-                $listConfig = new Generator_Yaml_ListConfig($table, $this->_klearConfig, $this->_enabledLanguages);
+
+                $dependantTables = $this->_getDependantTables($table);
+                
+                $listConfig = new Generator_Yaml_ListConfig($table, $dependantTables, $this->_klearConfig, $this->_enabledLanguages);
+
                 $this->_configWriter->write($listFile, $listConfig->getConfig());
                 $contents = "#include conf.d/mapperList.yaml\n";
-                $contents .= "#include conf.d/actions.yaml\n\n";
+                $contents .= "#include conf.d/actions.yaml\n";
+
+                foreach ($dependantTables as $tableName => $relFieldName) {
+                    $tableName = ucfirst(Generator_StringUtils::toCamelCase($tableName));
+                    $contents .= "##include ". $tableName . "List.yaml\n";    
+                }
+
+                $contents .= "\n\n";
                 $contents .= file_get_contents($listFile);
 
                 if ($generateLinks) {
@@ -128,7 +139,7 @@ class Generator_Yaml_Factory
 
     protected function _insertLinks($contents)
     {
-        return preg_replace('/\n\s{4}(\S+_(screen|dialog)):/', '$0 &$1Link', $contents);
+        return preg_replace('/\n\s{1,}&:\s([^\n]+)/', '&$1 ', $contents);
     }
 
     public function createMainConfigFile()
@@ -184,6 +195,56 @@ class Generator_Yaml_Factory
         }
 
         return $this->_tables;
+    }
+    
+    /**
+     * @return array of tableNames
+     */
+    protected function _getDependantTables($parentTableName)
+    {
+        if (is_null($this->_dependantTables)) {
+            $this->_loadDependantTables();
+        }
+
+        if (!isset($this->_dependantTables[$parentTableName])) {
+            return array();
+        }
+
+        return $this->_dependantTables[$parentTableName];
+    }
+    
+
+    protected function _loadDependantTables()
+    {
+        if (!is_null($this->_tables)) {
+            $this->_getTables();
+        }
+        $this->_dependantTables = array();       
+
+        $entities = $this->_getEntities();
+        foreach ($entities as $table) {
+
+            if (! array_key_exists($table, $this->_dependantTables)) {
+                $this->_dependantTables[$table] = array();
+            }
+
+            $dependantTables = Generator_Db::getDependantTables($this->_namespace, $table, $entities);
+
+            foreach ($dependantTables as $dependantTable) {
+
+                if (isset($dependantTable['foreign_tbl_name'])) {
+
+                    $dependantTableName = ucfirst(Generator_StringUtils::toCamelCase($dependantTable['foreign_tbl_name']));
+                    $relationColumnName = $dependantTable['column_name'];
+
+                    if ($table == $dependantTableName) {
+                        continue;
+                    }
+
+                    $this->_dependantTables[$table][$dependantTableName] = $relationColumnName;
+                }
+            }
+        }
     }
 
     public function createAllFiles($generateLinks = false)
