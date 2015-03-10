@@ -49,17 +49,15 @@ foreach ($fsoFields as $field) {
         $fsoObject = $this->_className;
     }
 
-    $fsoObjects[] = $fsoObject;
+    $fsoObjects[$fsoObject] = $field;
 }
-
-$fsoObjects = array_unique($fsoObjects);
 
 // Indicamos a cada campo que "hermanos" FSO existen
 foreach ($fields as $field) {
-    $field->setFSOSiblings($fsoObjects);
+    $field->setFSOSiblings(array_keys($fsoObjects));
 }
 
-foreach ($fsoObjects as $item) :
+foreach ($fsoObjects as $item => $field) :
 ?>
     /*
      * @var \Iron_Model_Fso
@@ -285,9 +283,14 @@ if (!empty($vars)) {
     protected function _initFileObjects()
     {
 <?php
-foreach ($fsoObjects as $fsoObject):
+foreach ($fsoObjects as $fsoObject => $field):
 ?>
         $this->_<?php echo lcfirst($fsoObject); ?>Fso = new \Iron_Model_Fso($this, $this->get<?php echo ucfirst($fsoObject); ?>Specs());
+<?php foreach($field->getModifiers() as $modifier): ?>
+        $this->_<?php echo lcfirst($fsoObject); ?>Fso->addModifier('<?php echo $modifier?>');
+<?php
+      endforeach; 
+?>
 <?php
 endforeach;
 ?>
@@ -301,7 +304,7 @@ endforeach;
 <?php
     if ($fsoFields) :
 ?>
-        return array('<?php echo implode("','", $fsoObjects); ?>');
+        return array('<?php echo implode("','", array_keys($fsoObjects)); ?>');
 <?php
     else:
 ?>
@@ -312,7 +315,7 @@ endforeach;
     }
 
 <?php
- foreach ($fsoObjects as $item) :
+ foreach ($fsoObjects as $item => $field) :
 
     $md5Column = false;
     foreach ($fields as $column) {

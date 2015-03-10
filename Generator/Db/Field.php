@@ -39,6 +39,16 @@ class Generator_Db_Field implements \IteratorAggregate
         return $this->_getDescriptionProperty('TABLE_NAME');
     }
 
+    public function getModifiers()
+    {
+        if (preg_match('/\[.*:(.+)\]/', $this->getComment(), $matches)) {
+            return explode("|", $matches[1]);
+        }
+        
+        return array();
+    }
+
+    
     public function getAcceptedValues()
     {
         $acceptedValues = array();
