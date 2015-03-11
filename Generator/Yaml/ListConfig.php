@@ -190,7 +190,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             $lcTableName = lcfirst($table);
 
             $screens += array(
-                $lcTableName => '',
+                '#' . $lcTableName => '',
                 '<<' => '*'. $lcTableName .'_screensLink',
                 //List
                 $lcTableName . 'List_screen' => array(

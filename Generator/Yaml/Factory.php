@@ -121,7 +121,7 @@ class Generator_Yaml_Factory
 
                 foreach ($dependantTables as $tableName => $relFieldName) {
                     $tableName = ucfirst(Generator_StringUtils::toCamelCase($tableName));
-                    $contents .= "##include ". $tableName . "List.yaml\n";    
+                    $contents .= "#include ". $tableName . "List.yaml\n";    
                 }
 
                 $contents .= "\n\n";
