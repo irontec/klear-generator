@@ -52,13 +52,13 @@ try {
     if ($generateKlear === true) {
         $klearDir = APPLICATION_PATH . '/configs/klear';
         $yamlFactory = new Generator_Yaml_Factory($klearDir, $namespace);
-        $yamlFactory->createAllFiles($generateLinks);
+        $yamlFactory->createAllFiles($generateLinks, false);
     }
 
     // Sistema base en raw, siempre se sobreescribe
     $klearDirRaw = APPLICATION_PATH . '/configs/klearRaw';
     $rawYamlFactory = new Generator_Yaml_Factory($klearDirRaw, $namespace, true);
-    $rawYamlFactory->createAllFiles($generateLinks);
+    $rawYamlFactory->createAllFiles($generateLinks, true);
 
     // genera y copia ficheros base de idiomas.
     $langs = new Generator_Languages_Config();
@@ -71,6 +71,7 @@ try {
     }
     file_put_contents($klearDirRaw . '/generator.log', $svnData, FILE_APPEND);
 
+    echo "Done!\n";
 } catch (Zend_Console_Getopt_Exception $e) {
     echo $e->getUsageMessage() .  "\n";
     echo $e->getMessage() . "\n";
