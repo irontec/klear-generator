@@ -871,6 +871,7 @@ abstract class MakeDbTable {
             $this->setTableName($table);
             try {
                 $this->parseTable();
+                echo "Processing table: $table\n";
                 $this->_doItAll();
             } catch (Exception $e) {
                 echo "Warning: Failed to process $table: " . $e->getMessage(). " ... Skipping\n";
@@ -933,7 +934,7 @@ abstract class MakeDbTable {
         if (is_dir($this->getIncludePath() . 'model')) {
             $this->copyIncludeFiles($this->getIncludePath() . 'model', $this->getLocation());
         } else {
-            echo $this->getIncludePath() . 'model';
+            //echo $this->getIncludePath() . 'model';
         }
 
         if (is_dir($this->getIncludePath() . 'mapper')) {

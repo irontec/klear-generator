@@ -286,10 +286,13 @@ if (!empty($vars)) {
 foreach ($fsoObjects as $fsoObject => $field):
 ?>
         $this->_<?php echo lcfirst($fsoObject); ?>Fso = new \Iron_Model_Fso($this, $this->get<?php echo ucfirst($fsoObject); ?>Specs());
-<?php foreach($field->getModifiers() as $modifier): ?>
-        $this->_<?php echo lcfirst($fsoObject); ?>Fso->addModifier('<?php echo $modifier?>');
+<?php 
+    $modifiers = $field->getModifiers();
+    if (!empty($modifiers)): 
+?>
+        $this->_<?php echo lcfirst($fsoObject); ?>Fso->getPathResolver()->setModifiers(array('<?php echo implode("' => true,'", $modifiers); ?>' => true));
 <?php
-      endforeach; 
+    endif; 
 ?>
 <?php
 endforeach;
