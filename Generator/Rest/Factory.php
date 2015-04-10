@@ -15,7 +15,7 @@ class Generator_Rest_Factory
     public function __construct($basePath, $apiNamespace, $namespace, $override = false)
     {
 
-        $this->_restPath = $basePath;
+        $this->_restPath = APPLICATION_PATH . '/' . $basePath;
         $this->_restNamespace = $apiNamespace;
 
         $this->_namespace = $namespace;

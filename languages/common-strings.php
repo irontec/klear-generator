@@ -40,9 +40,9 @@ ngettext('Role', 'Roles', 1);
 /*
  * Ficheros
  */
-ngettext('File','Files', 1);
-ngettext('Path','Paths', 1);
-ngettext('Size','Sizes', 1);
+ngettext('File', 'Files', 1);
+ngettext('Path', 'Paths', 1);
+ngettext('Size', 'Sizes', 1);
 _('FileSize');
 _('Filesize');
 _('File size');
@@ -103,7 +103,7 @@ ngettext('Description', 'Descriptions', 1);
 ngettext('Text', 'Texts', 1);
 ngettext('News', 'News(s)', 1);
 ngettext('Subject', 'Subjects', 1);
-ngettext('Message', 'Messages',1 );
+ngettext('Message', 'Messages', 1);
 ngettext('Section', 'Sections', 1);
 ngettext('Content', 'Contents', 1);
 _('Html');
