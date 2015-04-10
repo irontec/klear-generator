@@ -17,7 +17,7 @@ echo " */\n\n";
 use <?=$namespace?>Model as Models;
 use <?=$namespace?>Mapper\Sql as Mappers;
 
-class <?=$apiNamespace?>_<?=$tableName?>Controller extends Iron_Controller_Rest_BaseController
+class Rest_<?=$tableName?>Controller extends Iron_Controller_Rest_BaseController
 {
 
     public function init()
