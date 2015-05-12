@@ -359,10 +359,11 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
 
         $download = '_("Download file")';
         $upload = '_("Upload file")';
-
+        $delete = '_("Delete file")';
+        
         $table = lcfirst($this->_table);
-
-        return array(
+        
+        $retArray = array(
             'data' => 'fso',
             'size_limit' => '20M',
 //             'extensions' => array(),
@@ -407,5 +408,16 @@ class Generator_Yaml_ModelConfig extends Generator_Yaml_AbstractConfig
                 )
             )
         );
+        
+        if ($fieldDesc->isNullable()) {
+            $retArray['options']['delete'] = array(
+                'type' => 'setNullFso',
+                'icon' => 'ui-silk-bin',
+                'title' => $delete,
+                'onNull' => 'hide'
+            );
+        }
+        
+        return $retArray;
     }
 }
