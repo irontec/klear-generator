@@ -24,7 +24,7 @@ class ApidocController extends Zend_Controller_Action
     public function indexAction()
     {
 
-        $moduleControllerPath = APPLICATION_PATH . '/modules/<?=$restNamespace?>/controllers/';
+        $moduleControllerPath = APPLICATION_PATH . '/modules/rest/controllers/';
 
         $classes = array();
 

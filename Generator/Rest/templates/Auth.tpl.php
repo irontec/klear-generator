@@ -3,8 +3,8 @@
 $namespace = $this->_namespace;
 ?>
 
-use <?=$namespace?>Model as Models;
-use <?=$namespace?>Mapper\Sql as Mappers;
+use <?=$namespace?>\Model as Models;
+use <?=$namespace?>\Mapper\Sql as Mappers;
 
 class <?=$namespace?>_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 {
@@ -85,18 +85,36 @@ class <?=$namespace?>_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abst
 
         $authType = $tokenParts[0];
 
-        $mapper = new Mappers\Users();
+        $mapper = new Mappers\<?=$this->_usersAuthTable?>();
+
+        $getData = array(
+            'user' => '<?=$this->_fieldUsername?>',
+            'pass' => '<?=$this->_fieldPassword?>'
+        );
 
         if ($authType === 'Basic') {
 
-            $getData = array(
-                'user' => 'username',
-                'pass' => 'password'
+            $auth = new \Iron_Auth_RestBasic();
+            $auth->authenticate(
+                $tokenParts[1],
+                $mapper,
+                $getData
             );
 
-            $auth = new \Iron_Auth_RestBasic();
-            $auth->authenticate($tokenParts[1], $mapper, $getData);
+        } elseif ($authType = 'Hmac') {
 
+            $reqDate = $this->getRequest()->getHeader('Request-Date', false);
+
+            $auth = new \Iron_Auth_RestHmac();
+            $auth->authenticate(
+                $tokenParts[1],
+                $reqDate,
+                $mapper,
+                $getData
+            );
+
+        } else {
+            $this->_errorAuth();
         }
 
     }

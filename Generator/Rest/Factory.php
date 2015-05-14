@@ -1,160 +1,186 @@
 <?php
+
 class Generator_Rest_Factory
 {
 
-    protected $_restPath;
-    protected $_restNamespace;
-    protected $_namespace;
+    protected $_color;
 
-    protected $_override = false;
+    protected $_restPath;
+    protected $_usersAuthTable;
+    protected $_fieldUsername;
+    protected $_fieldPassword;
+    protected $_namespace;
+    protected $_pathLibrary;
 
     protected $_tables = null;
 
     protected $_enabledLanguages = array();
 
-    public function __construct($basePath, $apiNamespace, $namespace, $override = false)
+    public function __construct($restConfig, $namespace, $pathLibrary)
     {
 
-        $this->_restPath = APPLICATION_PATH . '/' . $basePath;
-        $this->_restNamespace = $apiNamespace;
+        require __DIR__ . '/../../class/Colors.php';
+        $this->_color = new Colors();
+
+        $this->_checkRestConfig($restConfig);
 
         $this->_namespace = $namespace;
-        $this->_override = (bool)$override;
+        $this->_pathLibrary = $pathLibrary . '/';
 
         $this->_getLanguages();
-        $this->_createDirStructure();
 
     }
 
+    /**
+     * Comprueba que esten todos los parametros de "restConfig"
+     * @param Zend_Config $restConfig
+     */
+    protected function _checkRestConfig($restConfig)
+    {
+
+        $status = true;
+
+        if (is_null($restConfig->path)) {
+            $status = false;
+            $this->_logFail(
+                'Required "restConfig.path"'
+            );
+            $this->_logSuccess(
+                'Example -> restConfig.path = APPLICATION_PATH "/modules/rest/"'
+            );
+        } else {
+            $this->_restPath = $restConfig->path;
+        }
+
+        if (is_null($restConfig->usersAuthTable)) {
+            $status = false;
+            $this->_logFail(
+                'Required "restConfig.usersAuthTable"'
+            );
+            $this->_logSuccess(
+                'Example -> restConfig.usersAuthTable = "KlearUsers"'
+            );
+        } else {
+            $this->_usersAuthTable = $restConfig->usersAuthTable;
+        }
+
+        if (is_null($restConfig->fieldUsername)) {
+            $status = false;
+            $this->_logFail(
+                'Required "restConfig.fieldUsername"'
+            );
+            $this->_logSuccess(
+                'Example -> restConfig.fieldUsername = "login"'
+            );
+        } else {
+            $this->_fieldUsername = $restConfig->fieldUsername;
+        }
+
+        if (is_null($restConfig->fieldPassword)) {
+            $status = false;
+            $this->_logFail(
+                'Required "restConfig.fieldPassword"'
+            );
+            $this->_logSuccess(
+                'Example -> restConfig.fieldPassword = "pass"'
+            );
+        } else {
+            $this->_fieldPassword = $restConfig->fieldPassword;
+        }
+
+        if (!$status) {
+            $this->_logFail(
+                'Declare the parameters before proceeding!!!'
+            );
+            die();
+        }
+
+    }
+
+    /**
+     * Idiomas usados en el Proyecto
+     */
     protected function _getLanguages()
     {
         $languages = new Generator_Languages_Config();
         $this->_enabledLanguages = $languages->getEnabledLanguages();
     }
 
-    protected function _createDirStructure()
-    {
-
-        if (!file_exists($this->_restPath)) {
-            if (!mkdir($this->_restPath, 0755, true)) {
-                throw new Exception(
-                    'No se puede crear el directorio rest: ' . $this->_restPath
-                );
-            };
-        }
-
-    }
-
     public function start()
     {
-        echo " * klear-rest Start.\n";
+
         $this->createDepsAuth();
-        $this->createFiles();
+        $this->createController();
         $this->createSystemDoc();
-        echo " * klear-rest Done.\n";
+
     }
 
     public function createDepsAuth()
     {
 
-        $library = APPLICATION_PATH . '/../library/';
         $config = APPLICATION_PATH . '/configs/';
-        $pathPlugin = $library . $this->_namespace . '/Controller/Plugin/';
+        $plugin = '/Controller/Plugin/';
+        $pathPlugin = $this->_pathLibrary . $this->_namespace . $plugin;
 
-        if (!file_exists($pathPlugin)) {
-            if (!mkdir($pathPlugin, 0755, true)) {
-                throw new Exception(
-                    'No se puede crear el directorio: ' . $pathPlugin
-                );
-            };
+        $this->_createFolders($this->_restPath . '/controllers');
+
+        $this->_createFolders($pathPlugin);
+
+        /**
+         * Plugin de Auth
+         */
+        $statusAuth = $this->_createFiles(
+            $pathPlugin . 'Auth.php',
+            'Auth.tpl.php',
+            array()
+        );
+
+        if ($statusAuth) {
+            $pluginAuth = $this->_namespace . "_Controller_Plugin_Auth";
+            $this->_logSuccess('Pendiente inicializar el plugin ' . $pluginAuth);
+            $this->_logSuccess('resources.frontController.plugins.authRest = "'.$pluginAuth.'"');
         }
 
-        $authFile = $pathPlugin . 'Auth.php';
-
-        if (!file_exists($authFile)) {
-
-            try {
-                $authData = $this->getParsedTplContents(
-                    'Auth.tpl.php',
-                    array()
-                );
-
-                if (!file_put_contents($authFile, $authData)) {
-                    die("could not write file $authFile\n");
-                } else {
-                    echo " * Creado el plugin de Auth $authFile \n";
-                    echo " * Pendiente inicializar. " . $this->_namespace . "_Controller_Plugin_Auth \n";
-                }
-
-            } catch (Exception $e) {
-
-                echo 'Error: ' . $e->getMessage() . "\n";
-
-            }
-        }
-
-        $restApliFile = $config . 'restApi.ini';
-
-        if (!file_exists($restApliFile)) {
-
-            try {
-
-                $restApiData = $this->getParsedTplContents(
-                    'restApi.tpl.ini',
-                    array()
-                );
-
-                if (!file_put_contents($restApliFile, $restApiData)) {
-                    die("could not write .ini file $restApliFile\n");
-                } else {
-                    echo " * Creado el .ini de Auth $restApliFile \n";
-                }
-
-            } catch (Exception $e) {
-
-                echo 'Error: ' . $e->getMessage() . "\n";
-
-            }
-        }
+        /**
+         * Config Auth
+         */
+        $this->_createFiles(
+            $config . 'restApi.ini',
+            'restApi.tpl.ini',
+            array()
+        );
 
     }
 
-    public function createFiles()
+    /**
+     *
+     * @return Generator_Rest_Factory
+     */
+    public function createController()
     {
 
         $entities = $this->_getEntities();
 
+        if (empty($entities)) {
+            return;
+        }
+
+        $controllers = $this->_restPath . '/controllers';
+
         foreach ($entities as $table) {
 
-            $controllerFile = $this->_restPath . '/' . $table . 'Controller.php';
+            $controllerFile = $controllers . '/' . $table . 'Controller.php';
 
-            if (!file_exists($controllerFile)) {
+            $data = array(
+                'tableName' => $table,
+            );
 
-                try {
+            $this->_createFiles(
+                $controllerFile,
+                'rest.tpl.php',
+                $data
+            );
 
-                    $data = array(
-                        'tableName' => $table,
-                        'apiNamespace' => ucfirst($this->_restNamespace)
-                    );
-
-                    $controllerData = $this->getParsedTplContents(
-                        'rest.tpl.php',
-                        $data
-                    );
-
-                    if (!file_put_contents($controllerFile, $controllerData)) {
-                        die("could not write controller file $controllerFile\n");
-                    } else {
-                        echo " * Creado el controller $controllerFile \n";
-                    }
-
-                } catch (Exception $e) {
-
-                    echo 'Error: ' . $e->getMessage() . "\n";
-
-                }
-
-            }
         }
 
         return $this;
@@ -166,126 +192,23 @@ class Generator_Rest_Factory
 
         $cliFolder = APPLICATION_PATH . '/../cli';
 
-        if (!file_exists($cliFolder)) {
-            if (!mkdir($cliFolder, 0755, true)) {
-                throw new Exception(
-                    'No se puede crear el directorio cli: ' . $cliFolder
-                );
-            };
-        }
+        $this->_createFolders($cliFolder);
 
         $cliDocs = $cliFolder . '/cliDocs.php';
         $runCliDocs = $cliFolder . '/runCliDocs.sh';
 
-        if (!file_exists($cliDocs)) {
-
-            try {
-
-                $cliDocsData = $this->getParsedTplContents(
-                    'cliDocs.tpl.php', array()
-                );
-
-                if (!file_put_contents($cliDocs, $cliDocsData)) {
-                    die("could not write file $cliDocs\n");
-                } else {
-                    echo " * Creado el cliDocs $cliDocs \n";
-                }
-
-            } catch (Exception $e) {
-
-                echo 'Error: ' . $e->getMessage() . "\n";
-
-            }
-        }
-
-        if (!file_exists($runCliDocs)) {
-            try {
-
-                $runCliDocsData = $this->getParsedTplContents(
-                    'runCliDocs.tpl.php', array()
-                );
-
-                if (!file_put_contents($runCliDocs, $runCliDocsData)) {
-                    die("could not write file $runCliDocs\n");
-                } else {
-                    echo " * Creado el runCliDocs $runCliDocs \n";
-                }
-
-            } catch (Exception $e) {
-
-                echo 'Error: ' . $e->getMessage() . "\n";
-
-            }
-        }
+        $this->_createFiles($cliDocs, 'cliDocs.tpl.php');
+        $this->_createFiles($runCliDocs, 'runCliDocs.tpl.php');
 
         $apidocs = APPLICATION_PATH . '/../public/apidocs';
-
-        if (!file_exists($apidocs)) {
-            if (!mkdir($apidocs, 0755, true)) {
-                throw new Exception(
-                    'No se puede crear el directorio apidocs: ' . $apidocs
-                );
-            } else {
-                echo " * Creado el directorio apidocs dentro de public. \n";
-            }
-        }
-
         $composerFolder = APPLICATION_PATH . '/../library/Composer';
-
-        if (!file_exists($composerFolder)) {
-            if (!mkdir($composerFolder, 0755, true)) {
-                throw new Exception(
-                    'No se puede crear el directorio Composer: ' . $composerFolder
-                );
-            };
-        }
+        $this->_createFolders($apidocs);
+        $this->_createFolders($composerFolder);
 
         $composerJson = $composerFolder . '/composer.json';
-
-        if (!file_exists($composerJson)) {
-            try {
-
-                $composerJsonData = $this->getParsedTplContents(
-                    'composerJson.tpl.php', array()
-                );
-
-                if (!file_put_contents($composerJson, $composerJsonData)) {
-                    die("could not write file $composerJson\n");
-                } else {
-                    echo " * En el directorio " . $composerFolder . " ejecuta un composer install. \n";
-                }
-
-            } catch (Exception $e) {
-
-                echo 'Error: ' . $e->getMessage() . "\n";
-
-            }
-        }
-
         $apidocController = APPLICATION_PATH . '/controllers/ApidocController.php';
-
-        if (!file_exists($apidocController)) {
-            try {
-
-                $data = $this->getParsedTplContents(
-                    'ApidocController.tpl.php',
-                    array(
-                        'restNamespace' => $this->_restNamespace
-                    )
-                );
-
-                if (!file_put_contents($apidocController, $data)) {
-                    die("could not write file $apidocController\n");
-                } else {
-                    echo " * Creado el contrller ApidocController.php. \n";
-                }
-
-            } catch (Exception $e) {
-
-                echo 'Error: ' . $e->getMessage() . "\n";
-
-            }
-        }
+        $this->_createFiles($composerJson, 'composerJson.tpl.php');
+        $this->_createFiles($apidocController, 'ApidocController.tpl.php');
 
     }
 
@@ -360,6 +283,100 @@ class Generator_Rest_Factory
         $data = ob_get_contents();
         ob_end_clean();
         return $data;
+
+    }
+
+    /**
+     * @param String $folderPath
+     * @throws Exception
+     */
+    protected function _createFolders($folderPath)
+    {
+
+        if (file_exists($folderPath)) {
+            return;
+        }
+
+        if (!mkdir($folderPath, 0755, true)) {
+            throw new Exception(
+                'No se puede crear el directorio: ' . $folderPath
+            );
+        } else {
+            $this->_logNew($folderPath);
+        }
+
+    }
+
+    /**
+     * @param String $filePath
+     * @param String $tpl
+     * @param Array $data
+     * @throws Exception
+     * @return boolean
+     */
+    protected function _createFiles($filePath, $tpl, $data = array())
+    {
+
+        if (file_exists($filePath)) {
+            return false;
+        }
+
+        try {
+
+            $restApiData = $this->getParsedTplContents(
+                $tpl,
+                $data
+            );
+
+            if (!file_put_contents($filePath, $restApiData)) {
+                throw new Exception(
+                    'No se puede crear: ' . $filePath
+                );
+            } else {
+                $this->_logNew($filePath);
+            }
+
+        } catch (Exception $e) {
+            throw new Exception(
+                $e->getMessage()
+            );
+        }
+
+        return true;
+
+    }
+
+
+    protected function _logNew($msg)
+    {
+
+        echo $this->_color->getColoredString(
+            ' [new] ' . $msg,
+            'light_cyan',
+            null
+        ) . "\n";
+
+    }
+
+    protected function _logSuccess($msg)
+    {
+
+        echo $this->_color->getColoredString(
+            ' >> ' . $msg,
+            'light_green',
+            null
+        ) . "\n";
+
+    }
+
+    protected function _logFail($msg)
+    {
+
+        echo $this->_color->getColoredString(
+            ' [error] ' . $msg,
+            'red',
+            null
+        ) . "\n";
 
     }
 
