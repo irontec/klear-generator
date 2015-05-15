@@ -188,7 +188,9 @@ foreach ($fields as $field) {
             $this->getResponse()->setHeader('Location', $location);
 
         } catch (\Exception $e) {
-            $this->addViewData($e->getMessage());
+            $this->addViewData(
+                array('error' => $e->getMessage())
+            );
             $this->status->setCode(404);
         }
 
@@ -232,7 +234,9 @@ foreach ($fields as $field) {
             $this->addViewData($model->toArray());
             $this->status->setCode(200);
         } catch (\Exception $e) {
-            $this->addViewData($e->getMessage());
+            $this->addViewData(
+                array('error' => $e->getMessage())
+            );
             $this->status->setCode(404);
         }
 
@@ -268,7 +272,9 @@ foreach ($fields as $field) {
             $model->delete();
             $this->status->setCode(204);
         } catch (\Exception $e) {
-            $this->addViewData($e->getMessage());
+            $this->addViewData(
+                array('error' => $e->getMessage())
+            );
             $this->status->setCode(404);
         }
 
