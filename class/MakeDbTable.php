@@ -222,13 +222,13 @@ abstract class MakeDbTable {
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function getNormalizedTableName() {
         $tableName = $this->_tbname;
         $tableParts = explode('_', $tableName);
-        
+
         return implode('', array_map("ucfirst", $tableParts));
     }
 
@@ -790,6 +790,8 @@ abstract class MakeDbTable {
         if (!file_exists($mapperFile)) {
             if (!file_put_contents($mapperFile, $mapperData)) {
                 die("Error: could not write mapper file $mapperFile.");
+            } else {
+                echo "> Nuevo Mapper: " . $mapperFile . "\n";
             }
         }
 
@@ -855,8 +857,11 @@ abstract class MakeDbTable {
         if (!file_exists($smartModelFile)) {
             if (!file_put_contents($smartModelFile, $smartModelData)) {
                 die("Error: could not write model file $smartModelFile.");
+            } else {
+                echo "> Nuevo Model: " . $smartModelFile . "\n";
             }
         }
+
     }
 
     /**
@@ -933,8 +938,6 @@ abstract class MakeDbTable {
 
         if (is_dir($this->getIncludePath() . 'model')) {
             $this->copyIncludeFiles($this->getIncludePath() . 'model', $this->getLocation());
-        } else {
-            //echo $this->getIncludePath() . 'model';
         }
 
         if (is_dir($this->getIncludePath() . 'mapper')) {

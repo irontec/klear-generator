@@ -58,8 +58,9 @@ class Generator_Yaml_Factory
     }
 
     # recursively remove a directory
-    protected function _rrmdir($dir) {
-        foreach(glob($dir . '/*') as $file) {
+    protected function _rrmdir($dir)
+    {
+        foreach (glob($dir . '/*') as $file) {
             if(is_dir($file))
                 $this->_rrmdir($file);
             else
@@ -87,13 +88,16 @@ class Generator_Yaml_Factory
         return $this;
     }
 
-    public function createModelFiles()
+    public function createModelFiles($raw = false)
     {
         $entities = $this->_getEntities();
         foreach ($entities as $table) {
             $modelFile = $this->_klearDirs['model'] . '/' . ucfirst(Generator_StringUtils::toCamelCase($table)) . '.yaml';
             if (!file_exists($modelFile) || $this->_override) {
                 try {
+                    if (!$raw) {
+                        echo "> Nuevo modelo: " . ucfirst(Generator_StringUtils::toCamelCase($table)) . ".yaml \n";
+                    }
                     $modelConfig = new Generator_Yaml_ModelConfig($table, $this->_namespace, $this->_klearConfig, $this->_enabledLanguages);
                     $this->_configWriter->write($modelFile, $modelConfig->getConfig());
                 } catch (Exception $e) {
@@ -104,7 +108,7 @@ class Generator_Yaml_Factory
         return $this;
     }
 
-    public function createModelListFiles($generateLinks = false)
+    public function createModelListFiles($generateLinks = false, $raw = false)
     {
         $entities = $this->_getEntities();
         foreach ($entities as $table) {
@@ -114,6 +118,10 @@ class Generator_Yaml_Factory
                 $dependantTables = $this->_getDependantTables($table);
                 
                 $listConfig = new Generator_Yaml_ListConfig($table, $dependantTables, $this->_klearConfig, $this->_enabledLanguages);
+
+                if (!$raw) {
+                    echo "> Nuevo List: " . ucfirst(Generator_StringUtils::toCamelCase($table)) . "List.yaml \n";
+                }
 
                 $this->_configWriter->write($listFile, $listConfig->getConfig());
                 $contents = "#include conf.d/mapperList.yaml\n";
@@ -168,13 +176,15 @@ class Generator_Yaml_Factory
 
     public function createMappersListFile()
     {
+
         /** Generate mapper list file **/
         $mappersFile = $this->_klearDirs['conf.d'] . '/mapperList.yaml';
-        if (!file_exists($mappersFile) || $this->_override) {
-            $mappersConfig = new Generator_Yaml_MappersFile($this->_getTables(), $this->_namespace);
-            $this->_configWriter->write($mappersFile, $mappersConfig->getConfig());
-        }
+
+        $mappersConfig = new Generator_Yaml_MappersFile($this->_getTables(), $this->_namespace);
+        $this->_configWriter->write($mappersFile, $mappersConfig->getConfig());
+
         return $this;
+
     }
 
     protected function _getTables()
@@ -247,13 +257,13 @@ class Generator_Yaml_Factory
         }
     }
 
-    public function createAllFiles($generateLinks = false)
+    public function createAllFiles($generateLinks = false, $raw = false)
     {
         $this->createErrorsFile();
         $this->createMappersListFile();
         $this->createActionsFile();
-        $this->createModelFiles();
-        $this->createModelListFiles($generateLinks);
+        $this->createModelFiles($raw);
+        $this->createModelListFiles($generateLinks, $raw);
         $this->createMainConfigFile();
     }
 }
