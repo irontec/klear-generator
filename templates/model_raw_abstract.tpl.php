@@ -788,9 +788,9 @@ abstract class ModelAbstract implements \IteratorAggregate
      * @see <?=$namespace?>Model\Mapper\MapperAbstract::toArray()
      * @return array
      */
-    public function toArray()
+    public function toArray($fields = array())
     {
-        return $this->getMapper()->toArray($this);
+        return $this->getMapper()->toArray($this, $fields);
     }
 
     /**

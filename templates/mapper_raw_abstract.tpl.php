@@ -609,7 +609,7 @@ abstract class MapperAbstract
     public function fetchList($where = null, $order = null, $limit = null, $offset = null)
     {
         $resultSet  = $this->_fetchListResultSet($where, $order, $limit, $offset);
-        
+
         $entries   = array();
         foreach ($resultSet as $row) {
             $entries[] = $row;
@@ -642,7 +642,7 @@ abstract class MapperAbstract
      * @return \Zend_Db_ResultSet_Abstract
      *
      */
-    protected function _fetchListResultSet($where = null, $order = null, 
+    protected function _fetchListResultSet($where = null, $order = null,
         $limit = null, $offset = null
     ) {
         $list = $this->getDbTable()->fetchList($where, $order, $limit, $offset);
@@ -663,7 +663,7 @@ abstract class MapperAbstract
                  ->fetchList($where, $order, $limit, $offset)
         );
     }
-    
+
     /**
      * Finds rows where $field equals $value.
      *
@@ -971,7 +971,7 @@ abstract class MapperAbstract
      * @param new <?=$namespace?>Model\Raw\ModelAbstract $model
      * @return array
      */
-    public abstract function toArray($model);
+    public abstract function toArray($model, $fields);
 
     /**
      * Loads the model specific data into the model object

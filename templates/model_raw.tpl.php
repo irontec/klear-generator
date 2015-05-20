@@ -122,22 +122,17 @@ foreach ($this->getDependentTables() as $key):
      */
     protected $_<?=$this->_getRelationName($key, 'dependent')?>;
 
-<?php endforeach;?>
-
 <?php
+endforeach;
 $vars = $this->_includeModel->getVars();
 if (!empty($vars)) {
     echo $vars . "\n\n";
 }
 ?>
     protected $_columnsList = array(
-<?php
-    foreach ($fields as $column):
-?>
+<?php foreach ($fields as $column): ?>
         '<?=$column->getName()?>'=>'<?=$column->getNormalizedName()?>',
-<?php
-    endforeach;
-?>
+<?php endforeach; ?>
     );
 
     /**
@@ -375,11 +370,31 @@ endforeach;
         return true;
     }
 
-<?php
- endforeach; //endforeach
- echo "\n";
-?>
+    public function get<?=ucfirst($item)?>Url($profile)
+    {
 
+        $fsoConfig = \Zend_Registry::get('fsoConfig');
+        $profileConf = $fsoConfig->$profile;
+
+        if (is_null($profileConf)) {
+            throw new \Exception('Profile invalid. not exist in fso.ini');
+        }
+
+        $route = array(
+            'profile' => $profile,
+            'routeMap' => $this->getId() . '-' . $this->get<?=ucfirst($item)?>BaseName()
+        );
+        $view = new \Zend_View();
+        $fsoUrl = $view->serverUrl($view->url($route, 'fso'));
+
+        return $fsoUrl;
+
+    }
+
+<?php
+endforeach; //endforeach
+echo "\n";
+?>
     /**************************************************************************
     *********************************** /FSO ***********************************
     ***************************************************************************/

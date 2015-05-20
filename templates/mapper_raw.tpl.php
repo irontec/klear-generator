@@ -63,8 +63,9 @@ if (!empty($vars)) {
      * @param <?=$namespace?>Model\Raw\<?=$this->_className?> $model
      * @return array
      */
-    public function toArray($model)
+    public function toArray($model, $fields = array())
     {
+
         if (!$model instanceof \<?=$namespace?>Model\Raw\<?=$this->_className?>) {
             if (is_object($model)) {
                 $message = get_class($model) . " is not a \<?=$namespace?>Model\Raw\<?=$this->_className?> object in toArray for " . get_class($this);
@@ -76,19 +77,38 @@ if (!empty($vars)) {
             throw new \Exception('Unable to create array: invalid model passed to mapper', 2000);
         }
 
-        $result = array(<?php
+        if (empty($fields)) {
+            $result = array(<?php
 echo "\n";
 foreach ($fields as $column):
     if (!$column->isMultilang()) :
+        if ($column->getComment() !== 'password') :
 ?>
-            '<?=$column->getName()?>' => $model->get<?=$column->getNormalizedName('upper')?>(),
+                '<?=$column->getName()?>' => $model->get<?=$column->getNormalizedName('upper')?>(),
 <?php
+endif;
     endif;
 endforeach;
 ?>
-        );
+            );
+        } else {
+            $result = array();
+            foreach ($fields as $fieldData) {
+                if (!empty(trim($fieldData))) {
+                    if (strpos($fieldData, ":") !== false) {
+                        list($field,$params) = explode(":", $fieldData, 2);
+                    } else {
+                        $field = $fieldData;
+                        $params = null;
+                    }
+                    $get = 'get' . ucfirst($field);
+                    $result[lcfirst($field)] = $model->$get($params);
+                }
+            }
+        }
 
         return $result;
+
     }
 
     /**

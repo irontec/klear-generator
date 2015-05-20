@@ -6,9 +6,6 @@ $fields = Generator_Db::describeTable($tableName);
 
 $primaryKey = $fields->getPrimaryKey();
 
-$enumFields = array();
-$fsoFields = array();
-
 echo "/**\n";
 echo " * $tableName\n";
 echo " */\n\n";
@@ -73,12 +70,63 @@ foreach ($fields as $field) {
 
     }
 
+    /**
+     * @ApiDescription(section="<?=$tableName?>", description="GET information about all <?=$tableName?>")
+     * @ApiMethod(type="get")
+     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
+     * @ApiParams(name="page", type="int", nullable=true, description="", sample="")
+     * @ApiParams(name="order", type="string", nullable=true, description="", sample="")
+     * @ApiParams(name="search", type="json_encode", nullable=true, description="", sample="")
+     * @ApiReturnHeaders(sample="HTTP 200 OK")
+     * @ApiReturn(type="object", sample="{
+<?php
+foreach ($fields as $field) {
+echo "     *     '" . $field->getName() ."': '', \n";
+}
+?>
+     * },{
+<?php
+foreach ($fields as $field) {
+echo "     *     '" . $field->getName() ."': '', \n";
+}
+?>
+     * }")
+     */
     public function indexAction()
     {
 
         $page = $this->getRequest()->getHeader('page', 0);
         $orderParam = $this->getRequest()->getParam('order', false);
         $searchParams = $this->getRequest()->getParam('search', false);
+
+        $fields = $this->getRequest()->getParam('fields', array());
+        if (!empty($fields)) {
+            $fields = explode(',', $fields);
+        } else {
+            $fields = array(
+<?php
+foreach ($fields as $field) :
+$fieldName = $field->getName();
+$name = '';
+if (strpos($fieldName, 'FileSize') == false && strpos($fieldName, 'MimeType') == false && strpos($fieldName, 'BaseName') == false) {
+
+    if (strpos($fieldName, '_')) {
+        $dataName = explode('_', $fieldName);
+        $name = $dataName[0] . ucfirst($dataName[1]);
+    } else {
+        $name = $fieldName;
+    }
+if (!empty($name)) {
+    echo "                '" . $name . "',\n";
+}
+
+} elseif ($field->getComment() === '[FSO]') {
+    $name = str_replace('FileSize', '', $fieldName) . 'Url';
+    echo "                //'" . $name . ":@profile', Cambia @profile por el profile del fso.ini\n";
+}
+endforeach;?>
+            );
+        }
 
         $order = $this->_prepareOrder($orderParam);
         $where = $this->_prepareWhere($searchParams);
@@ -111,7 +159,7 @@ foreach ($fields as $field) {
         $data = array();
 
         foreach ($items as $item) {
-            $data[] = $item->toArray();
+            $data[] = $item->toArray($fields);
         }
 
         $this->addViewData($data);
@@ -120,12 +168,12 @@ foreach ($fields as $field) {
     }
 
     /**
-     * [disabled]ApiDescription(section="<?=$tableName?>", description="Get information about <?=$tableName?>")
-     * [disabled]ApiMethod(type="get")
-     * [disabled]ApiRoute(name="/rest/<?=strtolower($tableName)?>/{<?=$primaryKey->getName()?>}")
-<?php echo '     * [disabled]ApiParams(name="' . $primaryKey->getName() . '", type="' . $primaryKey->getType() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', description="", sample="")' . "\n";?>
-     * [disabled]ApiReturnHeaders(sample="HTTP 200 OK")
-     * [disabled]ApiReturn(type="object", sample="{
+     * @ApiDescription(section="<?=$tableName?>", description="Get information about <?=$tableName?>")
+     * @ApiMethod(type="get")
+     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/{<?=$primaryKey->getName()?>}")
+<?php echo '     * @ApiParams(name="' . $primaryKey->getName() . '", type="' . $primaryKey->getType() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', description="", sample="")' . "\n";?>
+     * @ApiReturnHeaders(sample="HTTP 200 OK")
+     * @ApiReturn(type="object", sample="{
 <?php
 foreach ($fields as $field) {
 echo "     *     '" . $field->getName() ."': '', \n";
@@ -157,19 +205,19 @@ echo "     *     '" . $field->getName() ."': '', \n";
     }
 
     /**
-     * [disabled]ApiDescription(section="<?=$tableName?>", description="Create's a new <?=$tableName?>")
-     * [disabled]ApiMethod(type="post")
-     * [disabled]ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
+     * @ApiDescription(section="<?=$tableName?>", description="Create's a new <?=$tableName?>")
+     * @ApiMethod(type="post")
+     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
 <?php
 foreach ($fields as $field) {
     if ($field->getName() != $primaryKey->getName()) {
-        echo '     * [disabled]ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="'.$field->getComment().'")' . "\n";
+        echo '     * @ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="'.$field->getComment().'")' . "\n";
     }
 }
 ?>
-     * [disabled]ApiReturnHeaders(sample="HTTP 201")
-     * [disabled]ApiReturnHeaders(sample="Location: /rest/<?=strtolower($tableName)?>/{<?=$primaryKey->getName()?>}")
-     * [disabled]ApiReturn(type="object", sample="{}")
+     * @ApiReturnHeaders(sample="HTTP 201")
+     * @ApiReturnHeaders(sample="Location: /rest/<?=strtolower($tableName)?>/{<?=$primaryKey->getName()?>}")
+     * @ApiReturn(type="object", sample="{}")
      */
     public function postAction()
     {
@@ -197,16 +245,16 @@ foreach ($fields as $field) {
     }
 
     /**
-     * [disabled]ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
-     * [disabled]ApiMethod(type="put")
-     * [disabled]ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
+     * @ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
+     * @ApiMethod(type="put")
+     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
 <?php
 foreach ($fields as $field) {
-    echo '     * [disabled]ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="'.$field->getComment().'")' . "\n";
+    echo '     * @ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="'.$field->getComment().'")' . "\n";
 }
 ?>
-     * [disabled]ApiReturnHeaders(sample="HTTP 200")
-     * [disabled]ApiReturn(type="object", sample="{}")
+     * @ApiReturnHeaders(sample="HTTP 200")
+     * @ApiReturn(type="object", sample="{}")
      */
     public function putAction()
     {
@@ -243,12 +291,12 @@ foreach ($fields as $field) {
     }
 
     /**
-     * [disabled]ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
-     * [disabled]ApiMethod(type="delete")
-     * [disabled]ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
-<?php echo '     * [disabled]ApiParams(name="' . $primaryKey->getName() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', type="' . $primaryKey->getType() . '", sample="", description="")' . "\n";?>
-     * [disabled]ApiReturnHeaders(sample="HTTP 204")
-     * [disabled]ApiReturn(type="object", sample="{}")
+     * @ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
+     * @ApiMethod(type="delete")
+     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
+<?php echo '     * @ApiParams(name="' . $primaryKey->getName() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', type="' . $primaryKey->getType() . '", sample="", description="")' . "\n";?>
+     * @ApiReturnHeaders(sample="HTTP 204")
+     * @ApiReturn(type="object", sample="{}")
      */
     public function deleteAction()
     {
