@@ -185,10 +185,14 @@ echo "     *     '" . $field->getName() ."': '', \n";
     {
 
         $primaryKey = $this->getRequest()->getParam('<?=$primaryKey->getName()?>', false);
-
         if ($primaryKey === false) {
             $this->status->setCode(404);
             return;
+        }
+
+        $fields = $this->getRequest()->getParam('fields', array());
+        if (!empty($fields)) {
+            $fields = explode(',', $fields);
         }
 
         $mapper = new Mappers\<?=$tableName?>();
@@ -200,7 +204,7 @@ echo "     *     '" . $field->getName() ."': '', \n";
         }
 
         $this->status->setCode(200);
-        $this->addViewData($model->toArray());
+        $this->addViewData($model->toArray($fields));
 
     }
 
