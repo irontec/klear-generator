@@ -356,8 +356,10 @@ endif;//$fields->hasSoftDelete()
 
             throw $exception;
         }
+<?php if ($etagsExist) { if ($this->_className !== 'EtagVersions') { ?>        $this->_etagChange();<?php } }?>
 
         return $result;
+
     }
 
     /**
@@ -366,6 +368,8 @@ endif;//$fields->hasSoftDelete()
      */
     public function save(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model)
     {
+<?php if ($etagsExist) { if ($this->_className !== 'EtagVersions') { ?>        $this->_etagChange();<?php } }?>
+
         return $this->_save($model, false, false);
     }
 
@@ -807,6 +811,40 @@ endif;
         return $entry;
     }
 <?php
+if ($etagsExist) {
+    ?>
+    protected function _etagChange()
+    {
+
+        $date = new \Zend_Date();
+        $date->setTimezone('UTC');
+        $nowUTC = $date->toString('yyyy-MM-dd HH:mm:ss');
+
+        $etags = new \<?=$namespace?>Mapper\Sql\EtagVersions();
+        $etag = $etags->findOneByField('table', '<?=$this->_className?>');
+
+        if (empty($etag)) {
+            $etag = new \<?=$namespace?>Model\EtagVersions();
+            $etag->setTable('<?=$this->_className?>');
+        }
+
+        $random = substr(
+            str_shuffle(
+                str_repeat(
+                    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+                    5
+                )
+            ), 0, 5
+        );
+
+        $etag->setEtag(md5($nowUTC . $random));
+        $etag->setLastChange($nowUTC);
+        $etag->save();
+
+    }
+<?php
+}// endif $etagsExist
+
 $functions = $this->_includeMapper->getFunctions();
 if (!empty($functions)) {
     echo "\n$functions\n";

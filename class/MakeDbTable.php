@@ -795,6 +795,11 @@ abstract class MakeDbTable {
             }
         }
 
+        $etagsExist = in_array(
+            'EtagVersions',
+            $this->_tableList
+        );
+
         /********************************
          ************* Raw ************
          ********************************/
@@ -806,7 +811,10 @@ abstract class MakeDbTable {
             $this->_className . '.php'
         );
         $mapperFile = implode(DIRECTORY_SEPARATOR, $mapperFile);
-        $mapperData = $this->getParsedTplContents('mapper_raw.tpl.php');
+        $mapperData = $this->getParsedTplContents(
+            'mapper_raw.tpl.php',
+            array('etagsExist' => $etagsExist)
+        );
 
         if (!file_put_contents($mapperFile, $mapperData)) {
             die("Error: could not write mapper file $mapperFile.");
