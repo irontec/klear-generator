@@ -123,6 +123,7 @@ class Generator_Rest_Factory
         $pathPlugin = $this->_pathLibrary . $this->_namespace . $plugin;
 
         $this->_createFolders($this->_restPath . '/controllers');
+        $this->_createFolders($this->_restPath . '/controllersRaw');
 
         $this->_createFolders($pathPlugin);
 
@@ -170,6 +171,7 @@ class Generator_Rest_Factory
         foreach ($entities as $table) {
 
             $controllerFile = $controllers . '/' . $table . 'Controller.php';
+            $controllerRawFile = $controllers . 'Raw/' . $table . 'Controller.php';
 
             $data = array(
                 'tableName' => $table,
@@ -179,6 +181,13 @@ class Generator_Rest_Factory
                 $controllerFile,
                 'rest.tpl.php',
                 $data
+            );
+
+            $this->_createFiles(
+                $controllerRawFile,
+                'rest.tpl.php',
+                $data,
+                true
             );
 
         }
@@ -314,11 +323,13 @@ class Generator_Rest_Factory
      * @throws Exception
      * @return boolean
      */
-    protected function _createFiles($filePath, $tpl, $data = array())
+    protected function _createFiles($filePath, $tpl, $data = array(), $rewrite = false)
     {
 
-        if (file_exists($filePath)) {
-            return false;
+        if (!$rewrite) {
+            if (file_exists($filePath)) {
+                return false;
+            }
         }
 
         try {
@@ -333,7 +344,9 @@ class Generator_Rest_Factory
                     'No se puede crear: ' . $filePath
                 );
             } else {
-                $this->_logNew($filePath);
+                if (!$rewrite) {
+                    $this->_logNew($filePath);
+                }
             }
 
         } catch (Exception $e) {
