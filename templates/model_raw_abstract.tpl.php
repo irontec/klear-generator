@@ -158,11 +158,18 @@ abstract class ModelAbstract implements \IteratorAggregate
             }
         }
 
-<?php if (!empty($this->_loggerName)):?>
-        $this->_logger = \Zend_Registry::get('<?=$this->_loggerName ?>');
-<?php else:?>
-        $this->_logger = new \Zend_Log(new \Zend_Log_Writer_Null());
-<?php endif; ?>
+        $this->_logger = null;
+        if (!is_null($bootstrap)) {
+            $this->_logger = $bootstrap->getResource('log');
+        }
+        if (is_null($this->_logger)) {
+            $params = array(
+                array(
+                    'writerName' => 'Null'
+                )
+            );
+            $this->_logger = Zend_Log::factory($params);
+        }
 
 
         $this->init();

@@ -75,13 +75,8 @@ abstract class MapperAbstract
         $this->_cache = null;
 <?php endif; ?>
 
-<?php if (!empty($this->_loggerName)):?>
-        $this->_logger = \Zend_Registry::get('<?=$this->_loggerName ?>');
-<?php else:?>
-        $this->_logger = new \Zend_Log(new \Zend_Log_Writer_Null());
-<?php endif; ?>
-
         $bootstrap = \Zend_Controller_Front::getInstance()->getParam('bootstrap');
+
 
         if (is_null($bootstrap)) {
 
@@ -91,6 +86,19 @@ abstract class MapperAbstract
         } else {
 
             $conf = (Object) $bootstrap->getOptions();
+        }
+
+        $this->_logger = null;
+        if (!is_null($bootstrap)) {
+            $this->_logger = $bootstrap->getResource('log');
+        }
+        if (is_null($this->_logger)) {
+            $params = array(
+                array(
+                    'writerName' => 'Null'
+                )
+            );
+            $this->_logger = Zend_Log::factory($params);
         }
 
         if (isset($conf->mappers)) {
