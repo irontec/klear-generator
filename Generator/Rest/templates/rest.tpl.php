@@ -95,6 +95,9 @@ echo "     *     '" . $field->getName() ."': '', \n";
     public function indexAction()
     {
 
+        $currentEtag = false;
+        $ifNoneMatch = $this->getRequest()->getHeader('If-None-Match', false);
+
         $page = $this->getRequest()->getHeader('page', 0);
         $orderParam = $this->getRequest()->getParam('order', false);
         $searchParams = $this->getRequest()->getParam('search', false);
@@ -138,6 +141,25 @@ endforeach;?>
             )
         );
 
+        $etags = new Mappers\EtagVersions();
+        $etag = $etags->findOneByField('table', '<?=$tableName?>');
+
+        $hashEtag = md5(
+            serialize(
+                array($where, $order, $this->_limitPage, $offset)
+            )
+        );
+
+        if (!empty($etag)) {
+            $ifNoneMatch = $this->getRequest()->getHeader('If-None-Match', false);
+            if ($etag->getEtag() . $hashEtag === $ifNoneMatch) {
+                $this->status->setCode(304);
+                return;
+            } {
+                $currentEtag = $etag->getEtag() . $hashEtag;
+            }
+        }
+
         $mapper = new Mappers\<?=$tableName?>();
 
         $items = $mapper->fetchList(
@@ -165,6 +187,10 @@ endforeach;?>
         $this->addViewData($data);
         $this->status->setCode(200);
 
+        if ($currentEtag !== false) {
+            $this->getResponse()->setHeader('Etag', $currentEtag);
+        }
+
     }
 
     /**
@@ -183,7 +209,7 @@ echo "     *     '" . $field->getName() ."': '', \n";
      */
     public function getAction()
     {
-
+        $currentEtag = false;
         $primaryKey = $this->getRequest()->getParam('<?=$primaryKey->getName()?>', false);
         if ($primaryKey === false) {
             $this->status->setCode(404);
@@ -193,6 +219,19 @@ echo "     *     '" . $field->getName() ."': '', \n";
         $fields = $this->getRequest()->getParam('fields', array());
         if (!empty($fields)) {
             $fields = explode(',', $fields);
+        }
+
+        $etags = new Mappers\EtagVersions();
+        $etag = $etags->findOneByField('table', '<?=$tableName?>');
+
+        if (!empty($etag)) {
+            $ifNoneMatch = $this->getRequest()->getHeader('If-None-Match', false);
+            if ($etag->getEtag() . $primaryKey === $ifNoneMatch) {
+                $this->status->setCode(304);
+                return;
+            } else {
+                $currentEtag = $etag->getEtag() . $primaryKey;
+            }
         }
 
         $mapper = new Mappers\<?=$tableName?>();
@@ -205,6 +244,10 @@ echo "     *     '" . $field->getName() ."': '', \n";
 
         $this->status->setCode(200);
         $this->addViewData($model->toArray($fields));
+
+        if ($currentEtag !== false) {
+            $this->getResponse()->setHeader('Etag', $currentEtag);
+        }
 
     }
 
