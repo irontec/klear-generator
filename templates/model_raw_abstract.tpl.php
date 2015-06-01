@@ -168,7 +168,7 @@ abstract class ModelAbstract implements \IteratorAggregate
                     'writerName' => 'Null'
                 )
             );
-            $this->_logger = Zend_Log::factory($params);
+            $this->_logger = \Zend_Log::factory($params);
         }
 
 

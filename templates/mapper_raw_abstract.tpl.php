@@ -98,7 +98,7 @@ abstract class MapperAbstract
                     'writerName' => 'Null'
                 )
             );
-            $this->_logger = Zend_Log::factory($params);
+            $this->_logger = \Zend_Log::factory($params);
         }
 
         if (isset($conf->mappers)) {
