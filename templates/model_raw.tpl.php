@@ -281,13 +281,13 @@ if (!empty($vars)) {
 foreach ($fsoObjects as $fsoObject => $field):
 ?>
         $this->_<?php echo lcfirst($fsoObject); ?>Fso = new \Iron_Model_Fso($this, $this->get<?php echo ucfirst($fsoObject); ?>Specs());
-<?php 
+<?php
     $modifiers = $field->getModifiers();
-    if (!empty($modifiers)): 
+    if (!empty($modifiers)):
 ?>
         $this->_<?php echo lcfirst($fsoObject); ?>Fso->getPathResolver()->setModifiers(array('<?php echo implode("' => true,'", $modifiers); ?>' => true));
 <?php
-    endif; 
+    endif;
 ?>
 <?php
 endforeach;
@@ -404,11 +404,25 @@ foreach ($fields as $column):
     $setterParams = '';
     $getterParams = '';
     $multilang = false;
+    $trimMethod = '';
+    $trimOpen = '';
+    $trimClose = '';
 
     if ($column->isMultilang()) {
         $multilang = true;
         $setterParams = '$data, $language = \'\'';
         $getterParams = '$language = \'\'';
+    }
+
+    $trimMethods = array (
+            "[trim]" => "trim",
+            "[rtrim]" => "rtrim",
+            "[ltrim]" => "ltrim"
+    );
+    if ($column->hasComment() && isset($trimMethods[$column->getComment()])) {
+        $trimMethod = $trimMethods[$column->getComment()];
+        $trimOpen = "(";
+        $trimClose = ")";
     }
 ?>
 
@@ -483,7 +497,7 @@ foreach ($fields as $column):
         if (!method_exists($this, $methodName)) {
 
             // new \Exception('Unavailable language');
-            $this->_<?=$column->getNormalizedName()?> = $data;
+            $this->_<?=$column->getNormalizedName()?> = <?=$trimMethod.$trimOpen?>$data<?=$trimClose?>;
             return $this;
         }
         $this->$methodName($data);
@@ -526,7 +540,7 @@ foreach ($fields as $column):
 <?php
             endif;
 ?>
-            $this->_<?=$column->getNormalizedName()?> = <?php echo $casting; ?> $data;
+            $this->_<?=$column->getNormalizedName()?> = <?php echo $casting; ?> <?=$trimMethod.$trimOpen?>$data<?=$trimClose?>;
         } else {
             $this->_<?=$column->getNormalizedName()?> = $data;
         }
@@ -534,7 +548,7 @@ foreach ($fields as $column):
     else :
 ?>
 
-        $this->_<?=$column->getNormalizedName()?> = $data;
+        $this->_<?=$column->getNormalizedName()?> = <?=$trimMethod.$trimOpen?>$data<?=$trimClose?>;
 <?php
     endif; // !empty($casting)
     endif;
