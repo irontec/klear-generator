@@ -284,9 +284,12 @@ foreach ($fsoObjects as $fsoObject => $field):
 <?php
     $modifiers = $field->getModifiers();
     if (!empty($modifiers)):
+        foreach ($modifiers as $adapter => $values):
+        $getter = "get" . ucfirst($adapter) . "Resolver";
 ?>
-        $this->_<?php echo lcfirst($fsoObject); ?>Fso->getPathResolver()->setModifiers(array('<?php echo implode("' => true,'", $modifiers); ?>' => true));
+        $this->_<?php echo lcfirst($fsoObject); ?>Fso-><?php echo $getter; ?>()->setModifiers(array('<?php echo implode("' => true,'", $values); ?>' => true));
 <?php
+        endforeach;
     endif;
 ?>
 <?php

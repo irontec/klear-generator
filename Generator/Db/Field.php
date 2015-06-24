@@ -41,11 +41,37 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function getModifiers()
     {
-        if (preg_match('/\[.*:(.+)\]/', $this->getComment(), $matches)) {
-            return explode("|", $matches[1]);
+        $comment = $this->getComment();
+               
+        if (preg_match('/\[.*:(.+)\]/', $comment, $matches)) {
+            $comment = $matches[1];
+     
+            $isMultiArg = strpos($comment, '(') !== false; 
+            if($isMultiArg) {
+                return $this->_getMultiArgModifiers($comment);
+            } else {
+                $values = explode("|", $comment);
+                return array(
+                        "path" => $values
+                );
+            }
+        }
+
+        return array();
+    }
+    
+    protected function _getMultiArgModifiers($comment) 
+    {
+        $comments = (explode(")|", $comment));
+        $values = array();
+        foreach( $comments as $comment) {
+            preg_match('/([A-Za-z]+)\(([^\)]*)/', $comment, $matches);
+            $adapter = $matches[1];
+            $modifiers = explode("|", $matches[2]); 
+            $values[$adapter] = $modifiers;
         }
         
-        return array();
+        return $values;
     }
 
     
