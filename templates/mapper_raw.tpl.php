@@ -94,7 +94,8 @@ endforeach;
         } else {
             $result = array();
             foreach ($fields as $fieldData) {
-                if (!empty(trim($fieldData))) {
+                $checkField = trim($fieldData);
+                if (!empty($checkField)) {
                     if (strpos($fieldData, ":") !== false) {
                         list($field,$params) = explode(":", $fieldData, 2);
                     } else {
