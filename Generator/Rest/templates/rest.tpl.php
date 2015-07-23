@@ -78,7 +78,7 @@ foreach ($fields as $field) {
      * @ApiParams(name="order", type="string", nullable=true, description="", sample="")
      * @ApiParams(name="search", type="json_encode", nullable=true, description="", sample="")
      * @ApiReturnHeaders(sample="HTTP 200 OK")
-     * @ApiReturn(type="object", sample="{
+     * @ApiReturn(type="object", sample="[{
 <?php
 foreach ($fields as $field) {
 echo "     *     '" . $field->getName() ."': '', \n";
@@ -90,7 +90,7 @@ foreach ($fields as $field) {
 echo "     *     '" . $field->getName() ."': '', \n";
 }
 ?>
-     * }")
+     * }]")
      */
     public function indexAction()
     {
