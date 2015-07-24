@@ -433,7 +433,7 @@ foreach ($fields as $column):
      * Sets column <?=$column->getName() . $column->isAnyDateType()? "Stored in ISO 8601 format." : '' . "\n";?>
      *
 <?php if ($column->isAnyDateType()): ?>
-     * @param string|Zend_Date $date
+     * @param string|Zend_Date|DateTime $date
 <?php else: ?>
      * @param <?=$column->getPhpType()?> $data
 <?php endif; ?>
@@ -442,16 +442,29 @@ foreach ($fields as $column):
     public function set<?=$column->getNormalizedName('upper')?>(<?=$multilang ? $setterParams : '$data'; ?>)
     {
 <?php
-    $applyCasting = true;
-
+    $applyCasting = $column->isAnyDateType() ? false : true;
     if ($column->isAnyDateType()):
-        $applyCasting = false;
-?>
-
-        if ($data == '0000-00-00 00:00:00') {
-            $data = null;
+        $emptyValue = null;
+        switch($column->getType()) {
+            case 'datetime':
+            case 'timestamp':
+                $emptyValue = '0000-00-00 00:00:00';
+                break;
+            case 'date':
+                $emptyValue = '0000-00-00';
+                break;
+            case 'time':
+                // 00:00:00 makes sense
         }
 
+        if ($emptyValue): 
+?>
+        if ($data == '<?php echo $emptyValue; ?>') {
+            $data = null;
+        }
+<?php
+        endif;
+?>
         if ($data === 'CURRENT_TIMESTAMP'<?php
         // Si un timestamp es obligatorio -no nullable- y se le settea NULL
         // MySQL setea now(); mejor lo forzamos nosotros a now con TZ.
@@ -470,13 +483,15 @@ foreach ($fields as $column):
 
             $data = new \DateTime($data, new \DateTimeZone('<?=$this->_defaultTimeZone;?>'));
         }
-
+<?php
+        if ($column->appliesDst()):
+?>
         if ($data instanceof \DateTime && $data->getTimezone()->getName() != '<?=$this->_defaultTimeZone;?>') {
 
             $data->setTimezone(new \DateTimeZone('<?=$this->_defaultTimeZone;?>'));
         }
-
 <?php
+        endif;
     endif;
 ?>
 
@@ -488,7 +503,6 @@ foreach ($fields as $column):
         if (is_null($data)) {
             throw new \InvalidArgumentException(_('Required values cannot be null'));
         }
-
 <?php
     endif;
 
@@ -533,6 +547,7 @@ foreach ($fields as $column):
 ?>
         if ($data instanceof \Zend_Db_Expr) {
             $this->_<?=$column->getNormalizedName()?> = $data;
+
         } else if (!is_null($data)) {
 <?php
             if ($column->isEnum()) :
@@ -544,13 +559,13 @@ foreach ($fields as $column):
             endif;
 ?>
             $this->_<?=$column->getNormalizedName()?> = <?php echo $casting; ?> <?=$trimMethod.$trimOpen?>$data<?=$trimClose?>;
+
         } else {
             $this->_<?=$column->getNormalizedName()?> = $data;
         }
 <?php
     else :
 ?>
-
         $this->_<?=$column->getNormalizedName()?> = <?=$trimMethod.$trimOpen?>$data<?=$trimClose?>;
 <?php
     endif; // !empty($casting)
@@ -579,12 +594,10 @@ foreach ($fields as $column):
         }
     ?>)
     {
-    <?php
-        if ($column->isAnyDateType()):
+<?php
+    if ($column->isAnyDateType()):
     ?>
-
         if (is_null($this->_<?=$column->getNormalizedName()?>)) {
-
             return null;
         }
 
@@ -594,22 +607,21 @@ foreach ($fields as $column):
             return $zendDate;
         }
 
-
-<?php if ($column->getType() =='date'): ?>
+<?php
+            if ($column->getType() =='date'): ?>
         return $this->_<?=$column->getNormalizedName()?>->format('Y-m-d');
-<?php elseif ($column->getType() =='time') : ?>
+<?php
+            elseif ($column->getType() =='time') : ?>
         return $this->_<?=$column->getNormalizedName()?>->format('H:i:s');
-<?php else: ?>
+<?php
+            else: ?>
         return $this->_<?=$column->getNormalizedName()?>->format('Y-m-d H:i:s');
-<?php endif; ?>
-
-<?php elseif ($column->getPhpType() == 'boolean'): ?>
-
+<?php       endif;
+     elseif ($column->getPhpType() == 'boolean'): ?>
         return (int) $this->_<?=$column->getNormalizedName()?>;
 <?php
-    elseif ($multilang):
+     elseif ($multilang):
 ?>
-
         $language = $this->_getCurrentLanguage($language);
 
         $methodName = "get<?=$column->getNormalizedName('upper')?>". ucfirst(str_replace('_', '', $language));
@@ -620,26 +632,23 @@ foreach ($fields as $column):
         }
 
         return $this->$methodName();
-
 <?php
-    else:
-
+     else:
         if ($column->hasComment('[html]')):
 ?>
-
         $pathFixer = new \Iron_Filter_PathFixer;
         return $pathFixer->fix($this->_<?=$column->getNormalizedName()?>);
 <?php
         else:
+
 ?>
         return $this->_<?=$column->getNormalizedName()?>;
 <?php
         endif;
+      endif;
 ?>
-<?php endif; ?>
     }
 <?php endforeach; ?>
-
 <?php foreach ($this->getForeignKeysInfo() as $key): ?>
 
     /**

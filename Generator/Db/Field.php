@@ -245,6 +245,11 @@ class Generator_Db_Field implements \IteratorAggregate
         return (bool) preg_match('/date|time/', $this->_getDescriptionProperty('DATA_TYPE'));
     }
 
+    public function appliesDst()
+    {
+        return in_array($this->getType(), array('datetime', 'timestamp'));
+    }
+
     public function isRelationship()
     {
         return isset($this->_description['RELATED']);
