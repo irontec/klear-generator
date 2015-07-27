@@ -4,6 +4,11 @@ $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 
 $fields = Generator_Db::describeTable($tableName);
 
+$docFieldNames = array();
+foreach ($fields as $field) {
+    $docFieldNames[] = "     *     '" . $field->getName() ."': ''";
+}
+
 $primaryKey = $fields->getPrimaryKey();
 
 echo "/**\n";
@@ -77,22 +82,18 @@ foreach ($fields as $field) {
     /**
      * @ApiDescription(section="<?=$tableName?>", description="GET information about all <?=$tableName?>")
      * @ApiMethod(type="get")
-     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
+     * @ApiRoute(name="/rest/<?=$uri?>/")
      * @ApiParams(name="page", type="int", nullable=true, description="", sample="")
      * @ApiParams(name="order", type="string", nullable=true, description="", sample="")
      * @ApiParams(name="search", type="json_encode", nullable=true, description="", sample="")
      * @ApiReturnHeaders(sample="HTTP 200 OK")
      * @ApiReturn(type="object", sample="[{
 <?php
-foreach ($fields as $field) {
-echo "     *     '" . $field->getName() ."': '', \n";
-}
+echo implode(", \n", $docFieldNames) . "\n";    
 ?>
      * },{
 <?php
-foreach ($fields as $field) {
-echo "     *     '" . $field->getName() ."': '', \n";
-}
+echo implode(", \n", $docFieldNames) . "\n";    
 ?>
      * }]")
      */
@@ -205,9 +206,7 @@ endforeach;?>
      * @ApiReturnHeaders(sample="HTTP 200 OK")
      * @ApiReturn(type="object", sample="{
 <?php
-foreach ($fields as $field) {
-echo "     *     '" . $field->getName() ."': '', \n";
-}
+echo implode(", \n", $docFieldNames) . "\n";
 ?>
      * }")
      */

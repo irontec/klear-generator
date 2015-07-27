@@ -172,9 +172,11 @@ class Generator_Rest_Factory
 
             $controllerFile = $controllers . '/' . $table . 'Controller.php';
             $controllerRawFile = $controllers . 'Raw/' . $table . 'Controller.php';
+            $uri = preg_replace("/([A-Z]){1}/", "-$1", lcfirst($table));
 
             $data = array(
                 'tableName' => $table,
+                'uri' => strtolower($uri)
             );
 
             $this->_createFiles(
