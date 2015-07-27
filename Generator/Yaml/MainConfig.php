@@ -50,7 +50,16 @@ class Generator_Yaml_MainConfig extends Generator_Yaml_AbstractConfig
 
         $data['timezone'] = 'Europe/Madrid';
 
-        $entitiesConfig = array();
+        $entitiesConfig = array(
+            "Dashboard" => array(
+                "default" => "true",
+                "title" => array(
+                    "i18n" => array(
+                        "es" => "Panel de control"
+                    )    
+                )
+            )
+        );
         foreach ($entities as $entity) {
 
             $normalizedEntity = ucfirst(Generator_StringUtils::toCamelCase($entity));
