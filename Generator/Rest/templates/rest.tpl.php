@@ -35,10 +35,13 @@ class Rest_<?=$tableName?>Controller extends Iron_Controller_Rest_BaseController
             'params' => array(
 <?php
 foreach ($fields as $field) {
-    echo "                '" . $field->getName() . "' => array(\n";
-    echo "                    'type' => '" . $field->getType() . "',\n";
-    echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . "\n";
-    echo "                ),\n";
+    if ($primaryKey->getName() !== $field->getName()) {
+        echo "                '" . $field->getName() . "' => array(\n";
+        echo "                    'type' => '" . $field->getType() . "',\n";
+        echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
+        echo "                    'comment' => '" . $field->getComment() . "',\n";
+        echo "                ),\n";
+    }
 }
 ?>
             )
@@ -50,7 +53,8 @@ foreach ($fields as $field) {
 foreach ($fields as $field) {
     echo "                '" . $field->getName() . "' => array(\n";
     echo "                    'type' => '" . $field->getType() . "',\n";
-    echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . "\n";
+    echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
+    echo "                    'comment' => '" . $field->getComment() . "',\n";
     echo "                ),\n";
 }
 ?>
