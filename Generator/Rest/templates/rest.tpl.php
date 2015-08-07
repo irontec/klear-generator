@@ -82,7 +82,7 @@ foreach ($fields as $field) {
     /**
      * @ApiDescription(section="<?=$tableName?>", description="GET information about all <?=$tableName?>")
      * @ApiMethod(type="get")
-     * @ApiRoute(name="/rest/<?=$uri?>/")
+     * @ApiRoute(name="/rest/<?=$uri;?>/")
      * @ApiParams(name="page", type="int", nullable=true, description="", sample="")
      * @ApiParams(name="order", type="string", nullable=true, description="", sample="")
      * @ApiParams(name="search", type="json_encode", nullable=true, description="", sample="")
@@ -201,7 +201,7 @@ endforeach;?>
     /**
      * @ApiDescription(section="<?=$tableName?>", description="Get information about <?=$tableName?>")
      * @ApiMethod(type="get")
-     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/{<?=$primaryKey->getName()?>}")
+     * @ApiRoute(name="/rest/<?=$uri;?>/{<?=$primaryKey->getName()?>}")
 <?php echo '     * @ApiParams(name="' . $primaryKey->getName() . '", type="' . $primaryKey->getType() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', description="", sample="")' . "\n";?>
      * @ApiReturnHeaders(sample="HTTP 200 OK")
      * @ApiReturn(type="object", sample="{
@@ -257,7 +257,7 @@ echo implode(", \n", $docFieldNames) . "\n";
     /**
      * @ApiDescription(section="<?=$tableName?>", description="Create's a new <?=$tableName?>")
      * @ApiMethod(type="post")
-     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
+     * @ApiRoute(name="/rest/<?=$uri;?>/")
 <?php
 foreach ($fields as $field) {
     if ($field->getName() != $primaryKey->getName()) {
@@ -297,7 +297,7 @@ foreach ($fields as $field) {
     /**
      * @ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
      * @ApiMethod(type="put")
-     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
+     * @ApiRoute(name="/rest/<?=$uri;?>/")
 <?php
 foreach ($fields as $field) {
     echo '     * @ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="'.$field->getComment().'")' . "\n";
@@ -343,7 +343,7 @@ foreach ($fields as $field) {
     /**
      * @ApiDescription(section="<?=$tableName?>", description="Table <?=$tableName?>")
      * @ApiMethod(type="delete")
-     * @ApiRoute(name="/rest/<?=strtolower($tableName)?>/")
+     * @ApiRoute(name="/rest/<?=$uri;?>/")
 <?php echo '     * @ApiParams(name="' . $primaryKey->getName() . '", nullable=' . ($primaryKey->isNullable() ? 'true' : 'false') . ', type="' . $primaryKey->getType() . '", sample="", description="")' . "\n";?>
      * @ApiReturnHeaders(sample="HTTP 204")
      * @ApiReturn(type="object", sample="{}")
