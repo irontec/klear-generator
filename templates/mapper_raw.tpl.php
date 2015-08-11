@@ -94,12 +94,12 @@ endforeach;
         } else {
             $result = array();
             foreach ($fields as $fieldData) {
-                $checkField = trim($fieldData);
-                if (!empty($checkField)) {
-                    if (strpos($fieldData, ":") !== false) {
-                        list($field,$params) = explode(":", $fieldData, 2);
+                $trimField = trim($fieldData);
+                if (!empty($trimField)) {
+                    if (strpos($trimField, ":") !== false) {
+                        list($field,$params) = explode(":", $trimField, 2);
                     } else {
-                        $field = $fieldData;
+                        $field = $trimField;
                         $params = null;
                     }
                     $get = 'get' . ucfirst($field);
