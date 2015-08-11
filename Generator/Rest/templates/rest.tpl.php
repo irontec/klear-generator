@@ -3,13 +3,22 @@
 $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 
 $fields = Generator_Db::describeTable($tableName);
+$primaryKey = $fields->getPrimaryKey();
+$fields = $this->_prepareFields($fields);
+
+$fso = array();
+foreach ($fields as $field) {
+    $fieldName = str_replace('FileSize', '', $field->getName());
+    if ($field->getName() === $fieldName . 'FileSize') {
+        $fso[] = $fieldName;
+    }
+}
 
 $docFieldNames = array();
 foreach ($fields as $field) {
-    $docFieldNames[] = "     *     '" . $field->getName() ."': ''";
+    $fieldName = str_replace('FileSize', '', $field->getName());
+    $docFieldNames[] = "     *     '" . $fieldName ."': ''";
 }
-
-$primaryKey = $fields->getPrimaryKey();
 
 echo "/**\n";
 echo " * $tableName\n";
@@ -35,13 +44,15 @@ class Rest_<?=$tableName?>Controller extends Iron_Controller_Rest_BaseController
                 )
             )
         );
+
         $this->view->POST = array(
             'description' => '',
             'params' => array(
 <?php
 foreach ($fields as $field) {
     if ($primaryKey->getName() !== $field->getName()) {
-        echo "                '" . $field->getName() . "' => array(\n";
+        $fieldName = str_replace('FileSize', '', $field->getName());
+        echo "                '" . $fieldName . "' => array(\n";
         echo "                    'type' => '" . $field->getType() . "',\n";
         echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
         echo "                    'comment' => '" . $field->getComment() . "',\n";
@@ -51,12 +62,14 @@ foreach ($fields as $field) {
 ?>
             )
         );
+
         $this->view->PUT = array(
             'description' => '',
             'params' => array(
 <?php
 foreach ($fields as $field) {
-    echo "                '" . $field->getName() . "' => array(\n";
+    $fieldName = str_replace('FileSize', '', $field->getName());
+    echo "                '" . $fieldName . "' => array(\n";
     echo "                    'type' => '" . $field->getType() . "',\n";
     echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
     echo "                    'comment' => '" . $field->getComment() . "',\n";
@@ -89,11 +102,11 @@ foreach ($fields as $field) {
      * @ApiReturnHeaders(sample="HTTP 200 OK")
      * @ApiReturn(type="object", sample="[{
 <?php
-echo implode(", \n", $docFieldNames) . "\n";    
+echo implode(", \n", $docFieldNames) . "\n";
 ?>
      * },{
 <?php
-echo implode(", \n", $docFieldNames) . "\n";    
+echo implode(", \n", $docFieldNames) . "\n";
 ?>
      * }]")
      */
@@ -261,7 +274,8 @@ echo implode(", \n", $docFieldNames) . "\n";
 <?php
 foreach ($fields as $field) {
     if ($field->getName() != $primaryKey->getName()) {
-        echo '     * @ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="'.$field->getComment().'")' . "\n";
+        $fieldName = str_replace('FileSize', '', $field->getName());
+        echo '     * @ApiParams(name="' . $fieldName . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="'.$field->getComment().'")' . "\n";
     }
 }
 ?>
@@ -277,8 +291,17 @@ foreach ($fields as $field) {
         $model = new Models\<?=$tableName?>();
 
         try {
+<?php
+            if (!empty($fso)) {
+                foreach ($fso as $file) {
+?>
+            $<?=$file?> = $_FILES['<?=$file?>'];
+            $model->put<?=ucfirst($file)?>($<?=$file?>['tmp_name'], $<?=$file?>['name']);
+
+<?php } } ?>
             $model->populateFromArray($params);
             $model->save();
+
             $this->status->setCode(201);
 
             $location = $this->location() . '/' . $model->getPrimaryKey();
@@ -300,7 +323,8 @@ foreach ($fields as $field) {
      * @ApiRoute(name="/rest/<?=$uri;?>/")
 <?php
 foreach ($fields as $field) {
-    echo '     * @ApiParams(name="' . $field->getName() . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="'.$field->getComment().'")' . "\n";
+    $fieldName = str_replace('FileSize', '', $field->getName());
+    echo '     * @ApiParams(name="' . $fieldName . '", nullable=' . ($field->isNullable() ? 'true' : 'false') . ', type="' . $field->getType() . '", sample="", description="'.$field->getComment().'")' . "\n";
 }
 ?>
      * @ApiReturnHeaders(sample="HTTP 200")
@@ -327,8 +351,17 @@ foreach ($fields as $field) {
         }
 
         try {
+<?php
+            if (!empty($fso)) {
+                foreach ($fso as $file) {
+?>
+            $<?=$file?> = $_FILES['<?=$file?>'];
+            $model->put<?=ucfirst($file)?>($<?=$file?>['tmp_name'], $<?=$file?>['name']);
+
+<?php } } ?>
             $model->populateFromArray($params);
             $model->save();
+
             $this->addViewData($model->toArray());
             $this->status->setCode(200);
         } catch (\Exception $e) {

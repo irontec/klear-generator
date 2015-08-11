@@ -361,6 +361,48 @@ class Generator_Rest_Factory
 
     }
 
+    protected function _prepareFields($fields)
+    {
+        $result = array();
+
+        foreach ($fields as $field) {
+            $isFso = $this->_isFsoField($field);
+            if ($isFso !== false) {
+                $repl = str_replace('FileSize', '', $isFso);
+                if ($field->getName() === $repl . 'FileSize') {
+                    $result[] = $field;
+                }
+            } else {
+                $result[] = $field;
+            }
+        }
+
+        return $result;
+
+    }
+
+    protected function _isFsoField($field)
+    {
+        $fsoSufixes = array(
+            'FileSize',
+            'MimeType',
+            'BaseName'
+        );
+
+        $orgName = $field->getNormalizedName();
+        $curName = str_replace('FileSize', '', $orgName);
+        $curName = str_replace('MimeType', '', $curName);
+        $curName = str_replace('BaseName', '', $curName);
+
+        foreach ($fsoSufixes as $sufix) {
+            if ($orgName == $curName . $sufix) {
+                return $orgName;
+            }
+        }
+
+        return false;
+    }
+
 
     protected function _logNew($msg)
     {
