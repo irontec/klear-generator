@@ -295,8 +295,10 @@ foreach ($fields as $field) {
             if (!empty($fso)) {
                 foreach ($fso as $file) {
 ?>
-            $<?=$file?> = $_FILES['<?=$file?>'];
-            $model->put<?=ucfirst($file)?>($<?=$file?>['tmp_name'], $<?=$file?>['name']);
+            if (!empty($_FILES['<?=$file?>'])) {
+                $<?=$file?> = $_FILES['<?=$file?>'];
+                $model->put<?=ucfirst($file)?>($<?=$file?>['tmp_name'], $<?=$file?>['name']);
+            }
 
 <?php } } ?>
             $model->populateFromArray($params);
@@ -355,8 +357,10 @@ foreach ($fields as $field) {
             if (!empty($fso)) {
                 foreach ($fso as $file) {
 ?>
-            $<?=$file?> = $_FILES['<?=$file?>'];
-            $model->put<?=ucfirst($file)?>($<?=$file?>['tmp_name'], $<?=$file?>['name']);
+            if (!empty($_FILES['<?=$file?>'])) {
+                $<?=$file?> = $_FILES['<?=$file?>'];
+                $model->put<?=ucfirst($file)?>($<?=$file?>['tmp_name'], $<?=$file?>['name']);
+            }
 
 <?php } } ?>
             $model->populateFromArray($params);
