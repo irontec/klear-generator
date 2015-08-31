@@ -1,5 +1,6 @@
 <?="<?php\n"?>
 <?php
+
 $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 
 $fields = Generator_Db::describeTable($tableName);
@@ -50,6 +51,9 @@ class Rest_<?=$tableName?>Controller extends Iron_Controller_Rest_BaseController
             'params' => array(
 <?php
 foreach ($fields as $field) {
+    if ($this->_ignoreField($field)) {
+        continue;
+    }
     if ($primaryKey->getName() !== $field->getName()) {
         $fieldName = str_replace('FileSize', '', $field->getName());
         echo "                '" . $fieldName . "' => array(\n";
@@ -68,11 +72,15 @@ foreach ($fields as $field) {
             'params' => array(
 <?php
 foreach ($fields as $field) {
+    if ($this->_ignoreField($field)) {
+        continue;
+    }
+
     $fieldName = str_replace('FileSize', '', $field->getName());
     echo "                '" . $fieldName . "' => array(\n";
     echo "                    'type' => '" . $field->getType() . "',\n";
     echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
-    echo "                    'comment' => '" . $field->getComment() . "',\n";
+    echo "                    'comment' => '" . ($primaryKey->getName() === $field->getName() ? '[pk]' : $field->getComment()) . "',\n";
     echo "                ),\n";
 }
 ?>

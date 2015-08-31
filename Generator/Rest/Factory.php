@@ -361,6 +361,17 @@ class Generator_Rest_Factory
 
     }
 
+    protected function _ignoreField($field)
+    {
+
+        if (stripos($field->getComment(), "[ml]") !== false) {
+            return true;
+        }
+
+        return false;
+
+    }
+
     protected function _prepareFields($fields)
     {
         $result = array();
