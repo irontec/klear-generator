@@ -369,8 +369,6 @@ endif;//$fields->hasSoftDelete()
      */
     public function save(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model)
     {
-<?php if ($etagsExist) { if ($this->_className !== 'EtagVersions') { ?>        $this->_etagChange();<?php } }?>
-
         return $this->_save($model, false, false);
     }
 
@@ -740,8 +738,10 @@ endif;
             }
         }
 
-        if ($success === true) {
+<?php if ($etagsExist) { if ($this->_className !== 'EtagVersions') { ?>        $this->_etagChange();<?php } }?>
 
+
+        if ($success === true) {
             return $primaryKey;
         }
 
