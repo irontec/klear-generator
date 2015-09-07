@@ -31,7 +31,19 @@ use <?=$namespace?>Mapper\Sql as Mappers;
 class Rest_<?=$tableName?>Controller extends Iron_Controller_Rest_BaseController
 {
 
+    protected $_cache;
     protected $_limitPage = 10;
+
+    public function init()
+    {
+
+        parent::init();
+
+        $front = array();
+        $back = array();
+        $this->_cache = new Iron\Cache\Backend\Mapper($front, $back);
+
+    }
 
     public function optionsAction()
     {
@@ -124,7 +136,7 @@ echo implode(", \n", $docFieldNames) . "\n";
         $currentEtag = false;
         $ifNoneMatch = $this->getRequest()->getHeader('If-None-Match', false);
 
-        $page = $this->getRequest()->getHeader('page', 0);
+        $page = $this->getRequest()->getParam('page', 0);
         $orderParam = $this->getRequest()->getParam('order', false);
         $searchParams = $this->getRequest()->getParam('search', false);
 
@@ -167,8 +179,7 @@ endforeach;?>
             )
         );
 
-        $etags = new Mappers\EtagVersions();
-        $etag = $etags->findOneByField('table', '<?=$tableName?>');
+        $etag = $this->_cache->getEtagVersions('<?=$tableName?>');
 
         $hashEtag = md5(
             serialize(
@@ -176,13 +187,12 @@ endforeach;?>
             )
         );
 
-        if (!empty($etag)) {
-            $ifNoneMatch = $this->getRequest()->getHeader('If-None-Match', false);
-            if ($etag->getEtag() . $hashEtag === $ifNoneMatch) {
+        $currentEtag = $etag . $hashEtag;
+
+        if ($etag !== false) {
+            if ($currentEtag === $ifNoneMatch) {
                 $this->status->setCode(304);
                 return;
-            } {
-                $currentEtag = $etag->getEtag() . $hashEtag;
             }
         }
 
@@ -245,16 +255,14 @@ echo implode(", \n", $docFieldNames) . "\n";
             $fields = explode(',', $fields);
         }
 
-        $etags = new Mappers\EtagVersions();
-        $etag = $etags->findOneByField('table', '<?=$tableName?>');
+        $etag = $this->_cache->getEtagVersions('Authors');
+        $currentEtag = $etag . $primaryKey;
 
         if (!empty($etag)) {
             $ifNoneMatch = $this->getRequest()->getHeader('If-None-Match', false);
-            if ($etag->getEtag() . $primaryKey === $ifNoneMatch) {
+            if ($currentEtag === $ifNoneMatch) {
                 $this->status->setCode(304);
                 return;
-            } else {
-                $currentEtag = $etag->getEtag() . $primaryKey;
             }
         }
 
@@ -420,62 +428,6 @@ foreach ($fields as $field) {
             );
             $this->status->setCode(404);
         }
-
-    }
-
-    /**
-     * Offset to pagination
-     */
-    protected function _prepareOffset($params = array())
-    {
-
-        if (isset($params["page"]) && $params["page"] > 0) {
-            return ($params["page"] - 1) * $params["limit"];
-        }
-
-        return 0;
-
-    }
-
-    /**
-     * Order to list
-     */
-    protected function _prepareOrder($orderParam)
-    {
-
-        if ($orderParam === false || trim($orderParam) === '') {
-            return '<?=$primaryKey->getName()?> DESC';
-        }
-
-        return $orderParam;
-
-    }
-
-    /**
-     * Where para busquedas, la variable $search espera un json_encode con los parametros de busqueda.
-     */
-    protected function _prepareWhere($search)
-    {
-
-        if ($search === false || trim($search) === '') {
-            return NULL;
-        }
-
-        $search = json_decode($search);
-        $itemsSearch = array();
-        foreach ($search as $key => $val) {
-            if ($val != '') {
-                $itemsSearch[] = $key . ' = "' . $val . '"';
-            }
-        }
-
-        if (empty($itemsSearch)) {
-            return '';
-        }
-
-        $whereSearch = implode(' AND ', $itemsSearch);
-
-        return $whereSearch;
 
     }
 
