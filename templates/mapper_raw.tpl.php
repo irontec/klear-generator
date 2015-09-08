@@ -357,6 +357,7 @@ endif;//$fields->hasSoftDelete()
 
             throw $exception;
         }
+
 <?php if ($etagsExist) { if ($this->_className !== 'EtagVersions') { ?>        $this->_etagChange();<?php } }?>
 
         return $result;
@@ -738,8 +739,11 @@ endif;
             }
         }
 
-<?php if ($etagsExist) { if ($this->_className !== 'EtagVersions') { ?>        $this->_etagChange();<?php } }?>
-
+<?php if ($etagsExist) { if ($this->_className !== 'EtagVersions') { ?>
+        if ($model->mustUpdateEtag()) {
+            $this->_etagChange();
+        }
+<?php } }?>
 
         if ($success === true) {
             return $primaryKey;
@@ -814,6 +818,7 @@ endif;
 <?php
 if ($etagsExist) {
     ?>
+
     protected function _etagChange()
     {
 
@@ -843,6 +848,7 @@ if ($etagsExist) {
         $etag->save();
 
     }
+
 <?php
 }// endif $etagsExist
 

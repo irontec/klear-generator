@@ -457,7 +457,7 @@ foreach ($fields as $column):
                 // 00:00:00 makes sense
         }
 
-        if ($emptyValue): 
+        if ($emptyValue):
 ?>
         if ($data == '<?php echo $emptyValue; ?>') {
             $data = null;
@@ -939,6 +939,12 @@ else : ?>
         );
 <?php } ?>
     }
+
+    public function mustUpdateEtag()
+    {
+        return true;
+    }
+
 <?php $functions = $this->_includeModel->getFunctions();
 if (!empty($functions)) {
 echo "\n$functions\n";
