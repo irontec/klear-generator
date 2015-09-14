@@ -183,10 +183,9 @@ endforeach;?>
 
         $hashEtag = md5(
             serialize(
-                array($where, $order, $this->_limitPage, $offset)
+                array($fields, $where, $order, $this->_limitPage, $offset)
             )
         );
-
         $currentEtag = $etag . $hashEtag;
 
         if ($etag !== false) {
@@ -224,9 +223,8 @@ endforeach;?>
         $this->status->setCode(200);
 
         if ($currentEtag !== false) {
-            $this->getResponse()->setHeader('Etag', $currentEtag);
+            $this->_sendEtag($currentEtag);
         }
-
     }
 
     /**
@@ -253,10 +251,39 @@ echo implode(", \n", $docFieldNames) . "\n";
         $fields = $this->getRequest()->getParam('fields', array());
         if (!empty($fields)) {
             $fields = explode(',', $fields);
+        } else {
+            $fields = array(
+<?php
+foreach ($fields as $field) :
+$fieldName = $field->getName();
+$name = '';
+if (strpos($fieldName, 'FileSize') == false && strpos($fieldName, 'MimeType') == false && strpos($fieldName, 'BaseName') == false) {
+
+    if (strpos($fieldName, '_')) {
+        $dataName = explode('_', $fieldName);
+        $name = $dataName[0] . ucfirst($dataName[1]);
+    } else {
+        $name = $fieldName;
+    }
+if (!empty($name)) {
+    echo "                '" . $name . "',\n";
+}
+
+} elseif ($field->getComment() === '[FSO]') {
+    $name = str_replace('FileSize', '', $fieldName) . 'Url';
+    echo "                //'" . $name . ":@profile', Cambia @profile por el profile del fso.ini\n";
+}
+endforeach;?>
+            );
         }
 
-        $etag = $this->_cache->getEtagVersions('Authors');
-        $currentEtag = $etag . $primaryKey;
+        $etag = $this->_cache->getEtagVersions('<?=$tableName?>');
+        $hashEtag = md5(
+            serialize(
+                array($fields)
+            )
+        );
+        $currentEtag = $etag . $primaryKey . $hashEtag;
 
         if (!empty($etag)) {
             $ifNoneMatch = $this->getRequest()->getHeader('If-None-Match', false);
@@ -278,7 +305,7 @@ echo implode(", \n", $docFieldNames) . "\n";
         $this->addViewData($model->toArray($fields));
 
         if ($currentEtag !== false) {
-            $this->getResponse()->setHeader('Etag', $currentEtag);
+            $this->_sendEtag($currentEtag);
         }
 
     }
