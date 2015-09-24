@@ -129,12 +129,23 @@ abstract class ModelAbstract implements \IteratorAggregate
 
     public function __construct()
     {
+        $this->_loadLanguages();
+        $this->_loadLogger();
+
+
+
+        $this->init();
+    }
+
+    abstract protected function init();
+
+    protected function _loadLanguages()
+    {
         $availableLangs = $this->getAvailableLangs();
 
         if (count($availableLangs) > 0) {
 
             $bootstrap = \Zend_Controller_Front::getInstance()->getParam('bootstrap');
-
             if (is_null($bootstrap)) {
 
                 $conf = new \Zend_Config_Ini(APPLICATION_PATH . '/configs/application.ini',APPLICATION_ENV);
@@ -157,7 +168,11 @@ abstract class ModelAbstract implements \IteratorAggregate
                     $this->_defaultUserLanguage = $availableLangs[0];
             }
         }
+    }
 
+    protected function _loadLogger()
+    {
+        $bootstrap = \Zend_Controller_Front::getInstance()->getParam('bootstrap');
         $this->_logger = null;
         if (!is_null($bootstrap)) {
             $this->_logger = $bootstrap->getResource('log');
@@ -170,12 +185,8 @@ abstract class ModelAbstract implements \IteratorAggregate
             );
             $this->_logger = \Zend_Log::factory($params);
         }
-
-
-        $this->init();
     }
 
-    abstract protected function init();
 
     protected function _isMultiLang($column)
     {
@@ -895,5 +906,11 @@ abstract class ModelAbstract implements \IteratorAggregate
     public function getIterator()
     {
         return new \ArrayIterator($this->_columnsList);
+    }
+
+    public function __wakeup()
+    {
+        $this->_loadLanguages();
+        $this->_loadLogger();
     }
 }
