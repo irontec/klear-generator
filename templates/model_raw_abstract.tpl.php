@@ -817,9 +817,9 @@ abstract class ModelAbstract implements \IteratorAggregate
      * @see <?=$namespace?>Model\Mapper\MapperAbstract::save()
      * @return boolean If the save was sucessful
      */
-    public function save()
+    public function save($forceInsert = false)
     {
-        return $this->getMapper()->save($this);
+        return $this->getMapper()->save($this, $forceInsert);
     }
 
     /**
@@ -829,9 +829,9 @@ abstract class ModelAbstract implements \IteratorAggregate
      * @param boolean $useTransaction
      * @return boolean If the save was sucessful
      */
-    public function saveRecursive($useTransaction = true)
+    public function saveRecursive($useTransaction = true, $forceInsert = false)
     {
-        return $this->getMapper()->saveRecursive($this, $useTransaction);
+        return $this->getMapper()->saveRecursive($this, $useTransaction, $forceInsert);
     }
 
     /**

@@ -368,9 +368,9 @@ endif;//$fields->hasSoftDelete()
      * Saves current row
      * @return integer primary key for autoincrement fields if the save action was successful
      */
-    public function save(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model)
+    public function save(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model, $forceInsert = false)
     {
-        return $this->_save($model, false, false);
+        return $this->_save($model, false, false, null, $forceInsert);
     }
 
     /**
@@ -380,13 +380,14 @@ endif;//$fields->hasSoftDelete()
      * @param boolean $useTransaction Flag to indicate if save should be done inside a database transaction
      * @return integer primary key for autoincrement fields if the save action was successful
      */
-    public function saveRecursive(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model, $useTransaction = true, $transactionTag = null)
+    public function saveRecursive(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model, $useTransaction = true,
+            $transactionTag = null, $forceInsert = false)
     {
-        return $this->_save($model, true, $useTransaction, $transactionTag);
+        return $this->_save($model, true, $useTransaction, $transactionTag, $forceInsert);
     }
 
     protected function _save(\<?=$namespace?>Model\Raw\<?=$this->_className?> $model,
-        $recursive = false, $useTransaction = true, $transactionTag = null
+        $recursive = false, $useTransaction = true, $transactionTag = null, $forceInsert = false
     )
     {
         $this->_setCleanUrlIdentifiers($model);
@@ -496,10 +497,12 @@ else : //is_array($primaryKey)
 <?php
     if (!$primaryKey->isRelationship()):
 ?>
-        unset($data['<?=$primaryKey->getName()?>']);
+        if (!$forceInsert) {
+            unset($data['<?=$primaryKey->getName()?>']);
+        }
 
         try {
-            if (is_null($primaryKey) || empty($primaryKey)) {
+            if (is_null($primaryKey) || empty($primaryKey) || $forceInsert) {
 
 <?php if ($primaryKey->getComment() === '[uuid]') { ?>
                 $data['<?=$primaryKey->getName()?>'] = new \Zend_Db_Expr("uuid()");
