@@ -378,15 +378,36 @@ endforeach;
 
         $fsoConfig = \Zend_Registry::get('fsoConfig');
         $profileConf = $fsoConfig->$profile;
+        $routeMap = $fsoConfig->config->routeMap;
 
         if (is_null($profileConf)) {
             throw new \Exception('Profile invalid. not exist in fso.ini');
         }
 
+        $fsoColumn = $profileConf->fso;
+        $fsoSkipColumns = array(
+                $fsoColumn."FileSize",
+                $fsoColumn."MimeType",
+        );
+        $fsoBaseNameColum = $fsoColumn."BaseName";
+
+        foreach ($this->_columnsList as $column) {
+            if (in_array($column, $fsoSkipColumns)) {
+                continue;
+            }
+            $getter = "get".ucfirst($column);
+            $search = "{".$column."}";
+            if ($column == $fsoBaseNameColum) {
+                $search = "{basename}";
+            }
+            $routeMap = str_replace($search, $this->$getter(), $routeMap);
+        }
+
         $route = array(
             'profile' => $profile,
-            'routeMap' => $this->getId() . '-' . $this->get<?=ucfirst($item)?>BaseName()
+            'routeMap' => $routeMap
         );
+
         $view = new \Zend_View();
         $fsoUrl = $view->serverUrl($view->url($route, 'fso'));
 
