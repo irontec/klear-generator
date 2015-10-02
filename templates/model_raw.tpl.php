@@ -344,9 +344,9 @@ endforeach;
         );
     }
 
-    public function put<?php echo ucfirst($item); ?>($filePath = '',$baseName = '', $flush = true)
+    public function put<?php echo ucfirst($item); ?>($filePath = '',$baseName = '')
     {
-        $this->_<?php echo lcfirst($item); ?>Fso->put($filePath, $flush);
+        $this->_<?php echo lcfirst($item); ?>Fso->put($filePath);
 
         if (!empty($baseName)) {
 
