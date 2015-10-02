@@ -100,23 +100,30 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         }
 
         $editScreen = array(
-            '&' => lcfirst($this->_normalizedTable) . 'Edit_screenLink', 
+            '&' => lcfirst($this->_normalizedTable) . 'Edit_screenLink',
             '<<' => '*' . $normalizedTable,
             'controller' => 'edit',
             'class' =>  'ui-silk-pencil',
             'label' => 'false',
+            'labelOnPostAction' => $editTitles,
             'title' => $editTitles
         );
 
         $newScreen = array(
-            '&' => lcfirst($this->_normalizedTable) . 'New_screenLink', 
+            '&' => lcfirst($this->_normalizedTable) . 'New_screenLink',
             '<<' => '*' . $normalizedTable,
             'controller' => 'new',
             'class' =>  'ui-silk-add',
             'label' => 'true',
             'multiInstance' => 'true',
             'title' => $addTitles,
-            'shortcutOption' => 'N'
+            'shortcutOption' => 'N',
+            'postActionOptions' => array(
+                'screens' => array(
+                    lcfirst($this->_normalizedTable) . 'Edit_screen' => 'true'
+                )
+            )
+
         );
 
         $delDialog = array(
@@ -150,8 +157,8 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
         $data['main']['defaultScreen'] = $listScreenName;
 
         foreach ($this->_dependantTables as $relatedTableName => $relationFld) {
-            $screenName = lcfirst($relatedTableName) . 'List_screen'; 
-            $listScreen['fields']['options']['screens'][$screenName] = 'true'; 
+            $screenName = lcfirst($relatedTableName) . 'List_screen';
+            $listScreen['fields']['options']['screens'][$screenName] = 'true';
         }
 
         $screens = array(
@@ -174,7 +181,7 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
             $commandslink = array(
                 '&' => lcfirst($this->_normalizedTable) . '_commandsLink'
             );
-            
+
             $commands = $commandslink + $this->_getFsoFieldCommands($table);
             $data['commands'] = $commands;
         }
@@ -183,10 +190,10 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
     }
 
     protected function _getDependantScreens() {
-        
+
         $screens = array();
         foreach ($this->_dependantTables as $table => $filterFld) {
-            
+
             $lcTableName = lcfirst($table);
 
             $screens += array(
@@ -209,14 +216,14 @@ class Generator_Yaml_ListConfig extends Generator_Yaml_AbstractConfig
                 $lcTableName . 'Edit_screen' => array(
                     '<<' => '*'. $lcTableName .'Edit_screenLink',
                     'filterField' => $filterFld . "\n",
-                ),                
+                ),
             );
         }
-        
+
         return $screens;
     }
 
-    protected function _getDependantDialogs() 
+    protected function _getDependantDialogs()
     {
         $dialogs = array();
         foreach ($this->_dependantTables as $table => $fld) {
