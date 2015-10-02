@@ -395,26 +395,31 @@ endif;//$fields->hasSoftDelete()
         $fileObjects = array();
 
         $availableObjects = $model->getFileObjects();
-        $fileSpects = array();
 
         foreach ($availableObjects as $item) {
 
             $objectMethod = 'fetch' . $item;
             $fso = $model->$objectMethod(false);
+            $specMethod = 'get' . $item . 'Specs';
+            $fileSpects = $model->$specMethod();
+
+            $fileSizeSetter = 'set' . $fileSpects['sizeName'];
+            $baseNameSetter = 'set' . $fileSpects['baseNameName'];
+            $mimeTypeSetter = 'set' . $fileSpects['mimeName'];
 
             if (!is_null($fso) && $fso->mustFlush()) {
 
                 $fileObjects[$item] = $fso;
-                $specMethod = 'get' . $item . 'Specs';
-                $fileSpects[$item] = $model->$specMethod();
-
-                $fileSizeSetter = 'set' . $fileSpects[$item]['sizeName'];
-                $baseNameSetter = 'set' . $fileSpects[$item]['baseNameName'];
-                $mimeTypeSetter = 'set' . $fileSpects[$item]['mimeName'];
 
                 $model->$fileSizeSetter($fso->getSize())
                       ->$baseNameSetter($fso->getBaseName())
                       ->$mimeTypeSetter($fso->getMimeType());
+            }
+
+            if (is_null($fso)) {
+                $model->$fileSizeSetter(null)
+                ->$baseNameSetter(null)
+                ->$mimeTypeSetter(null);
             }
         }
 
