@@ -45,73 +45,6 @@ class Rest_<?=$tableName?>Controller extends Iron_Controller_Rest_BaseController
 
     }
 
-    public function optionsAction()
-    {
-
-        $this->view->GET = array(
-            'description' => '',
-            'params' => array(
-                '<?=$primaryKey->getName()?>' => array(
-                    'type' => '<?=$primaryKey->getType()?>',
-                    'required' => true
-                )
-            )
-        );
-
-        $this->view->POST = array(
-            'description' => '',
-            'params' => array(
-<?php
-foreach ($fields as $field) {
-    if ($this->_ignoreField($field)) {
-        continue;
-    }
-    if ($primaryKey->getName() !== $field->getName()) {
-        $fieldName = str_replace('FileSize', '', $field->getName());
-        echo "                '" . $fieldName . "' => array(\n";
-        echo "                    'type' => '" . $field->getType() . "',\n";
-        echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
-        echo "                    'comment' => '" . $field->getComment() . "',\n";
-        echo "                ),\n";
-    }
-}
-?>
-            )
-        );
-
-        $this->view->PUT = array(
-            'description' => '',
-            'params' => array(
-<?php
-foreach ($fields as $field) {
-    if ($this->_ignoreField($field)) {
-        continue;
-    }
-
-    $fieldName = str_replace('FileSize', '', $field->getName());
-    echo "                '" . $fieldName . "' => array(\n";
-    echo "                    'type' => '" . $field->getType() . "',\n";
-    echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
-    echo "                    'comment' => '" . ($primaryKey->getName() === $field->getName() ? '[pk]' : $field->getComment()) . "',\n";
-    echo "                ),\n";
-}
-?>
-            )
-        );
-        $this->view->DELETE = array(
-            'description' => '',
-            'params' => array(
-                '<?=$primaryKey->getName()?>' => array(
-                    'type' => '<?=$primaryKey->getType()?>',
-                    'required' => true
-                )
-            )
-        );
-
-        $this->status->setCode(200);
-
-    }
-
     /**
      * @ApiDescription(section="<?=$tableName?>", description="GET information about all <?=$tableName?>")
      * @ApiMethod(type="get")
@@ -458,4 +391,71 @@ foreach ($fields as $field) {
 
     }
 
+
+    public function optionsAction()
+    {
+
+        $this->view->GET = array(
+            'description' => '',
+            'params' => array(
+                '<?=$primaryKey->getName()?>' => array(
+                    'type' => '<?=$primaryKey->getType()?>',
+                    'required' => true
+                )
+            )
+        );
+
+        $this->view->POST = array(
+            'description' => '',
+            'params' => array(
+<?php
+foreach ($fields as $field) {
+    if ($this->_ignoreField($field)) {
+        continue;
+    }
+    if ($primaryKey->getName() !== $field->getName()) {
+        $fieldName = str_replace('FileSize', '', $field->getName());
+        echo "                '" . $fieldName . "' => array(\n";
+        echo "                    'type' => '" . $field->getType() . "',\n";
+        echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
+        echo "                    'comment' => '" . $field->getComment() . "',\n";
+        echo "                ),\n";
+    }
+}
+?>
+            )
+        );
+
+        $this->view->PUT = array(
+            'description' => '',
+            'params' => array(
+<?php
+foreach ($fields as $field) {
+    if ($this->_ignoreField($field)) {
+        continue;
+    }
+
+    $fieldName = str_replace('FileSize', '', $field->getName());
+    echo "                '" . $fieldName . "' => array(\n";
+    echo "                    'type' => '" . $field->getType() . "',\n";
+    echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
+    echo "                    'comment' => '" . ($primaryKey->getName() === $field->getName() ? '[pk]' : $field->getComment()) . "',\n";
+    echo "                ),\n";
+}
+?>
+            )
+        );
+        $this->view->DELETE = array(
+            'description' => '',
+            'params' => array(
+                '<?=$primaryKey->getName()?>' => array(
+                    'type' => '<?=$primaryKey->getType()?>',
+                    'required' => true
+                )
+            )
+        );
+
+        $this->status->setCode(200);
+
+    }
 }
