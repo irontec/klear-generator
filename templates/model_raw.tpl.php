@@ -569,7 +569,7 @@ foreach ($fields as $column):
         if ($data instanceof \Zend_Db_Expr) {
             $this->_<?=$column->getNormalizedName()?> = $data;
 
-        } else if (!is_null($data)) {
+        } else if (!is_null($data) && $data != "null") {
 <?php
             if ($column->isEnum()) :
 ?>
@@ -582,7 +582,7 @@ foreach ($fields as $column):
             $this->_<?=$column->getNormalizedName()?> = <?php echo $casting; ?> <?=$trimMethod.$trimOpen?>$data<?=$trimClose?>;
 
         } else {
-            $this->_<?=$column->getNormalizedName()?> = $data;
+            $this->_<?=$column->getNormalizedName()?> = NULL;
         }
 <?php
     else :
