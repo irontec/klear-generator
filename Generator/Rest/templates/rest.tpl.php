@@ -400,7 +400,8 @@ foreach ($fields as $field) {
             'params' => array(
                 '<?=$primaryKey->getName()?>' => array(
                     'type' => '<?=$primaryKey->getType()?>',
-                    'required' => true
+                    'required' => true,
+                    'comment' => '[pk]'
                 )
             )
         );
