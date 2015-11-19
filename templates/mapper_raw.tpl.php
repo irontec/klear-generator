@@ -103,7 +103,20 @@ endforeach;
                         $params = null;
                     }
                     $get = 'get' . ucfirst($field);
-                    $result[lcfirst($field)] = $model->$get($params);
+                    $value = $model->$get($params);
+
+                    if (is_array($value) || is_object($value)) {
+                        if (is_array($value) || $value instanceof Traversable) {
+                            foreach ($value as $key => $item) {
+                                if ($item instanceof \Itourbasque\Model\Raw\ModelAbstract) {
+                                    $value[$key] = $item->toArray(); 
+                                }
+                            }
+                        } else if ($value instanceof \Itourbasque\Model\Raw\ModelAbstract) {
+                            $value = $value->toArray();
+                        }
+                    }
+                    $result[lcfirst($field)] = $value;
                 }
             }
         }
