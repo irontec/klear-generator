@@ -367,7 +367,6 @@ endforeach;
     public function remove<?php echo ucfirst($item); ?>()
     {
         $this->_<?php echo lcfirst($item); ?>Fso->remove();
-
         $this->_<?php echo lcfirst($item); ?>Fso = null;
 
         return true;
@@ -375,14 +374,13 @@ endforeach;
 
     public function get<?=ucfirst($item)?>Url($profile)
     {
-
         $fsoConfig = \Zend_Registry::get('fsoConfig');
         $profileConf = $fsoConfig->$profile;
-        $routeMap = $fsoConfig->config->routeMap;
 
         if (is_null($profileConf)) {
             throw new \Exception('Profile invalid. not exist in fso.ini');
         }
+        $routeMap = isset($profileConf->routeMap) ? $profileConf->routeMap : $fsoConfig->config->routeMap;
 
         $fsoColumn = $profileConf->fso;
         $fsoSkipColumns = array(
