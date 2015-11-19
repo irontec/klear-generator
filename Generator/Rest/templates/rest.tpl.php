@@ -105,10 +105,15 @@ endforeach;?>
         $order = $this->_prepareOrder($orderParam);
         $where = $this->_prepareWhere($searchParams);
 
+        $limit = $this->_request->getParam("limit", $this->_limitPage);
+        if ($limit > 250) {
+            Throw new \Exception("limit argument cannot be larger than 250", 416);
+        }
+
         $offset = $this->_prepareOffset(
             array(
                 'page' => $page,
-                'limit' => $this->_limitPage
+                'limit' => $limit
             )
         );
 
@@ -133,7 +138,7 @@ endforeach;?>
         $items = $mapper->fetchList(
             $where,
             $order,
-            $this->_limitPage,
+            $limit,
             $offset
         );
 
