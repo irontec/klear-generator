@@ -202,8 +202,11 @@ class Make_mysql extends MakeDbTable {
             }
         }
 
-        if (stristr($tableComment, '[ignore]')) {
+        if (empty($tableComment)) {
+            throw new Exception('Not tag in the comment');
+        }
 
+        if (stristr($tableComment, '[ignore]')) {
             throw new Exception("Has [ignore] tag");
         }
 

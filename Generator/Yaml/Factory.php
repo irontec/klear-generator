@@ -116,7 +116,7 @@ class Generator_Yaml_Factory
             if (!file_exists($listFile) || $this->_override) {
 
                 $dependantTables = $this->_getDependantTables($table);
-                
+
                 $listConfig = new Generator_Yaml_ListConfig($table, $dependantTables, $this->_klearConfig, $this->_enabledLanguages);
 
                 if (!$raw) {
@@ -129,7 +129,7 @@ class Generator_Yaml_Factory
 
                 foreach ($dependantTables as $tableName => $relFieldName) {
                     $tableName = ucfirst(Generator_StringUtils::toCamelCase($tableName));
-                    $contents .= "#include ". $tableName . "List.yaml\n";    
+                    $contents .= "#include ". $tableName . "List.yaml\n";
                 }
 
                 $contents .= "\n\n";
@@ -197,16 +197,15 @@ class Generator_Yaml_Factory
         $tables = $dbAdapter->listTables();
 
         foreach ($tables as $table) {
-
             $tableComment = Generator_Db::tableComment($table);
-            if (!stristr($tableComment, '[ignore]')) {
+            if (!stristr($tableComment, '[ignore]') || !empty($tableComment)) {
                 $this->_tables[] = $table;
             }
         }
 
         return $this->_tables;
     }
-    
+
     /**
      * @return array of tableNames
      */
@@ -222,14 +221,14 @@ class Generator_Yaml_Factory
 
         return $this->_dependantTables[$parentTableName];
     }
-    
+
 
     protected function _loadDependantTables()
     {
         if (!is_null($this->_tables)) {
             $this->_getTables();
         }
-        $this->_dependantTables = array();       
+        $this->_dependantTables = array();
 
         $entities = $this->_getEntities();
         foreach ($entities as $table) {
