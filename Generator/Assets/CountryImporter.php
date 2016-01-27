@@ -2,7 +2,8 @@
 class Generator_Assets_CountryImporter
 {
 
-    const INDEX_URL = 'https://raw.github.com/umpirsky/country-list/master/country/icu/%lang%/country.json';
+    const INDEX_URL = 'https://raw.githubusercontent.com/umpirsky/country-list/master/data/%lang%/country.json';
+    
 
     /*
      * First we download from ISO the list of coutnries (so we get rid of Canary Islands and the other "Exceptional Reservations"
