@@ -521,15 +521,16 @@ else : //is_array($primaryKey)
 
         try {
             if (is_null($primaryKey) || empty($primaryKey) || $forceInsert) {
-
+                if (is_null($primaryKey) || empty($primaryKey)) {
 <?php if ($primaryKey->getComment() === '[uuid]') { ?>
-                $data['<?=$primaryKey->getName()?>'] = new \Zend_Db_Expr("uuid()");
+                    $data['<?=$primaryKey->getName()?>'] = new \Zend_Db_Expr("uuid()");
 <?php } ?>
 <?php if ($primaryKey->getComment() === '[uuid:php]') { ?>
-                $uuid = new \Iron\Utils\UUID();
-                $model->set<?=$primaryKey->getNormalizedName('upper')?>($uuid->generate());
-                $data['<?=$primaryKey->getName()?>'] = $model->get<?=$primaryKey->getNormalizedName('upper')?>();
+                    $uuid = new \Iron\Utils\UUID();
+                    $model->set<?=$primaryKey->getNormalizedName('upper')?>($uuid->generate());
+                    $data['<?=$primaryKey->getName()?>'] = $model->get<?=$primaryKey->getNormalizedName('upper')?>();
 <?php } ?>
+                }
 <?php
     else:
 ?>
