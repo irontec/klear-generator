@@ -401,6 +401,9 @@ endforeach;
             $routeMap = str_replace($search, $this->$getter(), $routeMap);
         }
 
+        if (!$routeMap) {
+            return null;
+        }
         $route = array(
             'profile' => $profile,
             'routeMap' => $routeMap
