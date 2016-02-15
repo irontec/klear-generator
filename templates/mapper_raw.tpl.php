@@ -108,11 +108,11 @@ endforeach;
                     if (is_array($value) || is_object($value)) {
                         if (is_array($value) || $value instanceof Traversable) {
                             foreach ($value as $key => $item) {
-                                if ($item instanceof \Itourbasque\Model\Raw\ModelAbstract) {
-                                    $value[$key] = $item->toArray(); 
+                                if ($item instanceof \<?=$namespace?>Model\Raw\ModelAbstract) {
+                                    $value[$key] = $item->toArray();
                                 }
                             }
-                        } else if ($value instanceof \Itourbasque\Model\Raw\ModelAbstract) {
+                        } else if ($value instanceof \<?=$namespace?>Model\Raw\ModelAbstract) {
                             $value = $value->toArray();
                         }
                     }
