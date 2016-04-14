@@ -48,5 +48,13 @@
             "email": "victor@irontec.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "bin": [
+        "klear-assets-generator.php",
+        "klear-doc-generator.php",
+        "klear-models-mappers-generator.php",
+        "klear-yaml-generator.php",
+        "klear-db-generator.php",
+        "klear-rest-generator.php"
+    ]
 }
