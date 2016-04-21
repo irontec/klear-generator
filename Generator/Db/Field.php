@@ -242,7 +242,7 @@ class Generator_Db_Field implements \IteratorAggregate
 
     public function isAnyDateType()
     {
-        return (bool) preg_match('/date|time/', $this->_getDescriptionProperty('DATA_TYPE'));
+        return !$this->isEnum() && (bool) preg_match('/date|time/', $this->_getDescriptionProperty('DATA_TYPE'));
     }
 
     public function appliesDst()
