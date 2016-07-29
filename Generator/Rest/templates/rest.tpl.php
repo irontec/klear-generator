@@ -86,7 +86,10 @@ if (strpos($fieldName, 'FileSize') == false && strpos($fieldName, 'MimeType') ==
 
     if (strpos($fieldName, '_')) {
         $dataName = explode('_', $fieldName);
-        $name = $dataName[0] . ucfirst($dataName[1]);
+        $name = array_shift($dataName);
+        foreach ($dataName as $dataNamePart) {
+            $name .= ucfirst($dataNamePart);
+        }
     } else {
         $name = $fieldName;
     }
@@ -199,7 +202,10 @@ if (strpos($fieldName, 'FileSize') == false && strpos($fieldName, 'MimeType') ==
 
     if (strpos($fieldName, '_')) {
         $dataName = explode('_', $fieldName);
-        $name = $dataName[0] . ucfirst($dataName[1]);
+        $name = array_shift($dataName);
+        foreach ($dataName as $dataNamePart) {
+            $name .= ucfirst($dataNamePart);
+        }
     } else {
         $name = $fieldName;
     }
