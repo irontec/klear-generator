@@ -169,13 +169,14 @@ class Generator_Rest_Factory
         $controllers = $this->_restPath . '/controllers';
 
         foreach ($entities as $table) {
-
-            $controllerFile = $controllers . '/' . $table . 'Controller.php';
-            $controllerRawFile = $controllers . 'Raw/' . $table . 'Controller.php';
-            $uri = preg_replace("/([A-Z]){1}/", "-$1", lcfirst($table));
+            $controllerName = Generator_StringUtils::toCamelCase($table, true);
+            $controllerFile = $controllers . '/' . $controllerName. 'Controller.php';
+            $controllerRawFile = $controllers . 'Raw/' . $controllerName. 'Controller.php';
+            $uri = preg_replace("/([A-Z]){1}/", "-$1", lcfirst($controllerName));
 
             $data = array(
-                'tableName' => $table,
+                'tableName' => $controllerName,
+                'dbtable' => $table,
                 'uri' => strtolower($uri)
             );
 
