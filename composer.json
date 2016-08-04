@@ -48,7 +48,9 @@
             "email": "victor@irontec.com"
         }
     ],
-    "require": {},
+    "require": {
+        "zendframework/zendframework1": "1.12.19"
+    },
     "bin": [
         "klear-assets-generator.php",
         "klear-doc-generator.php",
