@@ -373,6 +373,10 @@ endif;//$fields->hasSoftDelete()
 
 <?php if ($etagsExist) { if ($this->_className !== 'EtagVersions') { ?>        $this->_etagChange();<?php } }?>
 
+        // Save Changelog if requested
+        $model->logDelete();
+        $model->saveChangeLog();
+
         return $result;
 
     }
@@ -772,6 +776,10 @@ endif;
             $this->_etagChange();
         }
 <?php } }?>
+
+        if ($model->hasChange()) {
+            $model->saveChangeLog();
+        }
 
         if ($success === true) {
             return $primaryKey;
