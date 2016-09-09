@@ -3,7 +3,7 @@
 
 $namespace = !empty($this->_namespace) ? $this->_namespace . "\\" : "";
 
-$fields = Generator_Db::describeTable($tableName);
+$fields = Generator_Db::describeTable($dbtable);
 $primaryKey = $fields->getPrimaryKey();
 $fields = $this->_prepareFields($fields);
 
