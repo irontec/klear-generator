@@ -404,7 +404,7 @@ foreach ($fields as $field) {
             'description' => '',
             'params' => array(
                 '<?=$primaryKey->getName()?>' => array(
-                    'type' => '<?=$primaryKey->getType()?>',
+                    'type' => "<?=$primaryKey->getType()?>",
                     'required' => true,
                     'comment' => '[pk]'
                 )
@@ -422,7 +422,7 @@ foreach ($fields as $field) {
     if ($primaryKey->getName() !== $field->getName()) {
         $fieldName = str_replace('FileSize', '', $field->getName());
         echo "                '" . $fieldName . "' => array(\n";
-        echo "                    'type' => '" . $field->getType() . "',\n";
+        echo "                    'type' => \"" . $field->getType() . "\",\n";
         echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
         echo "                    'comment' => '" . $field->getComment() . "',\n";
         echo "                ),\n";
@@ -443,7 +443,7 @@ foreach ($fields as $field) {
 
     $fieldName = str_replace('FileSize', '', $field->getName());
     echo "                '" . $fieldName . "' => array(\n";
-    echo "                    'type' => '" . $field->getType() . "',\n";
+    echo "                    'type' => \"" . $field->getType() . "\",\n";
     echo "                    'required' => " . ($field->isNullable() ? 'false' : 'true') . ",\n";
     echo "                    'comment' => '" . ($primaryKey->getName() === $field->getName() ? '[pk]' : $field->getComment()) . "',\n";
     echo "                ),\n";
@@ -455,7 +455,7 @@ foreach ($fields as $field) {
             'description' => '',
             'params' => array(
                 '<?=$primaryKey->getName()?>' => array(
-                    'type' => '<?=$primaryKey->getType()?>',
+                    'type' => "<?=$primaryKey->getType()?>",
                     'required' => true
                 )
             )
