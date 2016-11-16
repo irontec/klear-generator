@@ -55,6 +55,8 @@ abstract class MapperAbstract
 
     protected $_urlIdentifiers = array();
 
+    protected $_saveOnlyChangedFields = false;
+
     /**
      * Setup the default configuration for the Mapper
      */
@@ -111,6 +113,11 @@ abstract class MapperAbstract
                 $this->_simulateReferencialActions = true;
             }
         }
+    }
+
+    public function setSaveOnlyChangedFields($state = true) {
+        $this->_saveOnlyChangedFields = $state;
+        return $this;
     }
 
     protected function getAdapter()
