@@ -578,7 +578,7 @@ msgid "On"
 msgstr "Piztuta"
 
 #: languages/common-strings.php:128
-msgid "Unasigned"
+msgid "Unassigned"
 msgstr "Esleigabea"
 
 #: languages/common-strings.php:129
