@@ -567,7 +567,7 @@ foreach ($fields as $column):
         }
 ?>
         if ($this->_<?=$column->getNormalizedName()?> != $data) {
-            $this->_logChange('<?=$column->getNormalizedName()?>');
+            $this->_logChange('<?=$column->getNormalizedName()?>', $this->_<?=$column->getNormalizedName()?>, $data);
         }
 
 <?php
