@@ -185,7 +185,21 @@ abstract class MakeDbTable {
      * @return array
      */
     public function getForeignKeysInfo() {
-        return $this->_foreignKeysInfo[$this->getTableName()];
+
+        $fkInfo = $this->_foreignKeysInfo[$this->getTableName()];
+        uasort($fkInfo, function ($fk1, $fk2) {
+
+            $key1 = $fk1['key_name'];
+            $key2 = $fk2['key_name'];
+
+            if (strlen($key1) !== strlen($key2)) {
+                return (strlen($key1) < strlen($key2)) ? -1 : 1;
+            }
+
+            return ($key1 < $key2) ? -1 : 1;
+        });
+
+        return $fkInfo;
     }
 
     /**
@@ -265,6 +279,16 @@ abstract class MakeDbTable {
      * @return array
      */
     public function getDependentTables() {
+
+        $fkInfo = $this->_dependentTables[$this->getTableName()];
+        uasort($fkInfo, function ($fk1, $fk2) {
+
+            $key1 = $fk1['key_name'];
+            $key2 = $fk2['key_name'];
+
+            return ($key1 < $key2) ? -1 : 1;
+        });
+
         return $this->_dependentTables[$this->getTableName()];
     }
 
