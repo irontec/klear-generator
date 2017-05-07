@@ -49,7 +49,7 @@
         }
     ],
     "require": {
-        "zendframework/zendframework1": "1.12.19"
+        "zendframework/zendframework1": "1.12.9"
     },
     "bin": [
         "klear-assets-generator.php",
