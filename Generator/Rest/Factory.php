@@ -123,7 +123,6 @@ class Generator_Rest_Factory
         $pathPlugin = $this->_pathLibrary . $this->_namespace . $plugin;
 
         $this->_createFolders($this->_restPath . '/controllers');
-        $this->_createFolders($this->_restPath . '/controllersRaw');
 
         $this->_createFolders($pathPlugin);
 
@@ -171,7 +170,6 @@ class Generator_Rest_Factory
         foreach ($entities as $table) {
             $controllerName = Generator_StringUtils::toCamelCase($table, true);
             $controllerFile = $controllers . '/' . $controllerName. 'Controller.php';
-            $controllerRawFile = $controllers . 'Raw/' . $controllerName. 'Controller.php';
             $uri = preg_replace("/([A-Z]){1}/", "-$1", lcfirst($controllerName));
 
             $data = array(
@@ -182,12 +180,6 @@ class Generator_Rest_Factory
 
             $this->_createFiles(
                 $controllerFile,
-                'rest.tpl.php',
-                $data
-            );
-
-            $this->_createFiles(
-                $controllerRawFile,
                 'rest.tpl.php',
                 $data,
                 true
@@ -213,13 +205,9 @@ class Generator_Rest_Factory
         $this->_createFiles($runCliDocs, 'runCliDocs.tpl.php');
 
         $apidocs = APPLICATION_PATH . '/../public/apidocs';
-        $composerFolder = APPLICATION_PATH . '/../library/Composer';
         $this->_createFolders($apidocs);
-        $this->_createFolders($composerFolder);
 
-        $composerJson = $composerFolder . '/composer.json';
         $apidocController = APPLICATION_PATH . '/controllers/ApidocController.php';
-        $this->_createFiles($composerJson, 'composerJson.tpl.php');
         $this->_createFiles($apidocController, 'ApidocController.tpl.php');
 
     }
