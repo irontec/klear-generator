@@ -581,7 +581,7 @@ foreach ($fields as $column):
             if ($column->isEnum()) :
 ?>
             if (!in_array($data, $this->_<?=$column->getNormalizedName()?>AcceptedValues) && !empty($data)) {
-                throw new \InvalidArgumentException(_('Invalid value for <?=$column->getNormalizedName()?>'));
+                throw new \InvalidArgumentException(sprintf(_('Invalid value for %s'), '<?=$column->getNormalizedName()?>'));
             }
 <?php
             endif;
