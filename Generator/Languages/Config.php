@@ -159,8 +159,10 @@ class Generator_Languages_Config
     
     protected function _copyCommonStringsFile()
     {
-        copy($this->_langStoragePath . 'common-strings.php' , 
-                $this->_langProjectPath . 'common-strings.php');
+        if (!file_exists($this->_langProjectPath . 'common-strings.php')) {
+            copy($this->_langStoragePath . 'common-strings.php' , 
+                    $this->_langProjectPath . 'common-strings.php');
+        }
     }
     
     public function createAllFiles()
