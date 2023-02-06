@@ -1,5 +1,5 @@
 {
-    "name": "irontec/Generator",
+    "name": "irontec/generator",
     "description": "Generator",
     "authors": [
         {
@@ -18,7 +18,6 @@
             "name": "Luis Felipe García Fernández",
             "email": "garcia.luisfelipe@gmail.com"
         },
-
         {
             "name": "Aitor Llamas",
             "email": "aitorllj93@gmail.com"
@@ -49,7 +48,7 @@
         }
     ],
     "require": {
-        "zendframework/zendframework1": "1.12.19"
+        "shardj/zf1-future": "1.22.*"
     },
     "bin": [
         "klear-assets-generator.php",
